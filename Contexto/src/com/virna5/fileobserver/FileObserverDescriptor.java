@@ -29,7 +29,7 @@ public class FileObserverDescriptor extends BaseDescriptor{
     private boolean triggered;
     private long timeout;
     
-    private String inputfile;
+    private String inputfile_path;
     private String outputfile;
     
 
@@ -38,7 +38,7 @@ public class FileObserverDescriptor extends BaseDescriptor{
         super();
         dependencies = new String[] { "com.virna5.fileobserver.FileObserverService" };
     
-        
+        this.inputfile_path = "/Bascon/BSW1";
         this.triggered = false;
         this.lag = 250;
         this.timeout = 60000;
@@ -123,14 +123,14 @@ public class FileObserverDescriptor extends BaseDescriptor{
      * @return the inputfile_path
      */
     public String getInputfile_path() {
-        return inputfile;
+        return inputfile_path;
     }
 
     /**
      * @param inputfile_path the inputfile_path to set
      */
     public void setInputfile_path(String inputfile_path) {
-        this.inputfile = inputfile_path;
+        this.inputfile_path = inputfile_path;
     }
 
     /**

@@ -12,7 +12,7 @@ public class BaseDescriptor {
     
     
     private long context;
-    private long uid;
+    private Long uid;
     
     public String[] dependencies;
 
@@ -39,14 +39,14 @@ public class BaseDescriptor {
     /**
      * @return the uid
      */
-    public long getUID() {
+    public Long getUID() {
         return uid;
     }
 
     /**
      * @param uid the uid to set
      */
-    public void setUID(long uid) {
+    public void setUID(Long uid) {
         this.uid = uid;
     }
 

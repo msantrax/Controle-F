@@ -2,6 +2,7 @@ Manifest-Version: 1.0
 AutoUpdate-Show-In-Client: true
 OpenIDE-Module: com.virna5.contexto
 OpenIDE-Module-Install: com/virna5/contexto/Installer.class
+OpenIDE-Module-Layer: com/virna5/contexto/layer.xml
 OpenIDE-Module-Localizing-Bundle: com/virna5/contexto/Bundle.properties
 OpenIDE-Module-Requires: org.openide.windows.WindowManager
 OpenIDE-Module-Specification-Version: 1.0

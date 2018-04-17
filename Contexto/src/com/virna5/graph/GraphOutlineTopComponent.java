@@ -5,7 +5,7 @@
  */
 package com.virna5.graph;
 
-import javax.swing.JTabbedPane;
+import com.mxgraph.swing.mxGraphOutline;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -16,37 +16,47 @@ import org.openide.util.NbBundle.Messages;
  * Top component which displays something.
  */
 @ConvertAsProperties(
-        dtd = "-//com.virna5.graph//Artifacts//EN",
+        dtd = "-//com.virna5.graph//GraphOutline//EN",
         autostore = false
 )
 @TopComponent.Description(
-        preferredID = "ArtifactsTopComponent",
+        preferredID = "GraphOutlineTopComponent",
         //iconBase="SET/PATH/TO/ICON/HERE", 
         persistenceType = TopComponent.PERSISTENCE_ONLY_OPENED
 )
-@TopComponent.Registration(mode = "explorer", openAtStartup = false)
-@ActionID(category = "Window", id = "com.virna5.graph.ArtifactsTopComponent")
+@TopComponent.Registration(mode = "properties", openAtStartup = false)
+@ActionID(category = "Window", id = "com.virna5.graph.GraphOutlineTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(
-        displayName = "#CTL_ArtifactsAction",
-        preferredID = "ArtifactsTopComponent"
+        displayName = "#CTL_GraphOutlineAction",
+        preferredID = "GraphOutlineTopComponent"
 )
 @Messages({
-    "CTL_ArtifactsAction=Artifacts",
-    "CTL_ArtifactsTopComponent=Artefatos",
-    "HINT_ArtifactsTopComponent=Repositorio de artefatos para o projeto de tarefas"
+    "CTL_GraphOutlineAction=GraphOutline",
+    "CTL_GraphOutlineTopComponent=Navegador",
+    "HINT_GraphOutlineTopComponent=Navegador do Designer de Tarefas"
 })
-public final class ArtifactsTopComponent extends TopComponent {
+public final class GraphOutlineTopComponent extends TopComponent {
 
-    public ArtifactsTopComponent() {
+    public GraphOutlineTopComponent() {
         initComponents();
-        setName(Bundle.CTL_ArtifactsTopComponent());
-        setToolTipText(Bundle.HINT_ArtifactsTopComponent());
+        setName(Bundle.CTL_GraphOutlineTopComponent());
+        setToolTipText(Bundle.HINT_GraphOutlineTopComponent());
 
     }
 
-    public JTabbedPane getPane(){
-        return jtp_artifacts;
+    public void addOutlinePane(mxGraphOutline pane){
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(pane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        
     }
     
     
@@ -57,22 +67,19 @@ public final class ArtifactsTopComponent extends TopComponent {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jtp_artifacts = new javax.swing.JTabbedPane();
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jtp_artifacts, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addGap(0, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jtp_artifacts, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTabbedPane jtp_artifacts;
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
