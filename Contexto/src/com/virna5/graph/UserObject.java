@@ -120,7 +120,6 @@ public class UserObject extends JFrame {
         };
 
         Object parent = graph.getDefaultParent();
-
         graph.getModel().beginUpdate();
         try {
             Object v1 = graph.insertVertex(parent, null, person1, 20, 20, 80,30);

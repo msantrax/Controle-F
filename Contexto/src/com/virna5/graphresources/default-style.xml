@@ -32,7 +32,7 @@
 		<add as="glass" value="1"/>
 	</add>
 	<add as="icon" extend="label">
-		<add as="align" value="center"/>
+		<add as="align" value="left"/>
 		<add as="imageAlign" value="center"/>
 		<add as="verticalLabelPosition" value="bottom"/>
 		<add as="verticalAlign" value="top"/>

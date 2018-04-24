@@ -5,12 +5,16 @@
  */
 package com.virna5.graph;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTabbedPane;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
+import org.openide.windows.Mode;
+import org.openide.windows.WindowManager;
 
 /**
  * Top component which displays something.
@@ -22,7 +26,7 @@ import org.openide.util.NbBundle.Messages;
 @TopComponent.Description(
         preferredID = "ArtifactsTopComponent",
         //iconBase="SET/PATH/TO/ICON/HERE", 
-        persistenceType = TopComponent.PERSISTENCE_ONLY_OPENED
+        persistenceType = TopComponent.PERSISTENCE_NEVER
 )
 @TopComponent.Registration(mode = "explorer", openAtStartup = false)
 @ActionID(category = "Window", id = "com.virna5.graph.ArtifactsTopComponent")
@@ -37,6 +41,50 @@ import org.openide.util.NbBundle.Messages;
     "HINT_ArtifactsTopComponent=Repositorio de artefatos para o projeto de tarefas"
 })
 public final class ArtifactsTopComponent extends TopComponent {
+
+    private static final Logger log = Logger.getLogger(ArtifactsTopComponent.class.getName());
+
+    
+    private static final String PREFERRED_ID = "ArtifactsTopComponent";
+    private static ArtifactsTopComponent instance;
+    
+    public static synchronized ArtifactsTopComponent getDefault() {
+        if (instance == null) {
+            instance = new ArtifactsTopComponent();
+        }
+        return instance;
+    }
+    
+    /**
+     * Obtain the TopComponent instance. Never call {@link #getDefault} directly!
+     */
+    public static synchronized ArtifactsTopComponent findInstance() {
+        
+        Mode propmode = WindowManager.getDefault().findMode("explorer");
+        //TopComponent win = ArtifactsTopComponent.getRegistry().getActivated();
+        TopComponent win = WindowManager.getDefault().findTopComponent(PREFERRED_ID);
+        if (win == null) {
+            log.log(Level.INFO, "Não foi possivel encontrar o componente " + PREFERRED_ID);
+            getDefault();
+            propmode.dockInto(instance);
+            instance.open();
+            instance.requestActive();
+            return instance;
+        }
+        if (win instanceof ArtifactsTopComponent) {
+            log.log(Level.INFO, "Component " + PREFERRED_ID+ " is already active");
+            propmode.dockInto(win);
+            win.open();
+            win.requestActive();
+            return (ArtifactsTopComponent) win;
+        }
+        log.log(Level.WARNING, 
+                "Parece que há várias instancias do ID '" + PREFERRED_ID
+                + "' Isso é uma fonte potencial de problemas e comportamento errático");
+        return getDefault();
+    }
+    
+    
 
     public ArtifactsTopComponent() {
         initComponents();

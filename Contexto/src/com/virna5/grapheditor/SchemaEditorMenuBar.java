@@ -387,7 +387,7 @@ public class SchemaEditorMenuBar extends JMenuBar
 			{
 				public void actionPerformed(ActionEvent e)
 				{
-					editor.setLookAndFeel(clazz);
+					//editor.setLookAndFeel(clazz);
 				}
 			});
 		}

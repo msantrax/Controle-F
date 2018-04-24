@@ -16,7 +16,7 @@ public class ContextControl {
     private static final Logger log = Logger.getLogger(ContextControl.class.getName());
 
     private Controler ctrl;
-    private ContextDescriptor descriptor;
+    private RootDescriptor descriptor;
     private long contextid = 0L;
     private long load_tm = 0L;
     
@@ -32,7 +32,7 @@ public class ContextControl {
         this.ctrl = ctrl;
     }
     
-    public void loadDescriptor(ContextDescriptor cd, String filename){
+    public void loadDescriptor(RootDescriptor cd, String filename){
         
         this.descriptor = cd;
         this.contextid = cd.getContext();
@@ -44,7 +44,7 @@ public class ContextControl {
     /**
      * @return the descriptor
      */
-    public ContextDescriptor getDescriptor() {
+    public RootDescriptor getDescriptor() {
         return descriptor;
     }
 

@@ -126,7 +126,7 @@ public class SchemaEditor extends BasicGraphEditor
 		}
 
 		SchemaEditor editor = new SchemaEditor();
-		editor.createFrame(new SchemaEditorMenuBar(editor)).setVisible(true);
+		//editor.createFrame(new SchemaEditorMenuBar(editor)).setVisible(true);
 	}
 
 }

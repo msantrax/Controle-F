@@ -6,9 +6,12 @@
 package com.virna5.fileobserver;
 
 import com.virna5.contexto.BaseDescriptor;
+import com.virna5.contexto.ContextUtils;
 import com.virna5.contexto.DescriptorConnector;
 import com.virna5.contexto.DescriptorNode;
+import java.beans.IntrospectionException;
 import java.io.Serializable;
+import org.openide.util.Exceptions;
 
 
 public class FileObserverConnector extends DescriptorConnector implements Serializable {
@@ -20,30 +23,37 @@ public class FileObserverConnector extends DescriptorConnector implements Serial
 
     @Override
     public String toString() {
-        
-        return "FileObserver " + this.hashCode();
-        
+        if (node == null){
+            return "FOD:"+ this.hashCode();
+        }
+        else{
+            return node.getDescriptor().getName();        
+        }
     }
 
-    /**
-     * @return the node
-     */
+   
     @Override
     public FileObserverNode getNode() {
         return (FileObserverNode)node;
     }
 
-    /**
-     * @param node the node to set
-     */
+    
     @Override
     public void setNode(DescriptorNode node) {
         this.node = (FileObserverNode)node;
     }
     
+    @Override
     public void initNode(){
-        //descriptor = new FileObserverDescriptor();
-        node = new FileObserverNode();
+    
+        try {
+            node = new FileObserverNode(new FileObserverDescriptor());
+            FileObserverDescriptor fod = (FileObserverDescriptor)node.getDescriptor();
+            fod.setUID(ContextUtils.getUID());
+        } catch (IntrospectionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+       
         
     }
     

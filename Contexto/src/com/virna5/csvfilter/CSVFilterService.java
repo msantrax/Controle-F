@@ -70,7 +70,9 @@ public class CSVFilterService extends BaseService {
     
     public void updateDescriptor(CSVFilterDescriptor csvfd){
         
-        ArrayList<CSVField> dfields = csvfd.getCSVfields();      
+        
+        CSVFieldsWrapper dfields = csvfd.getCsvfields();      
+        //ArrayList<CSVField> dfields = csvfd.getCSVfields();      
         for (CSVField csvf : csvfields){
             dfields.add(csvf);
         }
@@ -89,8 +91,8 @@ public class CSVFilterService extends BaseService {
         for (String s : fields){
             CSVField csvf = new CSVField();
             csvf.setCSVfield(s);
-            csvf.setId(filteredName(s));
-            csvf.setExclude(false);
+            //csvf.setId(filteredName(s));
+            csvf.setReadcsv(false);
             if (count < 6){
                 csvf.setRealm("header");
                 csvf.setType("string");

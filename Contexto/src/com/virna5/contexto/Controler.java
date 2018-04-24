@@ -23,8 +23,6 @@ import java.util.LinkedHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.windows.IOProvider;
-import org.openide.windows.InputOutput;
 
 
 
@@ -33,6 +31,7 @@ public class Controler {
     private static final Logger log = Logger.getLogger(Controler.class.getName());
 
     private static Controler instance; 
+    private ControleTopComponent top;
      
     private LinkedBlockingQueue<SMTraffic> smqueue;
     
@@ -52,22 +51,25 @@ public class Controler {
         if (instance == null) {instance = new Controler();}
         return instance;
     }
-    
-    
-    
+   
     public Controler() {
         
         log.setLevel(Level.ALL);
         contextpool = new ArrayList<>();
         
-        modn = new LinkedHashMap<>();
-        modn.put("com.virna5.fileobserver.FileObserverDescriptor", 
-                    "/Bascon/BSW1/Sandbox/Controle-D/build/cluster/modules/com-virna5-fileobserver.jar");
-        
-        artifacts = new LinkedHashMap<>();
-        log.addHandler(OutHandler.getInstance());
+//        modn = new LinkedHashMap<>();
+//        modn.put("com.virna5.fileobserver.FileObserverDescriptor", 
+//                    "/Bascon/BSW1/Sandbox/Controle-D/build/cluster/modules/com-virna5-fileobserver.jar");
+//        
+//        artifacts = new LinkedHashMap<>();
+//        log.addHandler(OutHandler.getInstance());
 
     }
+    
+    public void setView(ControleTopComponent top){
+        this.top = top;
+    }
+    
     
     public ContextControl isContextLoaded(long uid){
         
@@ -96,6 +98,7 @@ public class Controler {
         return descriptors_payload;
     }
     
+    
     public void loadSystem(){
 
         String basedir = ContextUtils.CONTEXTDIR + "Ctx";
@@ -111,30 +114,15 @@ public class Controler {
         log.info(String.format("Loaded %d contexts from disk", contextpool.size()));
         
         for (ContextControl cc : contextpool){          
-            ContextDescriptor cd = cc.getDescriptor();
+            RootDescriptor cd = cc.getDescriptor();
             if (loadNodes(cd.getContextNodes())){
-                if (loadVertex(cd.getContextNodes())){
-                    
-                }
-            }
-            
+                
+            }        
         }
         log.info(String.format("All contexts were loaded ..."));
     }
     
-    private boolean loadVertex(ContextNodes cn){
-        
-         for (BaseDescriptor bd : cn){
-             ArrayList<Long> vertexpool = bd.getVertex();
-             for (Long vertex : vertexpool){
-                 
-             }
-             
-         }
-        
-        
-        return true;
-    }
+  
     
     private boolean loadNodes(ContextNodes cn){
         
@@ -174,13 +162,10 @@ public class Controler {
         return null;
     }
     
-    
-    
     private void updateServiceData(BaseService bs, BaseDescriptor bd){
         //FileObserverService fos = (FileObserverService) bs;
         bs.configService(bd);  
     }
-    
     
     public void addContext(String filename){
         
@@ -188,7 +173,7 @@ public class Controler {
         
         try {       
             String json_out = ContextUtils.loadFile(filename);
-            ContextDescriptor lcd = loadContextDescriptor(json_out);
+            RootDescriptor lcd = loadContextDescriptor(json_out);
             if (lcd == null) return;
             
             long contextid = lcd.getContext();
@@ -211,7 +196,7 @@ public class Controler {
         
     }
 
-    public ContextDescriptor loadContextDescriptor(String payload){
+    public RootDescriptor loadContextDescriptor(String payload){
         
         String temp;
         boolean abort = false;
@@ -224,7 +209,7 @@ public class Controler {
         
         while (!abort){
             try{
-                ContextDescriptor jctx = gson.fromJson(payload, ContextDescriptor.class);
+                RootDescriptor jctx = gson.fromJson(payload, RootDescriptor.class);
                 //log.info("==== Context loaded");
                 return jctx;
             } catch (JsonParseException ex) {
@@ -271,24 +256,15 @@ public class Controler {
         }
         return false;
     }
-    
-    /**
-     * @return the contextpool
-     */
+   
     public ArrayList<ContextControl> getContextpool() {
         return contextpool;
     }
 
-    /**
-     * @return the descriptorsWatchPath
-     */
     public String getDescriptorsWatchPath() {
         return descriptorsWatchPath;
     }
 
-    /**
-     * @param descriptorsWatchPath the descriptorsWatchPath to set
-     */
     public void setDescriptorsWatchPath(String descriptorsWatchPath) {
         this.descriptorsWatchPath = descriptorsWatchPath;
     }

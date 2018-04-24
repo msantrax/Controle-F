@@ -5,29 +5,78 @@
  */
 package com.virna5.csvfilter;
 
+import com.virna5.contexto.ContextUtils;
+
 /**
  *
  * @author opus
  */
 public class CSVField {
 
+    
     private String csvfield;
-    private String id;
+    protected Integer csvseq;
     private String realm;
     private String type;
-    private boolean exclude = false;
+    private boolean readcsv = true;
     
-    
+    protected String resultfield;
+    protected Integer resultseq;
+    protected boolean writeresult = true;
+   
     private String value;
     private String value_type;
     
     private double number;
     
     
-    public CSVField() {
+    public static CSVField CSVFieldFactory(Integer seq){
+        CSVField instance = new CSVField();
+        String ids = String.valueOf(ContextUtils.getUID());
+        instance.csvfield = ids.substring(12);
+        instance.resultfield= ids.substring(10);
+        instance.resultseq=seq;
+        instance.realm = "valor";
+        instance.type="numero";
+        instance.readcsv=true;
+        instance.setWriteresult(true);
+        
+        return instance;
+    }
     
+    
+    public static Object[] getRealmTypes(){
+        return new Object[] {"cabecalho", "valor", "indicador"};
+    }
+    
+    public static Object[] getTypeTypes(){
+        return new Object[] {"texto", "numero", "indicador", "instante"};
+    }
+    
+    public CSVField() {    
+        
     }
 
+    public CSVField (String name, String realm, String type){
+        this.csvfield = name;
+        this.realm = realm;
+        this.type = type;
+    }
+    
+    
+    public CSVField clone(){
+        CSVField cl = new CSVField();
+        cl.csvfield = new String(csvfield);
+        cl.csvseq = new Integer(csvseq);
+        cl.readcsv = new Boolean(readcsv);
+        cl.realm = new String(realm);
+        cl.resultfield = new String(resultfield);
+        cl.resultseq = new Integer(resultseq);
+        cl.type = new String(type);
+        
+        return cl;
+    }
+    
     /**
      * @return the csvfield
      */
@@ -42,20 +91,7 @@ public class CSVField {
         this.csvfield = csvfield;
     }
 
-    /**
-     * @return the id
-     */
-    public String getId() {
-        return id;
-    }
-
-    /**
-     * @param id the id to set
-     */
-    public void setId(String id) {
-        this.id = id;
-    }
-
+   
     /**
      * @return the realm
      */
@@ -127,20 +163,75 @@ public class CSVField {
     }
 
     /**
-     * @return the exclude
+     * @return the readcsv
      */
-    public boolean isExclude() {
-        return exclude;
+    public boolean isReadcsv() {
+        return readcsv;
     }
 
     /**
-     * @param exclude the exclude to set
+     * @param readcsv the readcsv to set
      */
-    public void setExclude(boolean exclude) {
-        this.exclude = exclude;
+    public void setReadcsv(boolean readcsv) {
+        this.readcsv = readcsv;
     }
 
-    
+    /**
+     * @return the csvseq
+     */
+    public Integer getCsvseq() {
+        return csvseq;
+    }
+
+    /**
+     * @param csvseq the csvseq to set
+     */
+    public void setCsvseq(Integer csvseq) {
+        this.csvseq = csvseq;
+    }
+
+    /**
+     * @return the resultfield
+     */
+    public String getResultfield() {
+        return resultfield;
+    }
+
+    /**
+     * @param resultfield the resultfield to set
+     */
+    public void setResultfield(String resultfield) {
+        this.resultfield = resultfield;
+    }
+
+    /**
+     * @return the resultseq
+     */
+    public Integer getResultseq() {
+        return resultseq;
+    }
+
+    /**
+     * @param resultseq the resultseq to set
+     */
+    public void setResultseq(Integer resultseq) {
+        this.resultseq = resultseq;
+    }
+
+    /**
+     * @return the writeresult
+     */
+    public boolean isWriteresult() {
+        return writeresult;
+    }
+
+    /**
+     * @param writeresult the writeresult to set
+     */
+    public void setWriteresult(boolean writeresult) {
+        this.writeresult = writeresult;
+    }
+
     
 }
 

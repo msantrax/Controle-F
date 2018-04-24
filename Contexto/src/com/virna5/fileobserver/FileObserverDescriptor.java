@@ -6,6 +6,10 @@
 package com.virna5.fileobserver;
 
 import com.virna5.contexto.BaseDescriptor;
+import com.virna5.contexto.ContextUtils;
+import com.virna5.contexto.DescriptorConnector;
+import java.beans.IntrospectionException;
+import org.openide.util.Exceptions;
 
 
 
@@ -14,12 +18,7 @@ import com.virna5.contexto.BaseDescriptor;
  * @author opus
  */
 public class FileObserverDescriptor extends BaseDescriptor{
-   
-    
-    private String nodetype = "FileObserverDescriptor";
-    private String version = "1.0.0";
-    
-    
+ 
     
     private long timespot;
     private long lastseen;
@@ -37,57 +36,79 @@ public class FileObserverDescriptor extends BaseDescriptor{
         
         super();
         dependencies = new String[] { "com.virna5.fileobserver.FileObserverService" };
-    
+        
+        name="Observador de Arquivos";
+        desc = "Dispositivo para verificação e leitura de novos arquivos em um diratorio.";
+        
+        nodetype = "fileobserver.FileObserverDescriptor";
+        version = "1.0.0";
+        
         this.inputfile_path = "/Bascon/BSW1";
+        this.outputfile="";
         this.triggered = false;
         this.lag = 250;
         this.timeout = 60000;
         
         this.timespot = 0l;
         this.interval = 2000;
-        
-             
+          
     }
 
+    
+    @Override
+    public DescriptorConnector buildConnector(){
+        
+        FileObserverConnector foc = new FileObserverConnector();
+        try {
+            foc.setNode(new FileObserverNode(this));
+            foc.setID(ContextUtils.getUID());
+        } catch (IntrospectionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return foc;
+        
+    }
+    
+    
     /**
      * @return the lastseen
      */
-    public long getTimeSpot() {
+    public Long getTimeSpot() {
         return timespot;
     }
 
     /**
      * @param lastseen the lastseen to set
      */
-    public void setTimespot(long timespot) {
+    public void setTimespot(Long timespot) {
         this.timespot = timespot;
     }
 
     /**
      * @return the interval
      */
-    public long getInterval() {
+    public Long getInterval() {
         return interval;
     }
 
     /**
      * @param interval the interval to set
      */
-    public void setInterval(long interval) {
+    public void setInterval(Long interval) {
         this.interval = interval;
     }
 
     /**
      * @return the lag
      */
-    public long getLag() {
+    public Long getLag() {
         return lag;
     }
 
     /**
      * @param lag the lag to set
      */
-    public void setLag(long lag) {
+    public void setLag(Long lag) {
         this.lag = lag;
     }
 
@@ -108,14 +129,14 @@ public class FileObserverDescriptor extends BaseDescriptor{
     /**
      * @return the timeout
      */
-    public long getTimeout() {
+    public Long getTimeout() {
         return timeout;
     }
 
     /**
      * @param timeout the timeout to set
      */
-    public void setTimeout(long timeout) {
+    public void setTimeout(Long timeout) {
         this.timeout = timeout;
     }
 
@@ -136,15 +157,15 @@ public class FileObserverDescriptor extends BaseDescriptor{
     /**
      * @return the outputfile_path
      */
-    public String getOutputfile_path() {
+    public String getOutputfile() {
         return outputfile;
     }
 
     /**
      * @param outputfile_path the outputfile_path to set
      */
-    public void setOutputfile_path(String outputfile_path) {
-        this.outputfile = outputfile_path;
+    public void setOutputfile(String outputfile) {
+        this.outputfile = outputfile;
     }
 
     /**

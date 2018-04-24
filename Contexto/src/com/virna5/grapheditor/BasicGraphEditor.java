@@ -1,5 +1,7 @@
 package com.virna5.grapheditor;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.awt.BorderLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -21,7 +23,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -40,6 +41,9 @@ import com.mxgraph.layout.mxPartitionLayout;
 import com.mxgraph.layout.mxStackLayout;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxGeometry;
+import com.mxgraph.model.mxGraphModel;
+import com.mxgraph.model.mxGraphModel.mxValueChange;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.swing.mxGraphOutline;
 import com.mxgraph.swing.handler.mxKeyboardHandler;
@@ -55,12 +59,23 @@ import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.util.mxUndoableEdit.mxUndoableChange;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxGraphSelectionModel;
+import com.virna5.contexto.BaseDescriptor;
+import com.virna5.contexto.ContextNodes;
+import com.virna5.contexto.ContextNodesDeserializer;
 import com.virna5.contexto.ContextUtils;
 import com.virna5.contexto.Controler;
 import com.virna5.contexto.DescriptorConnector;
 import com.virna5.contexto.DescriptorNode;
+import com.virna5.edge.EdgeDescriptor;
 import com.virna5.graph.ArtifactsTopComponent;
 import com.virna5.graph.GraphOutlineTopComponent;
+import com.virna5.graph.GraphPropertiesTopComponent;
+import com.virna5.graph.GraphTopComponent;
+import com.virna5.contexto.RootConnector;
+import com.virna5.contexto.RootDescriptor;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -87,8 +102,6 @@ public class BasicGraphEditor extends JPanel {
 
     protected JTabbedPane libraryPane;
 
-    
-    
     protected mxUndoManager undoManager;
 
     protected String appTitle;
@@ -104,28 +117,60 @@ public class BasicGraphEditor extends JPanel {
     protected mxKeyboardHandler keyboardHandler;
 
     
+    private Controler ctrl;
+    private GraphTopComponent graph_panel;
+    private GraphPropertiesTopComponent properties_panel;
+    
+    private mxGraph graph;
+    private mxGraphModel model;
+    private mxCell rootcell;
+        
     protected mxIEventListener undoHandler = new mxIEventListener() {
         public void invoke(Object source, mxEventObject evt) {
             undoManager.undoableEditHappened((mxUndoableEdit) evt.getProperty("edit"));
         }
     };
-
+     
     protected mxIEventListener changeTracker = new mxIEventListener() {
         public void invoke(Object source, mxEventObject evt) {
             
+            StringBuilder sb = new StringBuilder();
             Map<String,Object> prop = evt.getProperties();
+            mxCell cell;
             
-            log.info(String.format("Graph : %s ", evt.getName()));
-            for (String s: prop.keySet()){
-                log.info(String.format("Key : %s ", s));
+            ArrayList<Object>changes =(ArrayList<Object>)prop.get("changes");
+            
+            if (changes.size() == 3){
+                sb.append("Node was created");
+            }
+            else{
+                Object obj = changes.get(0);
+                if (obj instanceof mxGraphModel.mxGeometryChange){
+                    sb.append("Geometry changed ");
+                }
+                else if (obj instanceof mxGraphModel.mxChildChange){
+                    //mxCell mxc = (mxCell)gch.getCell();
+                    sb.append("Node was deleted ");
+                }
+                else if (obj instanceof mxGraphModel.mxValueChange){
+                    Object prev = (( mxGraphModel.mxValueChange) obj).getPrevious();
+                    cell = (mxCell)((mxValueChange) obj).getCell();
+                    cell.setValue(prev);
+                    sb.append("Value was changed");
+                }
             }
             
+            log.info(sb.toString());
+  
             setModified(true);
         }
     };
 
-    
-    Controler ctrl = Controler.getInstance();
+    private void updatePointers(){
+        ctrl = Controler.getInstance();
+        graph_panel = GraphTopComponent.findInstance();
+        properties_panel = graph_panel.getPropertiesPanel();
+    }
     
     protected mxIEventListener selectionTracker = new mxIEventListener() {
         
@@ -133,10 +178,10 @@ public class BasicGraphEditor extends JPanel {
 
             long uid;
             mxGraphSelectionModel sm = (mxGraphSelectionModel) sender;
-            
             mxCell cell = (mxCell) sm.getCell();
+            
             if (cell != null) {
-                
+                // Cell is selected
                 String id = cell.getId();
                 String ctype =  cell.isVertex() ? "vertex" : "edge"; 
                 Object value = cell.getValue();
@@ -144,40 +189,50 @@ public class BasicGraphEditor extends JPanel {
                     DescriptorConnector dc = (DescriptorConnector)value;
                     if (dc.getID() == 0){
                         dc.setID(ContextUtils.getUID());
-                        dc.initNode();
+                        dc.initNode();                    
                     }
                     uid = dc.getID();
                     DescriptorNode dn = dc.getNode();
-                    dn.updateProp();
+                    if (ctrl == null){
+                        updatePointers();
+                    }
+                    properties_panel.setNode(dn);
                 }
                 else{
                     uid = -1l;
                 }
-                log.info(String.format("Cell %s was selected, is a %s with class hash %s, uid %s", 
-                        id, ctype, value.toString(), uid));
-                
+                log.info(String.format("Cell %s was selected, is a %s with class hash %s, uid %s", id, ctype, value.toString(), uid));               
+            }
+            else{
+                // No Cell selected - show global graph properties
+                DescriptorConnector rdc = (DescriptorConnector)rootcell.getValue();
+                DescriptorNode dn = rdc.getNode();
+                properties_panel.setNode(dn);
             }
         }
-
     };
     
  
-    
+    // ===============================================================================================================
     public BasicGraphEditor(String appTitle, mxGraphComponent component) {
         
         // Stores and updates the frame title
-        this.appTitle = appTitle;
+        this.appTitle = "Sistema Controle - Designer de Tarefas";
 
         // Stores a reference to the graph and creates the command history
         graphComponent = component;
-        final mxGraph graph = graphComponent.getGraph();
+        
+        graph = graphComponent.getGraph();
+        model = (mxGraphModel)graphComponent.getGraph().getModel();
+        rootcell = (mxCell)model.getCell("1");
+        RootConnector rc = new RootConnector();
+        rc.initNode();
+        rootcell.setValue(rc);
+        
         undoManager = createUndoManager();
 
         // Do not change the scale and translation after files have been loaded
         graph.setResetViewOnRootChange(false);
-
-        
-        
         
         TopComponent win;
         
@@ -204,9 +259,6 @@ public class BasicGraphEditor extends JPanel {
             outline.addOutlinePane(graphOutline);
         }
         
-        
-        
-     
         // Updates the modified flag if the graph model changes
         graph.getModel().addListener(mxEvent.CHANGE, changeTracker);
 
@@ -216,6 +268,13 @@ public class BasicGraphEditor extends JPanel {
         
         graph.getSelectionModel().addListener(mxEvent.CHANGE, selectionTracker);
 
+//        graph.getSelectionModel().addListener(mxEvent.CHANGE, new mxIEventListener() {
+//            public void invoke(Object source, mxEventObject evt) {
+//                log.info("Cell togled");
+//            }
+//        });
+        
+        
         // Keeps the selection in sync with the command history
         mxIEventListener undoHandler = new mxIEventListener() {
             public void invoke(Object source, mxEventObject evt) {
@@ -226,29 +285,6 @@ public class BasicGraphEditor extends JPanel {
 
         undoManager.addListener(mxEvent.UNDO, undoHandler);
         undoManager.addListener(mxEvent.REDO, undoHandler);
-
-        // Creates the graph outline component
-        //graphOutline = new mxGraphOutline(graphComponent);
-
-        // Creates the library pane that contains the tabs with the palettes
-        //libraryPane = new JTabbedPane();
-                
-        // Creates the inner split pane that contains the library with the
-        // palettes and the graph outline on the left side of the window
-//        JSplitPane inner = new JSplitPane(JSplitPane.VERTICAL_SPLIT, libraryPane, graphOutline);
-//        inner.setDividerLocation(320);
-//        inner.setResizeWeight(1);
-//        inner.setDividerSize(6);
-//        inner.setBorder(null);
-
-        // Creates the outer split pane that contains the inner split pane and
-        // the graph component on the right side of the window
-        //JPane inner = new JPane();        
-//        JSplitPane outer = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JPanel(), graphComponent);
-//        outer.setOneTouchExpandable(true);
-//        outer.setDividerLocation(200);
-//        outer.setDividerSize(6);
-//        outer.setBorder(null);
 
         // Creates the status bar
         statusBar = createStatusBar();
@@ -267,33 +303,186 @@ public class BasicGraphEditor extends JPanel {
         installHandlers();
         installListeners();
         updateTitle();
+    
+        
     }
-
-    /**
-     *
-     */
+   
+    // ----------------------------------------------------------------------------------------------------------------
+    
+    public void proccessGraph(String file){
+        
+        StringBuilder sb = new StringBuilder();
+        boolean failed = false;
+        
+        BaseDescriptor bd;
+        RootDescriptor rd = new RootDescriptor();
+        ArrayList<BaseDescriptor> nodes = new ArrayList<>();
+           
+        Map<String,Object> cells_map = model.getCells();
+        //Collection<Object>cells_list = cells_map.values();
+        
+        sb.append(String.format("Graph with %d cells is :\n", cells_map.size()));
+        
+        for (Object c : cells_map.values()){
+            mxCell mxc = (mxCell)c;
+            Object cvalue = mxc.getValue();
+            if (cvalue != null){
+                if (mxc.getId().equals("1")){
+                    sb.append("Found root\n");
+                    DescriptorConnector rdc = (DescriptorConnector)mxc.getValue();
+                    rd = (RootDescriptor)rdc.getDescriptor();
+                    rd.setGraph_widget(mxc.getId());
+                }
+                else{
+                    String stype = mxc.isEdge() ? "Edge" : "Vertex";
+                    sb.append("Cell ").append(mxc.getId()).append(" is a ").append(stype).append(" of class ").append(cvalue.toString()).append("\n");
+                    if (!(mxc.getParent().getId().equals("1"))){
+                        sb.append("\tCell ").append(mxc.getId()).append(" doesnt match parent 1\n");
+                    }
+                    else{
+                        if ((mxc.getValue() instanceof DescriptorConnector)){
+                            DescriptorConnector obd = (DescriptorConnector)mxc.getValue();
+                            bd = obd.getDescriptor();
+                            bd.setGraph_widget(mxc.getId());
+                            bd.setStyle(mxc.getStyle());
+                            if (mxc.isVertex()){
+                                mxGeometry mxg = mxc.getGeometry();
+                                bd.setPosition(mxg.getX(), mxg.getY());
+                                bd.setDimension(mxg.getWidth(), mxg.getHeight());
+                                
+                                nodes.add(bd);
+                                sb.append("\tVertex added to pool with geometry : ")
+                                        .append(bd.getXpos()+ " - ").append(bd.getYpos()+ " - ")
+                                        .append(bd.getWidth()+ " - ").append(bd.getHeight()+ "\n");
+                            }
+                            else{
+                                EdgeDescriptor ebd = (EdgeDescriptor)bd;
+                                ebd.setGraph_widget(mxc.getId());
+                                ebd.setStyle(mxc.getStyle());
+                                mxGeometry mxg = mxc.getGeometry();
+                                if (mxc.getSource() != null) {
+                                    ebd.setSource_widget(mxc.getSource().getId());
+                                    //ebd.setSourcept_x(mxg.getSourcePoint().getX());
+                                    //ebd.setSourcept_y(mxg.getSourcePoint().getY());
+                                    sb.append("\tEdge conected to source Vertex ").append(ebd.getSource_widget())
+                                            .append(" @ : ").append(ebd.getSourcept_x()).append(" / ").append(ebd.getSourcept_y()).append("\n");
+                                }
+                                else{
+                                    sb.append("\tEdge has a dangling source point\n");
+                                }
+                                if (mxc.getTarget() != null){
+                                    ebd.setTarget_widget(mxc.getTarget().getId());
+                                    //ebd.setTargetpt_x(mxg.getTargetPoint().getX());
+                                    //ebd.setTargetpt_y(mxg.getTargetPoint().getY());
+                                    sb.append("\tEdge conected to target Vertex ").append(ebd.getTarget_widget())
+                                            .append(" @ : ").append(ebd.getTargetpt_x()).append(" / ").append(ebd.getTargetpt_y()).append("\n");
+                                }
+                                else{
+                                    sb.append("\tEdge has a dangling target point\n");   
+                                }
+                                nodes.add(ebd);
+                            }
+                        }
+                        else{
+                            sb.append("\tCell ").append(mxc.getId()).append(" is not of type BaseDescriptor\n");
+                            failed = true;
+                        }
+                    } 
+                }
+            }
+            else{
+                sb.append("Cell ").append(mxc.getId()).append(" has null value, bypassing... \n");
+            }
+        }
+        
+        if (failed) sb.append("Parse has failed !\n");
+        log.info(sb.toString());
+        
+        if (!failed){
+            
+            for (BaseDescriptor nd : nodes){
+                rd.addNode(nd);
+            }
+            
+            GsonBuilder builder = new GsonBuilder(); 
+            builder.registerTypeAdapter(ContextNodes.class, new ContextNodesDeserializer()); 
+            builder.setPrettyPrinting(); 
+            Gson gson = builder.create();
+            String sjson = gson.toJson(rd);
+     
+            log.info("========== JSON : ==================\n\r");
+            log.info(sjson);
+            log.info(String.format("Json parser loaded %d chars", sjson.length()));
+                log.info("File saved");
+            try {
+                //ContextUtils.saveJson("/Bascon/BSW1/Testbench/graph1.json", sjson);
+                ContextUtils.saveJson(file, sjson);
+            } catch (IOException ex) {
+                log.info(String.format("Failed to save json file due : %s", ex.getMessage()));
+            }         
+        }
+        
+    }
+    
+    public void loadContext(String payload){
+        
+        if (ctrl == null) updatePointers();
+        RootDescriptor loadedctx = ctrl.loadContextDescriptor(payload);
+        
+        
+        Object parent = graph.getDefaultParent();
+        ArrayList<BaseDescriptor> nodes = loadedctx.getContextNodes();
+        LinkedHashMap<String, mxCell> nodemap = new LinkedHashMap<>();
+        
+        graph.getModel().beginUpdate();
+        try {
+            for (BaseDescriptor bs : nodes){
+                if (!(bs instanceof EdgeDescriptor)){
+                    mxCell nd = (mxCell)graph.insertVertex(parent, bs.getGraph_widget(), bs.buildConnector(), 
+                        bs.getXpos(), bs.getYpos(), bs.getWidth(), bs.getHeight(),
+                        bs.getStyle());
+                    nodemap.put(bs.getGraph_widget(), nd);
+                }
+            }
+        } finally {
+            graph.getModel().endUpdate();
+        }
+        
+        graph.getModel().beginUpdate();
+        try {
+            for (BaseDescriptor bs : nodes){
+                if (bs instanceof EdgeDescriptor){
+                    mxCell nd = (mxCell)graph.insertEdge(parent, bs.getGraph_widget(), bs.buildConnector(),
+                            nodemap.get(((EdgeDescriptor) bs).getSource_widget()), 
+                            nodemap.get(((EdgeDescriptor) bs).getTarget_widget()), 
+                            bs.getStyle());                 
+                    nodemap.put(bs.getGraph_widget(), nd);
+                }
+            }
+        } finally {
+            graph.getModel().endUpdate();
+        }
+        
+        
+        
+        log.info("Context reloaded");
+    }
+    
+    
+    
     protected mxUndoManager createUndoManager() {
         return new mxUndoManager();
     }
 
-    /**
-     *
-     */
     protected void installHandlers() {
         rubberband = new mxRubberband(graphComponent);
         keyboardHandler = new EditorKeyboardHandler(graphComponent);
     }
 
-    /**
-     *
-     */
     protected void installToolBar() {
         add(new EditorToolBar(this, JToolBar.HORIZONTAL), BorderLayout.NORTH);
     }
 
-    /**
-     *
-     */
     protected JLabel createStatusBar() {
         JLabel statusBar = new JLabel(mxResources.get("ready"));
         statusBar.setBorder(BorderFactory.createEmptyBorder(2, 4, 2, 4));
@@ -301,9 +490,6 @@ public class BasicGraphEditor extends JPanel {
         return statusBar;
     }
 
-    /**
-     *
-     */
     protected void installRepaintListener() {
         graphComponent.getGraph().addListener(mxEvent.REPAINT,new mxIEventListener() {
             public void invoke(Object source, mxEventObject evt) {
@@ -321,9 +507,6 @@ public class BasicGraphEditor extends JPanel {
         });
     }
 
-    /**
-     *
-     */
     public EditorPalette insertPalette(String title) {
         final EditorPalette palette = new EditorPalette();
         final JScrollPane scrollPane = new JScrollPane(palette);
@@ -345,9 +528,6 @@ public class BasicGraphEditor extends JPanel {
         return palette;
     }
 
-    /**
-     *
-     */
     protected void mouseWheelMoved(MouseWheelEvent e) {
         if (e.getWheelRotation() < 0) {
             graphComponent.zoomIn();
@@ -360,11 +540,6 @@ public class BasicGraphEditor extends JPanel {
 //                + "%");
     }
 
-    
-    
-    /**
-     *
-     */
     protected void showOutlinePopupMenu(MouseEvent e) {
         
         Point pt = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(),graphComponent);
@@ -410,9 +585,6 @@ public class BasicGraphEditor extends JPanel {
         e.consume();
     }
 
-    /**
-     *
-     */
     protected void showGraphPopupMenu(MouseEvent e) {
         Point pt = SwingUtilities.convertPoint(e.getComponent(), e.getPoint(),graphComponent);
         EditorPopupMenu menu = new EditorPopupMenu(BasicGraphEditor.this);
@@ -427,8 +599,7 @@ public class BasicGraphEditor extends JPanel {
     }
 
     protected void installListeners() {
-        
-        
+             
         // Installs mouse wheel listener for zooming
         MouseWheelListener wheelTracker = new MouseWheelListener() {
             
@@ -479,13 +650,11 @@ public class BasicGraphEditor extends JPanel {
 
         // Installs a mouse motion listener to display the mouse location
         graphComponent.getGraphControl().addMouseMotionListener( new MouseMotionListener() {
-
-            
+    
             public void mouseDragged(MouseEvent e) {
                 mouseLocationChanged(e);
             }
-
-            
+  
             public void mouseMoved(MouseEvent e) {
                 mouseDragged(e);
             }
@@ -493,9 +662,7 @@ public class BasicGraphEditor extends JPanel {
         });
     }
 
-    /**
-     *
-     */
+    
     public void setCurrentFile(File file) {
         File oldValue = currentFile;
         currentFile = file;
@@ -507,17 +674,10 @@ public class BasicGraphEditor extends JPanel {
         }
     }
 
-    /**
-     *
-     */
     public File getCurrentFile() {
         return currentFile;
     }
 
-    /**
-     *
-     * @param modified
-     */
     public void setModified(boolean modified) {
         boolean oldValue = this.modified;
         this.modified = modified;
@@ -529,58 +689,35 @@ public class BasicGraphEditor extends JPanel {
         }
     }
 
-    /**
-     *
-     * @return whether or not the current graph has been modified
-     */
     public boolean isModified() {
         return modified;
     }
 
-    /**
-     *
-     */
+    
     public mxGraphComponent getGraphComponent() {
         return graphComponent;
     }
 
-    /**
-     *
-     */
     public mxGraphOutline getGraphOutline() {
         return graphOutline;
     }
 
-    /**
-     *
-     */
+    
     public JTabbedPane getLibraryPane() {
         return libraryPane;
     }
 
-    /**
-     *
-     */
+    
     public mxUndoManager getUndoManager() {
         return undoManager;
     }
 
-    /**
-     *
-     * @param name
-     * @param action
-     * @return a new Action bound to the specified string name
-     */
+   
     public Action bind(String name, final Action action) {
         return bind(name, action, null);
     }
 
-    /**
-     *
-     * @param name
-     * @param action
-     * @return a new Action bound to the specified string name and icon
-     */
+    
     @SuppressWarnings("serial")
     public Action bind(String name, final Action action, String iconUrl) {
         AbstractAction newAction = new AbstractAction(name, (iconUrl != null) ? new ImageIcon(
@@ -600,15 +737,12 @@ public class BasicGraphEditor extends JPanel {
         statusBar.setText(msg);
     }
 
-    /**
-     *
-     */
     public void updateTitle() {
         JFrame frame = (JFrame) SwingUtilities.windowForComponent(this);
 
         if (frame != null) {
-            String title = (currentFile != null) ? currentFile
-                    .getAbsolutePath() : mxResources.get("newDiagram");
+            
+            String title = (currentFile != null) ? currentFile.getAbsolutePath() : mxResources.get("newDiagram");
 
             if (modified) {
                 title += "*";
@@ -643,40 +777,6 @@ public class BasicGraphEditor extends JPanel {
 //        }
     }
 
-    /**
-     *
-     */
-    public void setLookAndFeel(String clazz) {
-//        JFrame frame = (JFrame) SwingUtilities.windowForComponent(this);
-//
-//        if (frame != null) {
-//            try {
-//                UIManager.setLookAndFeel(clazz);
-//                SwingUtilities.updateComponentTreeUI(frame);
-//
-//                // Needs to assign the key bindings again
-//                keyboardHandler = new EditorKeyboardHandler(graphComponent);
-//            } catch (Exception e1) {
-//                e1.printStackTrace();
-//            }
-//        }
-    }
-
-    /**
-     *
-     */
-    public JFrame createFrame(JMenuBar menuBar) {
-        JFrame frame = new JFrame();
-        frame.getContentPane().add(this);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setJMenuBar(menuBar);
-        frame.setSize(870, 640);
-
-        // Updates the frame title
-        updateTitle();
-
-        return frame;
-    }
 
     /**
      * Creates an action that executes the specified layout.
@@ -801,3 +901,65 @@ public class BasicGraphEditor extends JPanel {
     }
 
 }
+
+
+        // Creates the graph outline component
+        //graphOutline = new mxGraphOutline(graphComponent);
+
+        // Creates the library pane that contains the tabs with the palettes
+        //libraryPane = new JTabbedPane();
+                
+        // Creates the inner split pane that contains the library with the
+        // palettes and the graph outline on the left side of the window
+//        JSplitPane inner = new JSplitPane(JSplitPane.VERTICAL_SPLIT, libraryPane, graphOutline);
+//        inner.setDividerLocation(320);
+//        inner.setResizeWeight(1);
+//        inner.setDividerSize(6);
+//        inner.setBorder(null);
+
+        // Creates the outer split pane that contains the inner split pane and
+        // the graph component on the right side of the window
+        //JPane inner = new JPane();        
+//        JSplitPane outer = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JPanel(), graphComponent);
+//        outer.setOneTouchExpandable(true);
+//        outer.setDividerLocation(200);
+//        outer.setDividerSize(6);
+//        outer.setBorder(null);
+
+
+
+
+//    /**
+//     *
+//     */
+//    public void setLookAndFeel(String clazz) {
+////        JFrame frame = (JFrame) SwingUtilities.windowForComponent(this);
+////
+////        if (frame != null) {
+////            try {
+////                UIManager.setLookAndFeel(clazz);
+////                SwingUtilities.updateComponentTreeUI(frame);
+////
+////                // Needs to assign the key bindings again
+////                keyboardHandler = new EditorKeyboardHandler(graphComponent);
+////            } catch (Exception e1) {
+////                e1.printStackTrace();
+////            }
+////        }
+//    }
+//
+//    /**
+//     *
+//     */
+//    public JFrame createFrame(JMenuBar menuBar) {
+//        JFrame frame = new JFrame();
+//        frame.getContentPane().add(this);
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.setJMenuBar(menuBar);
+//        frame.setSize(870, 640);
+//
+//        // Updates the frame title
+//        updateTitle();
+//
+//        return frame;
+//    }

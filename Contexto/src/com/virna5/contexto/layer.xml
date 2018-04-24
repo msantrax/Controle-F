@@ -6,6 +6,9 @@
         <folder name="Designer">
             <attr name="position" intvalue="1100"/>
         </folder>
+        <folder name="Window">
+            <file name="com-virna5-graph-GraphPropertiesTopComponent.shadow_hidden"/>
+        </folder>
     </folder>
     <folder name="Toolbars">
         <folder name="Designer">

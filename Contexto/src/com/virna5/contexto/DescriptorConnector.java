@@ -5,7 +5,9 @@
  */
 package com.virna5.contexto;
 
+import java.beans.IntrospectionException;
 import java.io.Serializable;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -13,10 +15,9 @@ import java.io.Serializable;
  */
 public class DescriptorConnector implements Serializable{
     
-    protected transient BaseDescriptor descriptor;
-    protected transient DescriptorNode node;
-    
+    protected transient DescriptorNode node;   
     private long id;
+    
 
     public DescriptorConnector() {
         this.id = 0l;
@@ -26,14 +27,14 @@ public class DescriptorConnector implements Serializable{
      * @return the descriptor
      */
     public BaseDescriptor getDescriptor() {
-        return descriptor;
+        return node.getDescriptor();
     }
 
     /**
      * @param descriptor the descriptor to set
      */
     public void setDescriptor(BaseDescriptor descriptor) {
-        this.descriptor = descriptor;
+        node.setDescriptor(descriptor);
     }
 
     /**
@@ -66,8 +67,12 @@ public class DescriptorConnector implements Serializable{
     
     
     public void initNode(){
-        this.descriptor = new BaseDescriptor();
-        this.node = new DescriptorNode( this.descriptor);
+        
+//        try {
+//            this.node = new DescriptorNode(bd);
+//        } catch (IntrospectionException ex) {
+//            Exceptions.printStackTrace(ex);
+//        }
         
     }
     

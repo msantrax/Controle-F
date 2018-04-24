@@ -6,17 +6,20 @@
 package com.virna5.csvfilter;
 
 import com.virna5.contexto.BaseDescriptor;
+import com.virna5.contexto.ContextUtils;
+import com.virna5.contexto.DescriptorConnector;
+import com.virna5.fileobserver.FileObserverConnector;
+import com.virna5.fileobserver.FileObserverNode;
+import java.beans.IntrospectionException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
+import org.openide.util.Exceptions;
 
 
 public class CSVFilterDescriptor extends BaseDescriptor {
 
     private static final Logger log = Logger.getLogger(CSVFilterDescriptor.class.getName());
 
-    private String nodetype = "CSVFilterDescriptor";
-    private String version = "1.0.0";
-    
     private boolean useheader = true;
     private String encoding = "UTF-8";
     private String separator = ",";
@@ -24,14 +27,38 @@ public class CSVFilterDescriptor extends BaseDescriptor {
     
     private String output = "result";
     
-    private ArrayList<CSVField> csvfields;
+    protected CSVFieldsWrapper csvfields;
     
     
     public CSVFilterDescriptor() {
-        csvfields = new ArrayList();
+        
+        csvfields = new CSVFieldsWrapper();
+        
         dependencies = new String[] { "com.virna5.csvfilter.CSVFilterService" };
+        
+        name="Filtro CSV";
+        desc = "Processador de dados em arquivos tipo CSV";
+        
+        nodetype = "csvfilter.CSVFilterDescriptor";
+        version = "1.0.0";
+        
+        csvfields.add(CSVField.CSVFieldFactory(0));
+        
     }
 
+    @Override
+    public DescriptorConnector buildConnector(){
+        
+        CSVFilterConnector foc = new CSVFilterConnector();
+        try {
+            foc.setNode(new CSVFilterNode(this));
+            foc.setID(ContextUtils.getUID());
+        } catch (IntrospectionException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return foc;
+        
+    }
     
     public String getNodetype() {
         return nodetype;
@@ -59,14 +86,16 @@ public class CSVFilterDescriptor extends BaseDescriptor {
     /**
      * @return the useheader
      */
-    public boolean isUseheader() {
+    public Boolean isUseheader() {
         return useheader;
     }
 
+    
+    
     /**
      * @param useheader the useheader to set
      */
-    public void setUseheader(boolean useheader) {
+    public void setUseheader(Boolean useheader) {
         this.useheader = useheader;
     }
 
@@ -129,17 +158,18 @@ public class CSVFilterDescriptor extends BaseDescriptor {
     /**
      * @return the csvfields
      */
-    public ArrayList<CSVField> getCSVfields() {
+    public CSVFieldsWrapper getCsvfields() {
         return csvfields;
     }
 
     /**
      * @param csvfields the csvfields to set
      */
-    public void setCSVfields(ArrayList<CSVField> csvfields) {
+    public void setCsvfields(CSVFieldsWrapper csvfields) {
         this.csvfields = csvfields;
     }
 
+    
     
 
     

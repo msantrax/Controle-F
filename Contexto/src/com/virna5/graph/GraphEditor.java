@@ -23,15 +23,16 @@ import com.mxgraph.util.mxEventSource.mxIEventListener;
 import com.mxgraph.util.mxResources;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.view.mxGraph;
+import com.virna5.csvfilter.CSVFilterConnector;
+import com.virna5.edge.EdgeConnector;
 import com.virna5.fileobserver.FileObserverConnector;
+import com.virna5.filewriter.FileWriterConnector;
+import com.virna5.qs4generator.QS4GeneratorConnector;
 import java.util.logging.Logger;
 
 public class GraphEditor extends BasicGraphEditor{
 
     private static final Logger log = Logger.getLogger(GraphEditor.class.getName());
-    
-    
-    
     
     private static final long serialVersionUID = -4601740824088314699L;
     
@@ -45,6 +46,7 @@ public class GraphEditor extends BasicGraphEditor{
     public static final NumberFormat numberFormat = NumberFormat.getInstance();
 
     public static URL url = null;
+    
 
     public GraphEditor(){
             this("mxGraph Editor", new CustomGraphComponent(new CustomGraph()));
@@ -77,27 +79,55 @@ public class GraphEditor extends BasicGraphEditor{
         });
 
         // Adds some template cells for dropping into the graph
+        
+        shapesPalette.addTemplate("Observador de Arquivos",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/hd-48x48.png")),
+                                        "icon;image=/com/virna5/graphimages/triangle.png",
+                                        120, 70, new FileObserverConnector() ); 
+        
+        shapesPalette.addTemplate("Filtro CSV",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/filter.png")),
+                                        "icon;image=/com/virna5/graphimages/filter.png",
+                                        120, 70, new CSVFilterConnector() );
+        
+        shapesPalette.addTemplate("Gravador de Arquivos",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/hd-48x48.png")),
+                                        "icon;image=/com/virna5/graphimages/save.gif",
+                                        120, 70, new FileWriterConnector() );
+        
+        shapesPalette.addTemplate("Gerador QS4",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/hd-48x48.png")),
+                                        "icon;image=/com/virna5/graphimages/gear.png",
+                                        120, 70, new QS4GeneratorConnector() );
+        
+        
         shapesPalette.addTemplate("Container",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/swimlane.png")),
                                         "swimlane", 280, 280, "Container");
-        shapesPalette.addTemplate("Icon",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/rounded.png")),
-                                        "icon;image=/com/virna5/graphimages/wrench.png",
-                                        70, 70, new FileObserverConnector() );
-        shapesPalette.addTemplate("Label",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/rounded.png")),
-                                        "label;image=/com/virna5/graphimages/gear.png",
-                                        130, 50, "Label");
-        shapesPalette.addTemplate("Rounded Rectangle",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/rounded.png")),
-                                        "rounded=1", 160, 120, "");
-        shapesPalette.addTemplate("Horizontal Line",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/hline.png")),
-                                        "line", 160, 10, "");	
+        
+//        shapesPalette.addTemplate("Icon",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/rounded.png")),
+//                                        "icon;image=/com/virna5/graphimages/wrench.png",
+//                                        120, 70, new FileObserverConnector() );
+        
+        
+         
+        
+//        shapesPalette.addTemplate("Label",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/rounded.png")),
+//                                        "label;image=/com/virna5/graphimages/gear.png",130, 50, "Etiqueta");
+//        shapesPalette.addTemplate("Rounded Rectangle",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/rounded.png")),
+//                                        "rounded=1", 160, 120, "");
+//        shapesPalette.addTemplate("Horizontal Line",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/hline.png")),
+//                                        "line", 160, 10, "");	
+        
+        
+        
         shapesPalette.addEdgeTemplate("Straight",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/straight.png")),
-                                        "straight", 120, 120, "");
+                                        "straight", 120, 120, new EdgeConnector());
         shapesPalette.addEdgeTemplate("Horizontal Connector",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/connect.png")),
-                                        null, 100, 100, "");
+                                        null, 100, 100, new EdgeConnector());
         shapesPalette.addEdgeTemplate("Vertical Connector",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/vertical.png")),
-                                        "vertical", 100, 100, "");
+                                        "vertical", 100, 100, new EdgeConnector());
         shapesPalette.addEdgeTemplate("Entity Relation",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/entity.png")),
-                                        "entity", 100, 100, "");
-
+                                        "entity", 100, 100, new EdgeConnector());
+        
+        
+        instance = this;
+        
     }
 
     
@@ -152,11 +182,6 @@ public class GraphEditor extends BasicGraphEditor{
             return super.importCells(cells, dx, dy, target, location);
         }
 
-        
-
-        
-        
-        
     }
 
     /**
