@@ -5,9 +5,17 @@
  */
 package com.virna5.contexto;
 
+import java.beans.PropertyVetoException;
+import java.util.LinkedHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JInternalFrame;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.util.Exceptions;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
 
@@ -21,9 +29,9 @@ import org.openide.util.NbBundle.Messages;
 @TopComponent.Description(
         preferredID = "MonitorTopComponent",
         iconBase = "com/virna5/contexto/nfs_mount.png",
-        persistenceType = TopComponent.PERSISTENCE_NEVER
+        persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
-@TopComponent.Registration(mode = "editor", openAtStartup = false)
+@TopComponent.Registration(mode = "editor", openAtStartup = true)
 @ActionID(category = "Window", id = "com.virna5.contexto.MonitorTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(
@@ -35,31 +43,66 @@ import org.openide.util.NbBundle.Messages;
     "CTL_MonitorTopComponent=Monitor de Dispositivos",
     "HINT_MonitorTopComponent=Monitore os dispositivos em funcionamento nas suas tarefas"
 })
-public final class MonitorTopComponent extends TopComponent {
+public final class MonitorTopComponent extends TopComponent  implements InternalFrameListener {
 
+    private static final Logger log = Logger.getLogger(MonitorTopComponent.class.getName());
+
+    private LinkedHashMap<String,JInternalFrame> frames;
+    
     public MonitorTopComponent() {
+        
+        log.setLevel(Level.FINE);
+        
         initComponents();
-        setName(Bundle.CTL_MonitorTopComponent());
+        setName("Monitor");
         setToolTipText(Bundle.HINT_MonitorTopComponent());
         //setContentPane(dpmain);
-         
-        createFrame(1);
-        createFrame(2);
-
+        
+        frames = new LinkedHashMap<>();
+     
+    }
+   
+    public boolean isLoaded(String id){
+        return frames.containsKey(id);
     }
     
-    protected void createFrame(int pos) {
-        Mon1IFrame mon1 = new Mon1IFrame();
-        mon1.setTitle("Dispositivo " + pos);
-        mon1.setVisible(true);
-        dpmain.add(mon1);
-        mon1.setLocation(100*pos, 100*pos);
-        
-        
+    public JInternalFrame addIFrame(String []framedata, BaseDescriptor bd, String artifact) {
+         
         try {
-            mon1.setSelected(true);
-        } catch (java.beans.PropertyVetoException e) {}
-}
+            String classname = framedata[0];
+            
+            Class clazz = Class.forName(classname);
+            JInternalFrame internal_frame = (JInternalFrame)clazz.newInstance();
+              
+            internal_frame.setTitle(framedata[1]);
+            internal_frame.addInternalFrameListener(this);
+            internal_frame.setVisible(true);
+            dpmain.add(internal_frame);
+            internal_frame.setLocation(100, 100);
+            internal_frame.setSelected(true);
+            
+            
+            MonitorIFrameInterface mif = (MonitorIFrameInterface)internal_frame;
+            
+            mif.setIframeid(artifact);
+            mif.setDescriptor(bd);
+            BaseService bs = bd.getService();
+            mif.setService(bs);
+            bs.addIFrame(String.valueOf(bd.getUID()), mif);           
+            //bs.addIFrame(artifact, mif);
+ 
+            frames.put(artifact, internal_frame);
+    
+            return internal_frame;
+            //frames.put(classname, internal_frame)
+            
+            
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | PropertyVetoException ex) {
+            Exceptions.printStackTrace(ex);
+            return  null;
+        }
+    }
+    
     
     
 
@@ -114,5 +157,48 @@ public final class MonitorTopComponent extends TopComponent {
     void readProperties(java.util.Properties p) {
         String version = p.getProperty("version");
         // TODO read your settings according to their version
+    }
+
+    @Override
+    public void internalFrameOpened(InternalFrameEvent e) {
+        log.fine("Frame opened");
+    }
+
+    @Override
+    public void internalFrameClosing(InternalFrameEvent e) {
+        log.fine("Frame closing");
+    }
+
+    @Override
+    public void internalFrameClosed(InternalFrameEvent e) {
+        log.fine("Frame closed");
+        MonitorIFrameInterface mif = (MonitorIFrameInterface)e.getSource();
+        frames.remove(mif.getIframeid());
+     
+        BaseService bs = mif.getService();
+        String bsid = mif.getIframeid().split("@")[1];
+        bs.removeIFrame(bsid);
+
+        
+    }
+
+    @Override
+    public void internalFrameIconified(InternalFrameEvent e) {
+        log.fine("Frame iconified");
+    }
+
+    @Override
+    public void internalFrameDeiconified(InternalFrameEvent e) {
+        log.fine("Frame decoinified");
+    }
+
+    @Override
+    public void internalFrameActivated(InternalFrameEvent e) {
+        log.fine("Frame activated");
+    }
+
+    @Override
+    public void internalFrameDeactivated(InternalFrameEvent e) {
+        log.fine("Frame deactivated ");
     }
 }

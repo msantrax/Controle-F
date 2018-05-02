@@ -42,7 +42,6 @@ public class GraphEditor extends BasicGraphEditor{
         return instance;
     }
     
-    
     public static final NumberFormat numberFormat = NumberFormat.getInstance();
 
     public static URL url = null;

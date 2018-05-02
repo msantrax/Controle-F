@@ -71,6 +71,21 @@ public class QS4GeneratorNode  extends DescriptorNode implements ChangeListener 
             psr.setShortDescription("Caracter utilizado para a separação dos campos (usualmente , ou ;");
             set.put(psr);
             
+            psr = new PropertySupport.Reflection<>(obj, String.class, "endline");
+            psr.setName("Terminador de linha");
+            psr.setShortDescription("Caracter terminador de linha (usualmente \\n no windows ou \\n\\r no unix/mac/android");
+            set.put(psr);
+            
+            psr = new PropertySupport.Reflection<>(obj, Boolean.class, "automatic");
+            psr.setName("Geração automatica");
+            psr.setShortDescription("Gdera resultados a cada <intervalo> milisdegunfos");
+            set.put(psr);
+            
+            psr = new PropertySupport.Reflection<>(obj, Long.class, "interval");
+            psr.setName("Intervalo");
+            psr.setShortDescription("Periodo dpara a emissão de novo resultado em milisdegunfos");
+            set.put(psr);
+            
         } catch (NoSuchMethodException noSuchMethodException) {
             ErrorManager.getDefault().notify(noSuchMethodException);
         } 

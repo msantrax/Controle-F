@@ -86,6 +86,9 @@
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
                 <Property name="horizontalAlignment" type="int" value="0"/>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/com/virna5/contexto/backdrop.png"/>
+                </Property>
                 <Property name="opaque" type="boolean" value="true"/>
               </Properties>
               <Constraints>
@@ -154,6 +157,9 @@
           <SubComponents>
             <Container class="javax.swing.JPanel" name="pnl_runtable">
               <Properties>
+                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                </Property>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="null"/>
                 </Property>
@@ -167,12 +173,16 @@
               <SubComponents>
                 <Container class="javax.swing.JScrollPane" name="jScrollPane1">
                   <Properties>
+                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                    </Property>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="null"/>
                     </Property>
                     <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[32767, 80]"/>
                     </Property>
+                    <Property name="opaque" type="boolean" value="true"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[456, 80]"/>
                     </Property>
@@ -196,63 +206,8 @@
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="DejaVu Sans" size="14" style="0"/>
                         </Property>
-                        <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="6" rowCount="7">
-                            <Column editable="false" title="Identifica&#xe7;&#xe3;o" type="java.lang.String">
-                              <Data value="Conversor QS4"/>
-                              <Data value="Simulador de Resultados"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                            </Column>
-                            <Column editable="false" title="Inicio" type="java.lang.String">
-                              <Data value="23-05-2016 23:45:15"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                            </Column>
-                            <Column editable="false" title="Propriet&#xe1;rio" type="java.lang.String">
-                              <Data value="msantos"/>
-                              <Data value="msantos"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                            </Column>
-                            <Column editable="true" title="Ativa" type="java.lang.Boolean">
-                              <Data value="true"/>
-                              <Data value="false"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                            </Column>
-                            <Column editable="true" title="Ferramentas" type="java.lang.String">
-                              <Data value="FileObserver"/>
-                              <Data value="Gerador de Resultados"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                            </Column>
-                            <Column editable="true" title="Coment&#xe1;rios" type="java.lang.String">
-                              <Data value="Conversor de resultados via arquivo CSV"/>
-                              <Data value="Ferramanta de testes"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                              <Data value="null"/>
-                            </Column>
-                          </Table>
+                        <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                          <Connection code="model" type="code"/>
                         </Property>
                         <Property name="toolTipText" type="java.lang.String" value="&lt;html&gt;&#xa;Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium &lt;br&gt;&#xa;doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore &lt;br&gt;&#xa;veritatis et quasi architecto beatae vitae dicta sunt explicabo.&lt;br&gt; &#xa;Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, &lt;br&gt;&#xa;sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. &lt;br&gt;&#xa;Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, &lt;br&gt;&#xa;adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et &lt;br&gt;&#xa;dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, &lt;br&gt;&#xa;&lt;/html&gt;" noResource="true"/>
                         <Property name="gridColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -261,7 +216,6 @@
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[2147483647, 80]"/>
                         </Property>
-                        <Property name="opaque" type="boolean" value="false"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[450, 80]"/>
                         </Property>
@@ -317,6 +271,9 @@
                         </Property>
                         <Property name="text" type="java.lang.String" value="Remover Tarefa" noResource="true"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bt_removetaskActionPerformed"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JButton" name="bt_addtask">
                       <Properties>
@@ -325,6 +282,9 @@
                         </Property>
                         <Property name="text" type="java.lang.String" value="Adicionar Tarefa"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bt_addtaskActionPerformed"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>

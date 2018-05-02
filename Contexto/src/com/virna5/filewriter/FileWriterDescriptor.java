@@ -8,7 +8,11 @@ package com.virna5.filewriter;
 import com.virna5.contexto.BaseDescriptor;
 import com.virna5.contexto.ContextUtils;
 import com.virna5.contexto.DescriptorConnector;
+import com.virna5.contexto.SMTraffic;
+import com.virna5.contexto.SignalListener;
+import com.virna5.contexto.UIInterface;
 import java.beans.IntrospectionException;
+import java.util.ArrayList;
 import org.openide.util.Exceptions;
 
 
@@ -22,10 +26,12 @@ public class FileWriterDescriptor extends BaseDescriptor{
     public FileWriterDescriptor() {
         
         super();
-        dependencies = new String[] { "com.virna5.fileobserver.FileWriterService" };
+        dependencies = new String[] { "com.virna5.filewriter.FileWriterService" };
+        interfaces = new UIInterface[] { new UIInterface("Gravador de Arquivos", "com.virna5.filewriter.MonitorIFrame", "iframe") };
+        
         
         name="Gravador de Arquivos";
-        desc = "Dispositivo para gravaçãode novos arquivos em um diratorio.";
+        desc = "Dispositivo para gravaçãode novos arquivos em um diretorio no disco";
         
         nodetype = "filewriter.FileWriterDescriptor";
         version = "1.0.0";
@@ -45,7 +51,8 @@ public class FileWriterDescriptor extends BaseDescriptor{
         return foc;
         
     }
-
+    
+    
     /**
      * @return the outputfile
      */

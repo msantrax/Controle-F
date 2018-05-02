@@ -5,27 +5,26 @@
  */
 package com.virna5.contexto;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  *
  * @author opus
  */
-public class BaseService implements SignalListener{
+public class BaseService {
 
     //protected static final Logger log = Logger.getLogger(BaseService.class.getName());
 
     protected LinkedBlockingQueue<SMTraffic> smqueue;
+    protected LinkedHashMap<Long, BaseDescriptor> descriptors;
     
-//    protected PrintWriter report_data;
-//    protected PrintWriter report_error;
-//    public OutHandler loghandler;
-    
-    
+    protected LinkedHashMap<String, MonitorIFrameInterface> iframes;
+   
     public BaseService() {
     
+         descriptors = new LinkedHashMap<>();
+        
         // crie nova janela de report na área de saida
 //        InputOutput io = IOProvider.getDefault().getIO("Report", false);
 //        report_data=io.getOut();
@@ -37,47 +36,36 @@ public class BaseService implements SignalListener{
     
     public void configService(BaseDescriptor bd){
         System.err.println("Error ! - Configuring base class ...");
+        
     }
     
-    
-    // ===========SIGNAL HANDLING ===================================================================
-        
-    /** Estrutura para armazenamento dos listeners do dispositivo*/ 
-    private ArrayList<SignalListener> listeners = new ArrayList<>();
-   
-    private long context;
-     
-    @Override
-    public long getContext() { return context;}
-    
-    public void processSignal (SMTraffic signal){
+    public void processSignal (SMTraffic signal, BaseDescriptor bd){
+        //System.err.println("Error ! - Processing on  base class ...");
         smqueue.add(signal);
     }
     
-     /** Método de registro do listener do dispositivo serial */
-    public void addSignalListener (SignalListener l){
-        listeners.add(l);
+  
+    /**
+     * @return the descriptors
+     */
+    public LinkedHashMap<Long, BaseDescriptor> getDescriptors() {
+        return descriptors;
     }
 
-    /** Método de remoção do registro do listener do dispositivo serial */
-    public void removeSignalListener (SignalListener l){
-        listeners.remove(l);
+    
+    
+    public void addIFrame(String descriptor_uid, MonitorIFrameInterface _iframe){
+        iframes.put(descriptor_uid, _iframe);
     }
-
-    /** Esse método é chamedo quando algo acontece no dispositivo */
-    protected void notify(long context, SMTraffic signal) {
-
-        if (!listeners.isEmpty()){      
-            // Rode entre os listeners
-            for (Iterator<SignalListener> i=listeners.iterator(); i.hasNext();){
-                SignalListener l =  i.next();
-                if ((context == 0) || (l.getContext() == context) ){
-                    l.processSignal(signal); //Notifique cada listener
-                }
-                
-            }
-        }
+    
+    public void removeIFrame(String uid){
+        iframes.remove(uid);
     }
+    
+    public MonitorIFrameInterface getIFrame(String uid){
+        return iframes.get(uid);
+    }
+    
     
     
     

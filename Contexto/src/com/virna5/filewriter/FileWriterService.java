@@ -19,6 +19,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,7 +31,8 @@ public class FileWriterService extends BaseService {
    
     private FileWriterService.SMThread service_thread;
     
-    private LinkedHashMap<Long, FileObserverDescriptor> descriptors;
+   
+    private Long current_handle;
     
     
     public static FileWriterService getInstance(){
@@ -41,9 +43,14 @@ public class FileWriterService extends BaseService {
     public FileWriterService() {
   
         super();
+        
+        log.setLevel(Level.FINE);
         log.addHandler(OutHandler.getInstance());
         descriptors = new LinkedHashMap<>();
         instance = this;      
+        
+        
+        startService();
         
     }
 
@@ -52,14 +59,15 @@ public class FileWriterService extends BaseService {
     @Override
     public void configService(BaseDescriptor bd){
         
-        FileObserverDescriptor fod = (FileObserverDescriptor) bd;
-        Long uid = fod.getContext();
+        FileWriterDescriptor fod = (FileWriterDescriptor) bd;
+        Long uid = fod.getUID();
         if (descriptors.containsKey(uid)){
             descriptors.remove(uid);
         }
         descriptors.put(uid, fod);
-        log.info(String.format("Configuring FileObserverclass %s to context : %s", bd.toString(),uid));
+        log.info(String.format("Configuring FileWriterclass %s to context : %s", bd.toString(),uid));
     }
+   
     
     
     
@@ -75,6 +83,10 @@ public class FileWriterService extends BaseService {
     }
     
     
+//    public void processSignal (SMTraffic signal, BaseDescriptor bd){
+//        
+//        smqueue.add(signal);
+//    }
     
     
     // ================================================================================================================
@@ -84,8 +96,8 @@ public class FileWriterService extends BaseService {
     }
     
     private void startService(){      
-        smqueue.clear();
-        //services.addUsbServicesListener(this);
+        smqueue = new LinkedBlockingQueue<>() ;
+        service_thread = new FileWriterService.SMThread(smqueue);
         new Thread(service_thread).start();
     }
     
@@ -97,9 +109,8 @@ public class FileWriterService extends BaseService {
         private VirnaServices.CMDS cmd;
         private ArrayDeque <VirnaServices.STATES>states_stack;
         private SMTraffic smm;
-        
-        protected ArrayList<FileObserverDescriptor> observers;
-        protected boolean doscan = false;
+
+        private BaseDescriptor temp_bd;
         
 
         public SMThread(BlockingQueue<SMTraffic> tqueue) {
@@ -107,14 +118,10 @@ public class FileWriterService extends BaseService {
             states_stack = new ArrayDeque<>();
             states_stack.push(VirnaServices.STATES.RESET);
             setDone(false);
-            observers = new ArrayList<>();
+           
         }
         
-        
-        public void addObserver(FileObserverDescriptor fod){
-            observers.add(fod);
-        }
-        
+  
         
         @Override
         public void run(){
@@ -133,7 +140,7 @@ public class FileWriterService extends BaseService {
                     switch (state){
                         
                         case INIT:
-                            log.log(Level.FINE, "FOB em INIT");
+                            log.log(Level.FINE, "FW em INIT");
                             break;
                             
                         case IDLE:
@@ -144,53 +151,47 @@ public class FileWriterService extends BaseService {
                                     state = smm.getState();
                                 }
                             }
-                            
-                            if (doscan){
-                                try { Thread.sleep(500); } catch (InterruptedException ex) {
-                                    System.out.println ("Thread de serviços foi interrompida");
-                                }
-                                long current_timestamp = System.currentTimeMillis();
-                                for (FileObserverDescriptor lfod : observers){
-                                    if (lfod.getTimeSpot() < current_timestamp){
-                                        visitFile(lfod, current_timestamp);                   
-                                    }
-                                }
-                            }
-                            else{
-                                try { Thread.sleep(100); } catch (InterruptedException ex) {
-                                    System.out.println ("Thread de serviços foi interrompida");
-                                }
-                            }
-                            
                             break;    
 
                         case CONFIG:
                             //log.log(Level.FINE, "Controler em CONFIG");
                             break; 
                             
+                        case TSK_MANAGE:
+                            Long lhandle = smm.getHandle();
+                            temp_bd = descriptors.get(lhandle);
+                            if (temp_bd !=null){
+                                String action = (smm.getCode() == 1) ? "Activating" : "Deactivating;";
+                                log.fine(String.format("%s task %d on FileWriterService using %s", action, lhandle, temp_bd.getName()));
+                            }
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;
+                        
                         case RESET:
                             //log.log(Level.FINE, "FOB em RESET");
                             states_stack.push(VirnaServices.STATES.IDLE);
                             states_stack.push(VirnaServices.STATES.CONFIG);
                             states_stack.push(VirnaServices.STATES.INIT);
-                            break;
-                                
-                        case FOB_DOSCAN:
-                            doscan=true;
-                            log.log(Level.FINE, "FOB Scan = true" );
+                            break; 
+                        
+                        case FWRITER_WRITE:
+                            
+                            log.fine("Writing file");
+                            
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;
                             
-                        case FOB_STOPSCAN:
-                            doscan=false;
-                            log.log(Level.FINE, "FOB Scan = false");
-                            states_stack.push(VirnaServices.STATES.IDLE);
-                            break;    
+//                        case RESET:
+//                            
+//                            states_stack.push(VirnaServices.STATES.IDLE);
+//                            break;    
+                            
                             
                     }
                 }
             } catch (Exception ex) {
-                log.log(Level.WARNING, ex.toString());
+                log.log(Level.WARNING, String.format("Falha na maquina de estados em FileWriter : %s"), ex.toString());
+                startService();
             }
 
         }
@@ -202,3 +203,21 @@ public class FileWriterService extends BaseService {
     };
 
 }
+
+//
+//if (doscan){
+//    try { Thread.sleep(500); } catch (InterruptedException ex) {
+//        System.out.println ("Thread de serviços foi interrompida");
+//    }
+//    long current_timestamp = System.currentTimeMillis();
+//    for (FileObserverDescriptor lfod : observers){
+//        if (lfod.getTimeSpot() < current_timestamp){
+//            visitFile(lfod, current_timestamp);                   
+//        }
+//    }
+//}
+//else{
+//    try { Thread.sleep(100); } catch (InterruptedException ex) {
+//        System.out.println ("Thread de serviços foi interrompida");
+//    }
+//}

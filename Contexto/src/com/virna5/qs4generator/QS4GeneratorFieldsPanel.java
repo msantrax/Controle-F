@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.virna5.contexto.ContextUtils;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
@@ -41,7 +42,7 @@ public class QS4GeneratorFieldsPanel extends javax.swing.JPanel implements Table
         
         JComboBox typecb = new JComboBox(CSVField.getTypeTypes());
         TableCellEditor typeeditor = new DefaultCellEditor(typecb);
-        TableColumn typecolumn = jtbl_fields.getColumnModel().getColumn(2);
+        TableColumn typecolumn = jtbl_fields.getColumnModel().getColumn(1);
         typecolumn.setCellEditor(typeeditor);
         
         model.addTableModelListener(this);  
@@ -204,7 +205,7 @@ public class QS4GeneratorFieldsPanel extends javax.swing.JPanel implements Table
     
     private void buildTemplate(){
         
-        String s = ContextUtils.selectInputFile(null);
+        String s = ContextUtils.selectFile(false, ContextUtils.TEMPLATESDIR, "tmpl");
         if (s !=null){
             try {
                 String payload = ContextUtils.loadFile (s);
@@ -217,23 +218,22 @@ public class QS4GeneratorFieldsPanel extends javax.swing.JPanel implements Table
                 for (CSVField csvf : tmpl){
                     QS4GeneratorField qs4f = new QS4GeneratorField();
                     qs4f.setFieldname(csvf.getCSVfield());
-                    String frealm = csvf.getRealm();
+                    //String frealm = csvf.getRealm();
                     String ftype = csvf.getType();
-                    if (frealm.equals("cabecalho")){
-                        if (ftype.equals("instante")){
-                            qs4f.setFieldtype("instante");
-                            qs4f.setFormat("dd-mm-yyyy - HH:mm:ss");
-                        }
-                        else{
-                            qs4f.setFieldtype("texto");
-                            qs4f.setFormat("%s");
-                        }
-                        qs4f.setRange("faixa");
+                    if (ftype.equals("instante")){
+                        qs4f.setFieldtype("instante");
+                        qs4f.setFormat("%1$td-%1$tm-%1$tY %1$tH:%1$tM:%1$tS");
+                        qs4f.setRange("");
                     }
-                    else{
-                        qs4f.setFieldtype("valor");
-                        qs4f.setFormat("4.2f");
+                    else if (ftype.equals("numero")){
+                        qs4f.setFieldtype("numero");
+                        qs4f.setFormat("%4.3f");
                         qs4f.setRange("0.02:0.035");
+                    }
+                    else if (ftype.equals("texto")){
+                        qs4f.setFieldtype("texto");
+                        qs4f.setFormat("%s");
+                        qs4f.setRange("");
                     }
                     cfw.add(qs4f);
                 }
@@ -254,7 +254,7 @@ public class QS4GeneratorFieldsPanel extends javax.swing.JPanel implements Table
     
     private void loadTemplate(){
         
-        String s = ContextUtils.selectInputFile(null);
+        String s = ContextUtils.selectFile(false, ContextUtils.TEMPLATESDIR, "tmpl");
         if (s !=null){
             try {
                 String payload = ContextUtils.loadFile (s);
@@ -263,7 +263,11 @@ public class QS4GeneratorFieldsPanel extends javax.swing.JPanel implements Table
                 builder.setPrettyPrinting(); 
                 Gson gson = builder.create();
                 QS4GeneratorFieldsWrapper tmpl = gson.fromJson(payload, QS4GeneratorFieldsWrapper.class);
-                cfw = tmpl;
+                //TODO - Why Should be coppied (instead just replacing reference) ?
+                cfw.clear();
+                for (int i = 0; i < tmpl.size(); i++) {
+                    cfw.add(tmpl.get(i));
+                }
                 jtbl_fields.updateUI();                
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
@@ -273,7 +277,7 @@ public class QS4GeneratorFieldsPanel extends javax.swing.JPanel implements Table
     
     private void saveTemplate(){
         
-        String s = ContextUtils.selectInputFile(null);
+        String s = ContextUtils.selectFile(true, ContextUtils.TEMPLATESDIR, "tmpl");
         if (s !=null){
             try {
                 GsonBuilder builder = new GsonBuilder(); 

@@ -6,6 +6,8 @@
 package com.virna5.qs4generator;
 
 import com.virna5.contexto.ContextUtils;
+import java.util.Locale;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  *
@@ -13,11 +15,17 @@ import com.virna5.contexto.ContextUtils;
  */
 public class QS4GeneratorField {
 
+    public static enum FTYPE {texto,numero,instante,indicador}
+   
    
     protected String fieldname;
     protected String fieldtype;
     protected String format;
     protected String range;
+    
+    private transient Double dvalue;
+    private transient String svalue;
+    
     
     
     public static QS4GeneratorField QS4GeneratorFieldFactory(Integer seq){
@@ -49,6 +57,58 @@ public class QS4GeneratorField {
         return cl;
     }
 
+    
+    
+    public String calculateField(int sequence, Locale lc){
+    
+        String out;
+       
+        if (fieldtype.equals(FTYPE.texto.name())){
+           try {
+                if (format.equals("%s")){
+                    out = String.format(format, range);
+                }
+                else{
+                    out = String.format(format, range, sequence);
+                }
+             } catch (Exception ex){
+                out = "Falha na conv.";
+            }
+        }
+        else if (fieldtype.equals(FTYPE.instante.name())){
+            out = String.format(format, System.currentTimeMillis());
+        }
+        else if (fieldtype.equals(FTYPE.numero.name())){
+            try {
+                String[] ranges = range.split(":");
+                if (ranges.length == 2){
+                    Double dl = Double.parseDouble(ranges[0]);
+                    Double dh = Double.parseDouble(ranges[1]);
+                    Double drange = dh - dl;
+                    if (drange > 0.0001){
+                        double random = ThreadLocalRandom.current().nextDouble(dl, dh);
+                        out = String.format(lc, format, random);
+                    }
+                    else{
+                        out = ranges[0];
+                    }
+                }
+                else {
+                    out = ranges[0];
+                }
+            } catch (Exception ex){
+                out = "0.0";
+            }
+        }
+        else {
+            out = "0";
+        }
+        return out;
+    }
+    
+    
+    
+    
     /**
      * @return the fieldname
      */

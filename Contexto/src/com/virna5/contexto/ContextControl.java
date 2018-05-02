@@ -5,6 +5,8 @@
  */
 package com.virna5.contexto;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.logging.Logger;
 
 /**
@@ -26,10 +28,12 @@ public class ContextControl {
     private boolean loaded = false;
     private boolean refresh = true;
     
+    private LinkedHashMap<String, BaseDescriptor>  signalmap;
     
     
     public ContextControl(Controler ctrl) {
         this.ctrl = ctrl;
+        signalmap = new LinkedHashMap<>();
     }
     
     public void loadDescriptor(RootDescriptor cd, String filename){
@@ -41,6 +45,36 @@ public class ContextControl {
         this.descriptorfile = filename;
     }
 
+    
+    public String[] getInterfacesNames(){
+        
+        ArrayList<String> intnames = new ArrayList<>();
+        intnames.add("Selecione uma ferramenta");
+        
+        ContextNodes cn = descriptor.getContextNodes();
+        for (BaseDescriptor bd : cn){
+            UIInterface[] uiis = bd.getInterfaces();
+            if (uiis != null){
+                for (UIInterface uii: uiis){
+                    intnames.add(uii.getDisplay_name()+"@"+bd.getUID());
+                }
+            }
+        }
+        String[] out = new String[intnames.size()];
+        intnames.toArray(out);
+        
+        return out;
+    }
+    
+    public void addMap (String widgetid, BaseDescriptor descriptor){
+        signalmap.put(widgetid, descriptor);
+    }
+    
+    public BaseDescriptor getMap(String widgetid){
+        return signalmap.get(widgetid);
+    }
+    
+    
     /**
      * @return the descriptor
      */

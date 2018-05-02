@@ -35,6 +35,7 @@ public class CSVFieldsPanel extends javax.swing.JPanel implements TableModelList
     
     
     CSVFieldsPanel(CSVFieldsWrapper cfw) {
+       
         this.cfw = cfw;
         initComponents();
         
@@ -224,7 +225,7 @@ public class CSVFieldsPanel extends javax.swing.JPanel implements TableModelList
     
     private void buildTemplate(){
         
-        String s = ContextUtils.selectInputFile(null);
+        String s = ContextUtils.selectFile(false, ContextUtils.TEMPLATESDIR, "tmpl");
         if (s !=null){
             NotifyDescriptor nd = new NotifyDescriptor.Message(
                     "<html>Erro na interpretação do arquivo, verifique se : "
@@ -238,7 +239,7 @@ public class CSVFieldsPanel extends javax.swing.JPanel implements TableModelList
     
     private void loadTemplate(){
         
-        String s = ContextUtils.selectInputFile(null);
+        String s = ContextUtils.selectFile(false, ContextUtils.TEMPLATESDIR, "tmpl");
         if (s !=null){
             try {
                 String payload = ContextUtils.loadFile (s);
@@ -247,8 +248,13 @@ public class CSVFieldsPanel extends javax.swing.JPanel implements TableModelList
                 builder.setPrettyPrinting(); 
                 Gson gson = builder.create();
                 CSVFieldsWrapper tmpl = gson.fromJson(payload, CSVFieldsWrapper.class);
-                cfw = tmpl;
-                jtbl_fields.updateUI();                
+                //TODO - Why Should be coppied (instead just replacing reference) ? 
+                for (int i = 0; i < tmpl.size(); i++) {
+                    cfw.add(tmpl.get(i));
+                }
+                jtbl_fields.updateUI();
+                //log.info(String.format("Updating env : %d with %d fields", cfw.hashCode(), cfw.size()));
+                
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -277,7 +283,7 @@ public class CSVFieldsPanel extends javax.swing.JPanel implements TableModelList
         }
         
         
-        String s = ContextUtils.selectInputFile(null);
+        String s = ContextUtils.selectFile(true, ContextUtils.TEMPLATESDIR, "tmpl");
         if (s !=null){
             try {
                 GsonBuilder builder = new GsonBuilder(); 

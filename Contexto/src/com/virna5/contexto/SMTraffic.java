@@ -8,12 +8,16 @@ package com.virna5.contexto;
 
 public class SMTraffic {
     
+    protected Long addr;
     private VirnaServices.CMDS command;
     private int code;
+    protected Long handle;
     private VirnaServices.STATES state;
     private VirnaPayload payload;
 
-    public SMTraffic(VirnaServices.CMDS command, int code, VirnaServices.STATES state, VirnaPayload payload) {
+    public SMTraffic( Long addr, VirnaServices.CMDS command, int code, VirnaServices.STATES state, VirnaPayload payload) {
+        
+        this.addr = addr;
         this.command = command;
         this.code = code;
         
@@ -27,6 +31,25 @@ public class SMTraffic {
         this.state=state;
     }
 
+     public SMTraffic( Long addr, Long handle, int code, VirnaServices.STATES state, VirnaPayload payload) {
+        
+        this.addr = addr;
+        this.command = VirnaServices.CMDS.LOADSTATE;
+        this.code = code;
+        this.handle = handle;
+        
+        if (payload == null){
+            this.payload = new VirnaPayload().setString("");
+        }
+        else{
+            this.payload = payload;
+        }
+        this.code=code;
+        this.state=state;
+    }
+    
+    
+    
     public VirnaServices.CMDS getCommand() {
         return command;
     }
@@ -41,6 +64,34 @@ public class SMTraffic {
     
     public VirnaPayload getPayload() {
         return payload;
+    }
+
+    /**
+     * @return the uid
+     */
+    public Long getAddr() {
+        return addr;
+    }
+
+    /**
+     * @param uid the uid to set
+     */
+    public void setAddr(Long addr) {
+        this.addr = addr;
+    }
+
+    /**
+     * @return the handle
+     */
+    public Long getHandle() {
+        return handle;
+    }
+
+    /**
+     * @param handle the handle to set
+     */
+    public void setHandle(Long handle) {
+        this.handle = handle;
     }
     
     

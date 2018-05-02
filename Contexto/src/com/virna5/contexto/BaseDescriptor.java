@@ -6,22 +6,26 @@
 package com.virna5.contexto;
 
 import static com.virna5.contexto.ContextUtils.datefullFormat;
-import com.virna5.fileobserver.FileObserverConnector;
-import com.virna5.fileobserver.FileObserverNode;
 import java.beans.IntrospectionException;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.Exceptions;
 
 
-public class BaseDescriptor {
+public class BaseDescriptor implements SignalListener{
+
+    private static final Logger log = Logger.getLogger(BaseDescriptor.class.getName());
 
     
     protected String nodetype;
-    protected String version;
-    
-    private long context;
-   
+    protected String version; 
+    private Long context;
     protected Long uid;
+    //private LinkedHashMap<Long, ContextEventListener> eventlisteners;
+    
+    protected transient BaseService service;
     
     protected String name;
     protected String desc;
@@ -42,14 +46,19 @@ public class BaseDescriptor {
     
     protected String observ;
     
-    public String[] dependencies;
+    protected String[] dependencies;
+    
+    protected UIInterface[] interfaces;
 
     
     public BaseDescriptor() {
         
+        log.setLevel(Level.FINE);
+        
+        //eventlisteners =  new LinkedHashMap<>();
+        
         nodetype = "contexto.BaseDescriptor";
         version = "1.0.0";
-        
         
         this.uid = 1002l;
         this.name="Descritor base";
@@ -72,12 +81,56 @@ public class BaseDescriptor {
         return foc;
     }
    
-    /**
-     * @return the context
-     */
-    public long getContext() {
+   // ===========SIGNAL HANDLING ===================================================================
+        
+    /** Estrutura para armazenamento dos listeners do dispositivo*/ 
+    //private transient LinkedHashMap<Long,SignalListener> listeners = new LinkedHashMap<>();
+    
+    private transient ArrayList<SignalListener> listeners = new ArrayList<>();
+    
+    @Override
+    public Long getContext() {
         return context;
     }
+    
+    /**
+     * @return the uid
+     */
+    public Long getUID() {
+        return uid;
+    }
+    
+    public void processSignal (SMTraffic signal){
+        String mstate = signal.getState().toString();
+        
+        log.finest(String.format("Processing message of type %s to %d @ %s ", mstate, signal.handle, this.toString()));
+        service.processSignal(signal, this);
+    }
+    
+     /** Método de registro do listener do dispositivo serial */
+    public void addSignalListener (SignalListener l){
+        listeners.add(l);
+    }
+
+    /** Método de remoção do registro do listener do dispositivo serial */
+    public void removeSignalListener (SignalListener l){
+        listeners.remove(l);
+    }
+
+    /** Esse método é chamedo quando algo acontece no dispositivo */
+    public void notifySignalListeners(long uid, SMTraffic signal) {
+
+        if (!listeners.isEmpty()){      
+            //log.fine("Notifying "+ context);
+            for (SignalListener sl : listeners){
+                if (sl.getUID() == uid || uid == 0){
+                    sl.processSignal(signal);
+                }
+            }
+        }
+    }
+    
+    
 
     /**
      * @param context the context to set
@@ -86,13 +139,7 @@ public class BaseDescriptor {
         this.context = context;
     }
 
-    /**
-     * @return the uid
-     */
-    public Long getUID() {
-        return uid;
-    }
-
+    
     /**
      * @param uid the uid to set
      */
@@ -328,5 +375,36 @@ public class BaseDescriptor {
     public void setObserv(String observ) {
         this.observ = observ;
     }
+
+    
+    /**
+     * @return the dependencies
+     */
+    public String[] getDependencies() {
+        return dependencies;
+    }
+
+    /**
+     * @return the interfaces
+     */
+    public UIInterface[] getInterfaces() {
+        return interfaces;
+    }
+
+    /**
+     * @return the service
+     */
+    public BaseService getService() {
+        return service;
+    }
+
+    /**
+     * @param service the service to set
+     */
+    public void setService(BaseService service) {
+        this.service = service;
+    }
+
+    
     
 }

@@ -50,14 +50,15 @@ import com.mxgraph.util.mxUtils;
 import com.mxgraph.view.mxGraph;
 import com.virna5.contexto.ContextUtils;
 import com.virna5.graph.GraphEditor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.util.Exceptions;
 
 /**
  *
  */
 public class EditorActions {
-    
-    
-    
+   
     
     @SuppressWarnings("serial")
     public static class OpenAction extends AbstractAction {
@@ -78,48 +79,30 @@ public class EditorActions {
                     mxGraph graph = editor.getGraphComponent().getGraph();
 
                     if (graph != null) {
-                        String wd = (lastDir != null) ? lastDir : "/Bascon/BSW1/Testbench";
-                        JFileChooser fc = new JFileChooser(wd);
-
-                        // Adds file filter for supported file format
-                        DefaultFileFilter defaultFilter = new DefaultFileFilter(
-                                "", mxResources.get("allSupportedFormats")) {
-
-                            public boolean accept(File file) {
-                                String lcase = file.getName().toLowerCase();
-                                return super.accept(file)
-                                        || lcase.endsWith(".png")
-                                        || lcase.endsWith(".vdx");
-                            }
-                        };
-                        fc.addChoosableFileFilter(defaultFilter);      
-                        fc.setFileFilter(defaultFilter);
-
-                        int rc = fc.showDialog(null,
-                                mxResources.get("openFile"));
-
-                        if (rc == JFileChooser.APPROVE_OPTION) {
-                            lastDir = fc.getSelectedFile().getParent();
-
+                        String s = ContextUtils.selectFile(false, ContextUtils.TASKSDIR, "tsk");
+                        if (s !=null){
+                            String payload;
                             try {
-                                String payload = ContextUtils.loadFile (fc.getSelectedFile().getAbsolutePath());
+                                payload = ContextUtils.loadFile (s);
                                 editor.loadContext(payload);
-                                
                             } catch (IOException ex) {
-                                ex.printStackTrace();
-                                JOptionPane.showMessageDialog(
-                                        editor.getGraphComponent(),
-                                        ex.toString(),
-                                        mxResources.get("error"),
-                                        JOptionPane.ERROR_MESSAGE);
+                                NotifyDescriptor nd = new NotifyDescriptor.Message(
+                                        "<html>Erro na carga da tarefa, verifique se : "
+                                      + "<ul>"
+                                      + "<li>Há permissões de leitura no diretório e no arquivo</li>"
+                                      + "<li>A conexão de rede está ativa caso seja arquivo remoto</li>"
+                                      + "</ul>"
+                                      + "</html>", 
+                                        NotifyDescriptor.ERROR_MESSAGE);
+                                Object retval = DialogDisplayer.getDefault().notify(nd);
                             }
+                           
                         }
                     }
                 }
             }
         }
     }
-    
     
     
     @SuppressWarnings("serial")
@@ -140,35 +123,40 @@ public class EditorActions {
             if (editor != null) {
                 
                 mxGraph graph = editor.getGraphComponent().getGraph();
-
+                
                 if (graph != null) {
-                    String wd = (lastDir != null) ? lastDir : "/Bascon/BSW1/Testbench";
-                    JFileChooser fc = new JFileChooser(wd);
-
-                    // Adds file filter for supported file format
-                    DefaultFileFilter defaultFilter = new DefaultFileFilter(
-                            "", mxResources.get("allSupportedFormats")) {
-
-                        public boolean accept(File file) {
-                            String lcase = file.getName().toLowerCase();
-                            return super.accept(file)
-                                    || lcase.endsWith(".png")
-                                    || lcase.endsWith(".vdx");
-                        }
-                    };
-                    fc.addChoosableFileFilter(defaultFilter);      
-                    fc.setFileFilter(defaultFilter);
-
-                    int rc = fc.showDialog(null,mxResources.get("openFile"));
-
-                    if (rc == JFileChooser.APPROVE_OPTION) {
-                        lastDir = fc.getSelectedFile().getParent();
-                        editor.proccessGraph(fc.getSelectedFile().getAbsolutePath());
+                    String s = ContextUtils.selectFile(true, ContextUtils.TASKSDIR, "tsk");
+                    if (s !=null){
+                        editor.proccessGraph(s);
                     }
                 }
-                
             }
+        }
+    }
+    
+    @SuppressWarnings("serial")
+    public static class NewAction extends AbstractAction {
+
+        public void actionPerformed(ActionEvent e) {
             
+            BasicGraphEditor editor = getEditor(e);
+            
+            if (editor != null) {
+                if (!editor.isModified() || 
+                    JOptionPane.showConfirmDialog(editor,mxResources.get("Descartar as Modificações ?")) == JOptionPane.YES_OPTION) {
+  
+                    mxGraph graph = editor.getGraphComponent().getGraph();
+                    
+                    mxCell root = new mxCell();
+                    root.insert(new mxCell());
+                    graph.getModel().setRoot(root);
+
+                    editor.setModified(false);
+                    editor.setCurrentFile(null);
+                    editor.getGraphComponent().zoomAndCenter();               
+  
+                }
+            }
         }
     }
     
@@ -176,17 +164,6 @@ public class EditorActions {
     
     
     
-    
-    
-    
-    
-    
-
-    /**
-     *
-     * @param e
-     * @return Returns the graph for the given action event.
-     */
     public static final BasicGraphEditor getEditor(ActionEvent e) {
         if (e.getSource() instanceof Component) {
             Component component = (Component) e.getSource();
@@ -283,9 +260,6 @@ public class EditorActions {
         }
     }
 
-    /**
-     *
-     */
     @SuppressWarnings("serial")
     public static class ExitAction extends AbstractAction {
 
@@ -568,12 +542,10 @@ public class EditorActions {
             addActionListener(new ActionListener() {
                
                 public void actionPerformed(ActionEvent e) {
-                    mxGraphComponent graphComponent = editor
-                            .getGraphComponent();
+                    mxGraphComponent graphComponent = editor.getGraphComponent();
 
                     if (graphComponent != null) {
-                        mxConnectionHandler handler = graphComponent
-                                .getConnectionHandler();
+                        mxConnectionHandler handler = graphComponent.getConnectionHandler();
                         handler.setCreateTarget(!handler.isCreateTarget());
                         setSelected(handler.isCreateTarget());
                     }
@@ -842,33 +814,7 @@ public class EditorActions {
         }
     }
 
-    @SuppressWarnings("serial")
-    public static class NewAction extends AbstractAction {
-
-        public void actionPerformed(ActionEvent e) {
-            
-            BasicGraphEditor editor = getEditor(e);
-            
-
-            if (editor != null) {
-                if (!editor.isModified() || 
-                    JOptionPane.showConfirmDialog(editor,mxResources.get("loseChanges")) == JOptionPane.YES_OPTION) {
-                    
-                    
-                    mxGraph graph = editor.getGraphComponent().getGraph();
-
-                    // Check modified flag and display save dialog
-                    mxCell root = new mxCell();
-                    root.insert(new mxCell());
-                    graph.getModel().setRoot(root);
-
-                    editor.setModified(false);
-                    editor.setCurrentFile(null);
-                    editor.getGraphComponent().zoomAndCenter();
-                }
-            }
-        }
-    }
+    
 
     
     @SuppressWarnings("serial")

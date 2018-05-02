@@ -11,9 +11,12 @@ package com.virna5.contexto;
  */
 public interface SignalListener {
     
-    long getContext();
+    Long getContext();
+    
+    Long getUID();
     
     void processSignal (SMTraffic signal);
+    
     
     
 }

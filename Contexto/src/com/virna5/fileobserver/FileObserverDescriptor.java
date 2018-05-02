@@ -8,6 +8,7 @@ package com.virna5.fileobserver;
 import com.virna5.contexto.BaseDescriptor;
 import com.virna5.contexto.ContextUtils;
 import com.virna5.contexto.DescriptorConnector;
+import com.virna5.contexto.UIInterface;
 import java.beans.IntrospectionException;
 import org.openide.util.Exceptions;
 
@@ -36,6 +37,7 @@ public class FileObserverDescriptor extends BaseDescriptor{
         
         super();
         dependencies = new String[] { "com.virna5.fileobserver.FileObserverService" };
+        interfaces = new UIInterface[] { new UIInterface("Observador de Arquivos", "com.virna5.fileobserver.MonitorIFrame", "iframe") };
         
         name="Observador de Arquivos";
         desc = "Dispositivo para verificação e leitura de novos arquivos em um diratorio.";

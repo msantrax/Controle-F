@@ -29,7 +29,7 @@ public class QS4GeneratorPropertyEditor extends PropertyEditorSupport implements
        Object[] beans = pe.getBeans();
        QS4GeneratorNode cfn = (QS4GeneratorNode) beans[0];
        cfw = cfn.getCfw();      
-       //log.info("Attaching env");
+       log.info(String.format("Attaching Gen env : %d with %d fields", cfw.hashCode(), cfw.size()));
     }  
     
     

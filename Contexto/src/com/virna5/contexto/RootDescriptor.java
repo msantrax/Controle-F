@@ -64,10 +64,7 @@ public class RootDescriptor extends BaseDescriptor{
     public ContextNodes getContextNodes(){
         return contextnodes;
     }
-    
-    
-    
-    
+   
     /**
      * @return the obs
      */

@@ -49,13 +49,15 @@ public class OutHandler extends StreamHandler{
     }
     
     
+    
+    
     public void publish(LogRecord rec){
         
         String logname = rec.getLoggerName();
         
         if (logname !=null && logname.contains("com.virna5")){
             String mes = formatter.formatMessage(rec);
-            if (rec.getLevel() == Level.WARNING ||rec.getLevel() == Level.WARNING){
+            if (rec.getLevel() == Level.WARNING ||rec.getLevel() == Level.SEVERE){
                 report_error.println(mes);
             }
             else{

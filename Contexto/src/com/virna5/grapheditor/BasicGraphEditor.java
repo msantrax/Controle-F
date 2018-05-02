@@ -321,6 +321,8 @@ public class BasicGraphEditor extends JPanel {
         Map<String,Object> cells_map = model.getCells();
         //Collection<Object>cells_list = cells_map.values();
         
+        Long context = ContextUtils.getUID();
+        
         sb.append(String.format("Graph with %d cells is :\n", cells_map.size()));
         
         for (Object c : cells_map.values()){
@@ -332,14 +334,19 @@ public class BasicGraphEditor extends JPanel {
                     DescriptorConnector rdc = (DescriptorConnector)mxc.getValue();
                     rd = (RootDescriptor)rdc.getDescriptor();
                     rd.setGraph_widget(mxc.getId());
+                    rd.setContext(context);
                 }
                 else{
+                    // Build info fot log servicces
                     String stype = mxc.isEdge() ? "Edge" : "Vertex";
                     sb.append("Cell ").append(mxc.getId()).append(" is a ").append(stype).append(" of class ").append(cvalue.toString()).append("\n");
+                    
+                    // Now if it is proper rooted process else tell log 
                     if (!(mxc.getParent().getId().equals("1"))){
                         sb.append("\tCell ").append(mxc.getId()).append(" doesnt match parent 1\n");
                     }
                     else{
+                        
                         if ((mxc.getValue() instanceof DescriptorConnector)){
                             DescriptorConnector obd = (DescriptorConnector)mxc.getValue();
                             bd = obd.getDescriptor();
@@ -349,7 +356,7 @@ public class BasicGraphEditor extends JPanel {
                                 mxGeometry mxg = mxc.getGeometry();
                                 bd.setPosition(mxg.getX(), mxg.getY());
                                 bd.setDimension(mxg.getWidth(), mxg.getHeight());
-                                
+                                bd.setContext(context);
                                 nodes.add(bd);
                                 sb.append("\tVertex added to pool with geometry : ")
                                         .append(bd.getXpos()+ " - ").append(bd.getYpos()+ " - ")
@@ -380,6 +387,7 @@ public class BasicGraphEditor extends JPanel {
                                 else{
                                     sb.append("\tEdge has a dangling target point\n");   
                                 }
+                                ebd.setContext(context);
                                 nodes.add(ebd);
                             }
                         }

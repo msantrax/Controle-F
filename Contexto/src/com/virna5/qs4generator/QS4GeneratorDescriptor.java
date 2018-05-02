@@ -5,10 +5,10 @@
  */
 package com.virna5.qs4generator;
 
-import com.virna5.csvfilter.*;
 import com.virna5.contexto.BaseDescriptor;
 import com.virna5.contexto.ContextUtils;
 import com.virna5.contexto.DescriptorConnector;
+import com.virna5.contexto.UIInterface;
 import java.beans.IntrospectionException;
 import java.util.logging.Logger;
 import org.openide.util.Exceptions;
@@ -20,10 +20,17 @@ public class QS4GeneratorDescriptor extends BaseDescriptor {
 
     private boolean useheader = true;
     private String encoding = "UTF-8";
-    private String separator = ",";
+    private String separator = ";";
+    private String endline = "\n\r";
     private String locale = "PT-BR";
     
     private String output = "csv";
+    
+    private  boolean automatic = false;
+    private  long interval=0;
+    
+    private transient int field_sequence = 1;
+    
     
     protected QS4GeneratorFieldsWrapper generatorfields;
     
@@ -33,9 +40,11 @@ public class QS4GeneratorDescriptor extends BaseDescriptor {
         generatorfields = new QS4GeneratorFieldsWrapper();
         
         dependencies = new String[] { "com.virna5.qs4generator.QS4GeneratorService" };
+        interfaces = new UIInterface[] { new UIInterface("Gerador de Resultados", "com.virna5.qs4generator.MonitorIFrame", "iframe") };
+        
         
         name="Geradorn QS4";
-        desc = "Cria arquivo CSV de resultados randomicos para teste";
+        desc = "Cria arquivo de resultados randomicos para teste";
         
         nodetype = "qs4generator.QS4GeneratorDescriptor";
         version = "1.0.0";
@@ -167,6 +176,65 @@ public class QS4GeneratorDescriptor extends BaseDescriptor {
         this.generatorfields = generatorfields;
     }
 
+    /**
+     * @return the automatic
+     */
+    public Boolean getAutomatic() {
+        return automatic;
+    }
+
+    /**
+     * @param automatic the automatic to set
+     */
+    public void setAutomatic(Boolean automatic) {
+        this.automatic = automatic;
+    }
+
+    /**
+     * @return the interval
+     */
+    public Long getInterval() {
+        return interval;
+    }
+
+    /**
+     * @param interval the interval to set
+     */
+    public void setInterval(Long interval) {
+        this.interval = interval;
+    }
+
+    /**
+     * @return the endline
+     */
+    public String getEndline() {
+        return endline;
+    }
+
+    /**
+     * @param endline the endline to set
+     */
+    public void setEndline(String endline) {
+        this.endline = endline;
+    }
+
+    /**
+     * @return the field_sequence
+     */
+    public int getField_sequence() {
+        return field_sequence;
+    }
+
+    /**
+     * @param field_sequence the field_sequence to set
+     */
+    public void setField_sequence(int field_sequence) {
+        this.field_sequence = field_sequence;
+    }
+
+    public void updateField_sequence() {
+        field_sequence++;
+    }
     
     
 

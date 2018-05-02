@@ -8,10 +8,8 @@ package com.virna5.csvfilter;
 import com.virna5.contexto.BaseDescriptor;
 import com.virna5.contexto.ContextUtils;
 import com.virna5.contexto.DescriptorConnector;
-import com.virna5.fileobserver.FileObserverConnector;
-import com.virna5.fileobserver.FileObserverNode;
+import com.virna5.contexto.UIInterface;
 import java.beans.IntrospectionException;
-import java.util.ArrayList;
 import java.util.logging.Logger;
 import org.openide.util.Exceptions;
 
@@ -35,6 +33,9 @@ public class CSVFilterDescriptor extends BaseDescriptor {
         csvfields = new CSVFieldsWrapper();
         
         dependencies = new String[] { "com.virna5.csvfilter.CSVFilterService" };
+        
+        interfaces = new UIInterface[] { new UIInterface("Filtro CSV", "com.virna5.csvfilter.MonitorIFrame", "iframe") };
+        
         
         name="Filtro CSV";
         desc = "Processador de dados em arquivos tipo CSV";
