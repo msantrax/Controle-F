@@ -102,6 +102,12 @@ public class ContextUtils {
     }
     
     
+    public static void saveFile(String filename, String payload) throws IOException{
+        
+        Path p = Paths.get(filename);
+        Files.write(p, payload.getBytes(StandardCharsets.UTF_8));
+    }
+    
     public static String readCSV(String filename) throws IOException{
         
         Path p = Paths.get(filename);

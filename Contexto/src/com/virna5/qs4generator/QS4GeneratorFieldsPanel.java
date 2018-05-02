@@ -73,6 +73,7 @@ public class QS4GeneratorFieldsPanel extends javax.swing.JPanel implements Table
         
         int srow=jtbl_fields.getSelectedRow();
         
+        try {
         if(srow == -1){
             if (cfw.size() != 0){
                 cfw.remove(cfw.size()-1);
@@ -80,7 +81,10 @@ public class QS4GeneratorFieldsPanel extends javax.swing.JPanel implements Table
         }
         else{
             cfw.remove(srow);
-        }       
+        } 
+        }catch (Exception ex){
+            log.fine("Deleting non existent row");
+        }
         jtbl_fields.updateUI();
         
     }

@@ -343,8 +343,6 @@ public class Controler implements SignalListener{
         }
     }
     
-    
-    
     public void addContext(String filename){
         
         ContextControl cc;
@@ -673,6 +671,12 @@ public class Controler implements SignalListener{
                 }
             } catch (Exception ex) {
                 log.log(Level.WARNING, "Falha na maquina de estados do Controle : " + ex.toString());
+                NotifyDescriptor nd = new NotifyDescriptor.Message(
+                                        "<html><h3 style=\"color:red;\">Erro na maquina de estados no modulo controle :</h2></html>", 
+                                        NotifyDescriptor.ERROR_MESSAGE);
+                                nd.setTitle("Ooops !! - Mensagem do Gerente de Processos");
+                                
+                                Object retval = DialogDisplayer.getDefault().notify(nd); 
             }
 
         }

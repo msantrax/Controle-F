@@ -7,14 +7,16 @@ package com.virna5.csvfilter;
 
 import com.virna5.contexto.BaseDescriptor;
 import com.virna5.contexto.BaseService;
-import com.virna5.contexto.OutHandler;
+import com.virna5.contexto.ContextUtils;
+import com.virna5.contexto.MonitorIFrameInterface;
 import com.virna5.contexto.SMTraffic;
+import com.virna5.contexto.VirnaPayload;
 import com.virna5.contexto.VirnaServices;
-import java.text.Normalizer;
+import com.virna5.filewriter.FileWriterUIUpdater;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,7 +25,8 @@ public class CSVFilterService extends BaseService {
 
     private static final Logger log = Logger.getLogger(CSVFilterService.class.getName());
     private CSVFilterService.SMThread service_thread;    
-    private LinkedHashMap<Long, CSVFilterDescriptor> descriptors;
+    private Long current_handle;
+    
     
     private static CSVFilterService instance;    
     public static CSVFilterService getInstance(){
@@ -48,10 +51,12 @@ public class CSVFilterService extends BaseService {
     public CSVFilterService() {
         
         super();
-        log.addHandler(OutHandler.getInstance());
+       
         lines = new ArrayList<>();
         csvfields = new ArrayList<>();
-        descriptors = new LinkedHashMap<Long, CSVFilterDescriptor>();
+     
+        startService();
+        
     }
     
     
@@ -59,7 +64,7 @@ public class CSVFilterService extends BaseService {
     public void configService(BaseDescriptor bd){
         
         CSVFilterDescriptor fod = (CSVFilterDescriptor) bd;
-        Long uid = fod.getContext();
+        Long uid = fod.getUID();
         if (descriptors.containsKey(uid)){
             descriptors.remove(uid);
         }
@@ -69,8 +74,7 @@ public class CSVFilterService extends BaseService {
     
     
     public void updateDescriptor(CSVFilterDescriptor csvfd){
-        
-        
+             
         CSVFieldsWrapper dfields = csvfd.getCsvfields();      
         //ArrayList<CSVField> dfields = csvfd.getCSVfields();      
         for (CSVField csvf : csvfields){
@@ -79,94 +83,26 @@ public class CSVFilterService extends BaseService {
         
     }
     
-    public void buildHeader(){
+    
+    @Override
+    public void UpdateUI (String mes, String bduid){
         
-        int count = 0;
-        String[] lines = rawpayload.split("\n");
-        
-        String header = lines[0];
-        header = header.replace("\r", "");
-        String[] fields = header.split(";");
-                
-        for (String s : fields){
-            CSVField csvf = new CSVField();
-            csvf.setCSVfield(s);
-            //csvf.setId(filteredName(s));
-            csvf.setReadcsv(false);
-            if (count < 6){
-                csvf.setRealm("header");
-                csvf.setType("string");
-            }
-            else{
-                csvf.setRealm("value");
-                csvf.setType("number");
-            }
-            csvfields.add(csvf);
-        }       
+//        com.virna5.filewriter.MonitorIFrame liframe = (com.virna5.filewriter.MonitorIFrame) getIFrame(bduid);
+//        FileWriterDescriptor fwd = (FileWriterDescriptor)descriptors.get(Long.parseLong(bduid));
+//        
+//        if ( liframe != null){
+//            if (mes == null){
+//                FileWriterUIUpdater fwuiup = new FileWriterUIUpdater();
+//                liframe.setWriteFile(fwd.getOutputfile());
+//                
+//                log.fine("Init UI em CSV Filter");
+//            }           
+//        }
     }
-    
-    public String getJson(){
-        
-        int count = 0;
-        StringBuilder sb = new StringBuilder();
-        
-        String[] lines = rawpayload.split("\n");
-        String header = lines[0];
-        header = header.replace("\r", "");
-        String[] fields = header.split(";");
-        
-        sb.append("fields: [\n");        
-                
-        for (String s : fields){
-            
-            sb.append("\t{\n");
-            
-            sb.append("\t    \"csvfield\": \"" + s + "\",\n");
-            sb.append("\t    \"id\":\"" + filteredName(s) + "\",\n");
-            
-            if (count < 6){
-                sb.append("\t    \"realm\": \"header\",\n");
-                sb.append("\t    \"type\": \"string\",\n");
-            }
-            else{
-                sb.append("\t    \"realm\": \"value\",\n");
-                sb.append("\t    \"type\": \"number\",\n");
-            }
-            count++;    
-            sb.append("\t},\n");
-        }
-        sb.append("]\n");    
-        
-        return sb.toString();
-    }
+       
     
     
     
-    private String filteredName(String fname){
-        
-        // Filtre ruídos e normalize o nome    
-        fname = fname.toUpperCase().trim();
-        fname = fname.replace(" ", "_");
-        fname = fname.replace(".", "");
-        fname = fname.replace("'", "");
-        fname = fname.replace(":", "");
-        
-        fname = Normalizer.normalize(fname, Normalizer.Form.NFC);
-        fname = fname.toUpperCase();
-        
-        fname = fname.replace("Ã", "A");
-        fname = fname.replace("Õ", "O");
-        fname = fname.replace("Á", "A");
-        fname = fname.replace("Ó", "O");
-        fname = fname.replace("Â", "A");
-        fname = fname.replace("Õ", "O");
-        fname = fname.replace("É", "E");
-        fname = fname.replace("Ê", "E");
-        fname = fname.replace("Ç", "C");
-        
-        return fname;
-        
-    }
     
     
     
@@ -177,8 +113,8 @@ public class CSVFilterService extends BaseService {
     }
     
     private void startService(){      
-        smqueue.clear();
-        //services.addUsbServicesListener(this);
+        smqueue = new LinkedBlockingQueue<>() ;
+        service_thread = new CSVFilterService.SMThread(smqueue);
         new Thread(service_thread).start();
     }
     
@@ -190,6 +126,9 @@ public class CSVFilterService extends BaseService {
         private VirnaServices.CMDS cmd;
         private ArrayDeque <VirnaServices.STATES>states_stack;
         private SMTraffic smm;
+        
+        private BaseDescriptor temp_bd;
+        CSVFilterDescriptor csvdesc;
         
 
         public SMThread(BlockingQueue<SMTraffic> tqueue) {
@@ -241,6 +180,51 @@ public class CSVFilterService extends BaseService {
                             states_stack.push(VirnaServices.STATES.INIT);
                             break;
                         
+                        case TSK_MANAGE:
+                            Long lhandle = smm.getHandle();
+                            temp_bd = descriptors.get(lhandle);
+                            if (temp_bd !=null){
+                                String action = (smm.getCode() == 1) ? "Activating" : "Deactivating;";
+                                log.fine(String.format("%s task %d on FileWriterService using %s", action, lhandle, temp_bd.getName()));
+                            }
+                            
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;    
+                        
+                        case CSV_CONVERT:
+                            VirnaPayload vp = smm.getPayload();
+                            String payload = vp.vstring;
+                            
+//                            com.virna5.filewriter.MonitorIFrame liframe = 
+//                                    (com.virna5.filewriter.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
+//                            
+//                            if (liframe != null){
+//                                liframe.updateUIDirect(new FileWriterUIUpdater()
+//                                                            .setLedcolor(MonitorIFrameInterface.LED_GREEN_ON)
+//                                                        );
+//                                //csvdesc = liframe.getDescriptor();
+//                                try{
+//                                    ContextUtils.saveFile(fwdesc.getOutputfile(), payload);
+//                                    log.fine(String.format("Wrote file %s with :\n\r%s",fwdesc.getOutputfile(), payload));
+//                                    liframe.updateUIDirect(new FileWriterUIUpdater()
+//                                                            .setLedcolor(MonitorIFrameInterface.LED_GREEN_OFF)
+//                                                            .setPayload(payload)
+//                                                        );
+//                                }catch(Exception ex){
+//                                    log.warning(String.format("Failed to write %s due %s", fwdesc.getOutputfile(), ex.toString()));
+//                                    liframe.updateUIDirect(new FileWriterUIUpdater()
+//                                                            .setLedcolor(MonitorIFrameInterface.LED_RED)
+//                                                            .setPayload(ex.toString())
+//                                                        );
+//                                }
+//                            }
+                                                
+                            
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;    
+                            
+                            
+                            
                     }
                 }
             } catch (Exception ex) {
@@ -259,3 +243,96 @@ public class CSVFilterService extends BaseService {
     
     
 }
+
+//
+//
+// public void buildHeader(){
+//        
+//        int count = 0;
+//        String[] lines = rawpayload.split("\n");
+//        
+//        String header = lines[0];
+//        header = header.replace("\r", "");
+//        String[] fields = header.split(";");
+//                
+//        for (String s : fields){
+//            CSVField csvf = new CSVField();
+//            csvf.setCSVfield(s);
+//            //csvf.setId(filteredName(s));
+//            csvf.setReadcsv(false);
+//            if (count < 6){
+//                csvf.setRealm("header");
+//                csvf.setType("string");
+//            }
+//            else{
+//                csvf.setRealm("value");
+//                csvf.setType("number");
+//            }
+//            csvfields.add(csvf);
+//        }       
+//    }
+//    
+//    public String getJson(){
+//        
+//        int count = 0;
+//        StringBuilder sb = new StringBuilder();
+//        
+//        String[] lines = rawpayload.split("\n");
+//        String header = lines[0];
+//        header = header.replace("\r", "");
+//        String[] fields = header.split(";");
+//        
+//        sb.append("fields: [\n");        
+//                
+//        for (String s : fields){
+//            
+//            sb.append("\t{\n");
+//            
+//            sb.append("\t    \"csvfield\": \"" + s + "\",\n");
+//            sb.append("\t    \"id\":\"" + filteredName(s) + "\",\n");
+//            
+//            if (count < 6){
+//                sb.append("\t    \"realm\": \"header\",\n");
+//                sb.append("\t    \"type\": \"string\",\n");
+//            }
+//            else{
+//                sb.append("\t    \"realm\": \"value\",\n");
+//                sb.append("\t    \"type\": \"number\",\n");
+//            }
+//            count++;    
+//            sb.append("\t},\n");
+//        }
+//        sb.append("]\n");    
+//        
+//        return sb.toString();
+//    }
+//    
+//    
+//    
+//    private String filteredName(String fname){
+//        
+//        // Filtre ruídos e normalize o nome    
+//        fname = fname.toUpperCase().trim();
+//        fname = fname.replace(" ", "_");
+//        fname = fname.replace(".", "");
+//        fname = fname.replace("'", "");
+//        fname = fname.replace(":", "");
+//        
+//        fname = Normalizer.normalize(fname, Normalizer.Form.NFC);
+//        fname = fname.toUpperCase();
+//        
+//        fname = fname.replace("Ã", "A");
+//        fname = fname.replace("Õ", "O");
+//        fname = fname.replace("Á", "A");
+//        fname = fname.replace("Ó", "O");
+//        fname = fname.replace("Â", "A");
+//        fname = fname.replace("Õ", "O");
+//        fname = fname.replace("É", "E");
+//        fname = fname.replace("Ê", "E");
+//        fname = fname.replace("Ç", "C");
+//        
+//        return fname;
+//        
+//    }
+//    
+//    

@@ -58,11 +58,8 @@ public class VirnaServices {
                                 CTRL_HOUSEKEEP,
                                 
                                 TSK_MANAGE, TSK_REQUESTALARM, TASK_CANCLELARM,
-                                
-                                
-                                
-                                
-                                QS4GEN_GEN,FWRITER_WRITE
+         
+                                QS4GEN_GEN,FWRITER_WRITE,FOB_READ,CSV_CONVERT
                                 
                                 
                                 

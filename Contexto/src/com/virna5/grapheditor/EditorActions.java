@@ -49,10 +49,10 @@ import com.mxgraph.util.mxResources;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.view.mxGraph;
 import com.virna5.contexto.ContextUtils;
+import com.virna5.contexto.RootConnector;
 import com.virna5.graph.GraphEditor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -143,12 +143,17 @@ public class EditorActions {
             
             if (editor != null) {
                 if (!editor.isModified() || 
-                    JOptionPane.showConfirmDialog(editor,mxResources.get("Descartar as Modificações ?")) == JOptionPane.YES_OPTION) {
+                    JOptionPane.showConfirmDialog(editor,"Descartar as Modificações ?") == JOptionPane.YES_OPTION) {
   
                     mxGraph graph = editor.getGraphComponent().getGraph();
                     
                     mxCell root = new mxCell();
-                    root.insert(new mxCell());
+                    mxCell level1 = new mxCell();
+                    RootConnector rc = new RootConnector();
+                    rc.initNode();
+                    level1.setValue(rc);
+                    root.insert(level1);
+                         
                     graph.getModel().setRoot(root);
 
                     editor.setModified(false);

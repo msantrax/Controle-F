@@ -115,7 +115,7 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
      
         this.requestActive();
         
-        ctrl.addContext("/Bascon/BSW1/Testbench/Ctx/task4.tsk");
+        ctrl.addContext("/Bascon/BSW1/Testbench/Ctx/task9.tsk");
         //ctrl.addContext("/Bascon/BSW1/Testbench/Ctx/task5.tsk");
         
     
@@ -238,15 +238,16 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
                     break;
                 case 4:
                     csvf.tool = (String)value;
-                    if (!value.equals("Selecione uma ferramenta")){
-                        VirnaPayload payload = new VirnaPayload().setString((String)value).setLong1(csvf.context);
-                        SMTraffic smtf = new SMTraffic( ctrl.getContext(),
-                                    VirnaServices.CMDS.LOADSTATE, 0, 
-                                    VirnaServices.STATES.CTRL_LOADMONITOR, 
-                                    payload);
-                        ctrl.processSignal(smtf);
+                    if (value !=null){
+                        if (!value.equals("Selecione uma ferramenta")){
+                            VirnaPayload payload = new VirnaPayload().setString((String)value).setLong1(csvf.context);
+                            SMTraffic smtf = new SMTraffic( ctrl.getContext(),
+                                        VirnaServices.CMDS.LOADSTATE, 0, 
+                                        VirnaServices.STATES.CTRL_LOADMONITOR, 
+                                        payload);
+                            ctrl.processSignal(smtf);
+                        }
                     }
-                    
                     break;    
                 case 5:
                     csvf.obs = (String)value;

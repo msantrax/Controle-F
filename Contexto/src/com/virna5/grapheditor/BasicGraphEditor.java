@@ -73,6 +73,7 @@ import com.virna5.graph.GraphPropertiesTopComponent;
 import com.virna5.graph.GraphTopComponent;
 import com.virna5.contexto.RootConnector;
 import com.virna5.contexto.RootDescriptor;
+import com.virna5.contexto.RootNode;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -323,6 +324,7 @@ public class BasicGraphEditor extends JPanel {
         
         Long context = ContextUtils.getUID();
         
+        
         sb.append(String.format("Graph with %d cells is :\n", cells_map.size()));
         
         for (Object c : cells_map.values()){
@@ -335,6 +337,7 @@ public class BasicGraphEditor extends JPanel {
                     rd = (RootDescriptor)rdc.getDescriptor();
                     rd.setGraph_widget(mxc.getId());
                     rd.setContext(context);
+                    rd.setUID(ContextUtils.getUID());
                 }
                 else{
                     // Build info fot log servicces
@@ -350,13 +353,15 @@ public class BasicGraphEditor extends JPanel {
                         if ((mxc.getValue() instanceof DescriptorConnector)){
                             DescriptorConnector obd = (DescriptorConnector)mxc.getValue();
                             bd = obd.getDescriptor();
+                            bd.setContext(context);
+                            bd.setUID(ContextUtils.getUID());
                             bd.setGraph_widget(mxc.getId());
                             bd.setStyle(mxc.getStyle());
                             if (mxc.isVertex()){
                                 mxGeometry mxg = mxc.getGeometry();
                                 bd.setPosition(mxg.getX(), mxg.getY());
                                 bd.setDimension(mxg.getWidth(), mxg.getHeight());
-                                bd.setContext(context);
+                                //bd.setContext(context);
                                 nodes.add(bd);
                                 sb.append("\tVertex added to pool with geometry : ")
                                         .append(bd.getXpos()+ " - ").append(bd.getYpos()+ " - ")
@@ -436,9 +441,14 @@ public class BasicGraphEditor extends JPanel {
         
         if (ctrl == null) updatePointers();
         RootDescriptor loadedctx = ctrl.loadContextDescriptor(payload);
+       
         
+        mxCell parent = (mxCell)graph.getDefaultParent();
+        RootConnector rc = (RootConnector)parent.getValue();
+        //rc.initNode();
+        RootNode rn = (RootNode)rc.getNode();
+        rn.setDescriptor(loadedctx);
         
-        Object parent = graph.getDefaultParent();
         ArrayList<BaseDescriptor> nodes = loadedctx.getContextNodes();
         LinkedHashMap<String, mxCell> nodemap = new LinkedHashMap<>();
         

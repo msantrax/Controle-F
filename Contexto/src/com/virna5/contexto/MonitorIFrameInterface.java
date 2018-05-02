@@ -14,13 +14,10 @@ import java.time.format.DateTimeFormatter;
  */
 public interface MonitorIFrameInterface {
     
-    
     static final Color LED_GREEN_OFF = new Color (0,150,50);
     static final Color LED_GREEN_ON = new Color (100,255,100);
     static final Color LED_YELLOW = new Color (255,255,100);
     static final Color LED_RED = new Color (255,100,100);
-    
-    
     
    
     void setDescriptor(BaseDescriptor bd);
@@ -33,8 +30,7 @@ public interface MonitorIFrameInterface {
     void setIframeid(String iframeid);
     
     void updateUI(Color ledcolor, String  message);
-    
-    
+   
     
     
 }

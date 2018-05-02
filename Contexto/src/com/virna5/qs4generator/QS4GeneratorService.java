@@ -58,14 +58,10 @@ public class QS4GeneratorService extends BaseService {
         super();
         
         log.setLevel(Level.FINE);
-        iframes = new LinkedHashMap<>();
-        
-        log.addHandler(OutHandler.getInstance());
         
         lines = new ArrayList<>();
         csvfields = new ArrayList<>();
        
-        
         startService();
         
     }
@@ -236,17 +232,13 @@ public class QS4GeneratorService extends BaseService {
                             }
                             String values = buildResultValues(qs4desc);
                             String rout = header+values;
-                            SMTraffic smt = new SMTraffic(qs4desc.getUID(),
+                            qs4desc.notifySignalListeners(0, new SMTraffic(qs4desc.getUID(),
                                             VirnaServices.CMDS.LOADSTATE,
-                                            alarm_handle, 
-                                            VirnaServices.STATES.CTRL_ADDALARM, 
+                                            0, 
+                                            VirnaServices.STATES.FWRITER_WRITE, 
                                             new VirnaPayload().setString(rout)
-                            );
-                            qs4desc.notifySignalListeners(0, smt);
-                            
-                            
-                            log.fine(rout);
-                            
+                            ));
+                            liframe.updateUI(MonitorIFrameInterface.LED_GREEN_OFF, null);
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;    
      

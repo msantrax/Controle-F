@@ -20,7 +20,7 @@ public class FileWriterDescriptor extends BaseDescriptor{
  
     
     protected String outputfile;
-    protected Boolean append;
+    protected Boolean multiline;
     protected Boolean overwrite;
 
     public FileWriterDescriptor() {
@@ -28,8 +28,7 @@ public class FileWriterDescriptor extends BaseDescriptor{
         super();
         dependencies = new String[] { "com.virna5.filewriter.FileWriterService" };
         interfaces = new UIInterface[] { new UIInterface("Gravador de Arquivos", "com.virna5.filewriter.MonitorIFrame", "iframe") };
-        
-        
+            
         name="Gravador de Arquivos";
         desc = "Dispositivo para gravaçãode novos arquivos em um diretorio no disco";
         
@@ -68,17 +67,17 @@ public class FileWriterDescriptor extends BaseDescriptor{
     }
 
     /**
-     * @return the append
+     * @return the multiline
      */
-    public Boolean getAppend() {
-        return append;
+    public Boolean getMultiline() {
+        return multiline;
     }
 
     /**
-     * @param append the append to set
+     * @param multiline the multiline to set
      */
-    public void setAppend(Boolean append) {
-        this.append = append;
+    public void setMultiline(Boolean multiline) {
+        this.multiline = multiline;
     }
 
     /**

@@ -124,6 +124,7 @@ public class BaseDescriptor implements SignalListener{
             //log.fine("Notifying "+ context);
             for (SignalListener sl : listeners){
                 if (sl.getUID() == uid || uid == 0){
+                    signal.setHandle(sl.getUID());
                     sl.processSignal(signal);
                 }
             }

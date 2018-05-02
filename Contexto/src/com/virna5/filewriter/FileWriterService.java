@@ -8,20 +8,22 @@ package com.virna5.filewriter;
 import com.virna5.fileobserver.*;
 import com.virna5.contexto.BaseDescriptor;
 import com.virna5.contexto.BaseService;
-import com.virna5.contexto.OutHandler;
+import com.virna5.contexto.ContextUtils;
+import com.virna5.contexto.MonitorIFrameInterface;
 import com.virna5.contexto.SMTraffic;
+import com.virna5.contexto.VirnaPayload;
 import com.virna5.contexto.VirnaServices;
-import static com.virna5.contexto.VirnaServices.STATES.FOB_DOSCAN;
-import static com.virna5.contexto.VirnaServices.STATES.FOB_STOPSCAN;
 import static com.virna5.contexto.VirnaServices.STATES.IDLE;
 import static com.virna5.contexto.VirnaServices.STATES.INIT;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 
 public class FileWriterService extends BaseService {
 
@@ -30,8 +32,7 @@ public class FileWriterService extends BaseService {
     private static FileWriterService instance;    
    
     private FileWriterService.SMThread service_thread;
-    
-   
+ 
     private Long current_handle;
     
     
@@ -45,11 +46,9 @@ public class FileWriterService extends BaseService {
         super();
         
         log.setLevel(Level.FINE);
-        log.addHandler(OutHandler.getInstance());
-        descriptors = new LinkedHashMap<>();
+        
         instance = this;      
-        
-        
+     
         startService();
         
     }
@@ -68,6 +67,24 @@ public class FileWriterService extends BaseService {
         log.info(String.format("Configuring FileWriterclass %s to context : %s", bd.toString(),uid));
     }
    
+    
+    @Override
+    public void UpdateUI (String mes, String bduid){
+        
+        com.virna5.filewriter.MonitorIFrame liframe = (com.virna5.filewriter.MonitorIFrame) getIFrame(bduid);
+        FileWriterDescriptor fwd = (FileWriterDescriptor)descriptors.get(Long.parseLong(bduid));
+        
+        if ( liframe != null){
+            if (mes == null){
+                FileWriterUIUpdater fwuiup = new FileWriterUIUpdater();
+                liframe.setWriteFile(fwd.getOutputfile());
+                
+                log.fine("Init UI em Filewriter");
+            }           
+        }
+    }
+       
+    
     
     
     
@@ -111,6 +128,7 @@ public class FileWriterService extends BaseService {
         private SMTraffic smm;
 
         private BaseDescriptor temp_bd;
+        FileWriterDescriptor fwdesc;
         
 
         public SMThread(BlockingQueue<SMTraffic> tqueue) {
@@ -121,7 +139,7 @@ public class FileWriterService extends BaseService {
            
         }
         
-  
+        
         
         @Override
         public void run(){
@@ -164,6 +182,7 @@ public class FileWriterService extends BaseService {
                                 String action = (smm.getCode() == 1) ? "Activating" : "Deactivating;";
                                 log.fine(String.format("%s task %d on FileWriterService using %s", action, lhandle, temp_bd.getName()));
                             }
+                            
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;
                         
@@ -175,12 +194,36 @@ public class FileWriterService extends BaseService {
                             break; 
                         
                         case FWRITER_WRITE:
+                            VirnaPayload vp = smm.getPayload();
+                            String payload = vp.vstring;
+                            com.virna5.filewriter.MonitorIFrame liframe = 
+                                    (com.virna5.filewriter.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
                             
-                            log.fine("Writing file");
+                            if (liframe != null){
+                                liframe.updateUIDirect(new FileWriterUIUpdater()
+                                                            .setLedcolor(MonitorIFrameInterface.LED_GREEN_ON)
+                                                        );
+                                fwdesc = liframe.getDescriptor();
+                                try{
+                                    ContextUtils.saveFile(fwdesc.getOutputfile(), payload);
+                                    log.fine(String.format("Wrote file %s with :\n\r%s",fwdesc.getOutputfile(), payload));
+                                    liframe.updateUIDirect(new FileWriterUIUpdater()
+                                                            .setLedcolor(MonitorIFrameInterface.LED_GREEN_OFF)
+                                                            .setPayload(payload)
+                                                        );
+                                }catch(Exception ex){
+                                    log.warning(String.format("Failed to write %s due %s", fwdesc.getOutputfile(), ex.toString()));
+                                    liframe.updateUIDirect(new FileWriterUIUpdater()
+                                                            .setLedcolor(MonitorIFrameInterface.LED_RED)
+                                                            .setPayload(ex.toString())
+                                                        );
+                                }
+                            }
+                                                
                             
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;
-                            
+ 
 //                        case RESET:
 //                            
 //                            states_stack.push(VirnaServices.STATES.IDLE);
@@ -221,3 +264,24 @@ public class FileWriterService extends BaseService {
 //        System.out.println ("Thread de serviços foi interrompida");
 //    }
 //}
+
+
+
+//public void visualizePayload(){
+//        
+////        VisualizePanel vp = new VisualizePanel();
+////        
+////        
+////        DialogDescriptor d = new DialogDescriptor(vp, "Visualize os dados", true, this);
+////        d.setClosingOptions(new Object[]{});
+////        d.addPropertyChangeListener(new PropertyChangeListener() {
+////            public void propertyChange(PropertyChangeEvent e) {
+////                if(e.getPropertyName().equals(DialogDescriptor.PROP_VALUE)&& e.getNewValue()==DialogDescriptor.CLOSED_OPTION) {
+////                    
+////                }
+////            }
+////        });
+////        DialogDisplayer.getDefault().notifyLater(d);
+//        
+//        
+//    }

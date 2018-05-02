@@ -54,8 +54,8 @@ public class FileWriterNode  extends DescriptorNode implements ChangeListener {
             psr.setShortDescription("Caminho para o arquivo a gravar");
             set.put(psr);
           
-            psr = new PropertySupport.Reflection<>(obj, Boolean.class, "append");
-            psr.setName("Adicionar ao arquivo");
+            psr = new PropertySupport.Reflection<>(obj, Boolean.class, "multiline");
+            psr.setName("Multiplas linhas");
             psr.setShortDescription("Caso a opção esteja marcada, os novos dados deverão ser adicionados ao arquivo"
                     + " caso não, o comportamante dependerá da opção sobrescrever abaixo");
             set.put(psr);

@@ -51,7 +51,7 @@ public final class MonitorTopComponent extends TopComponent  implements Internal
     
     public MonitorTopComponent() {
         
-        log.setLevel(Level.FINE);
+        log.setLevel(Level.INFO);
         
         initComponents();
         setName("Monitor");
@@ -81,21 +81,19 @@ public final class MonitorTopComponent extends TopComponent  implements Internal
             internal_frame.setLocation(100, 100);
             internal_frame.setSelected(true);
             
-            
             MonitorIFrameInterface mif = (MonitorIFrameInterface)internal_frame;
             
             mif.setIframeid(artifact);
             mif.setDescriptor(bd);
             BaseService bs = bd.getService();
+            
             mif.setService(bs);
             bs.addIFrame(String.valueOf(bd.getUID()), mif);           
-            //bs.addIFrame(artifact, mif);
- 
+            bs.UpdateUI(null, String.valueOf(bd.getUID()));
+                
             frames.put(artifact, internal_frame);
     
             return internal_frame;
-            //frames.put(classname, internal_frame)
-            
             
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | PropertyVetoException ex) {
             Exceptions.printStackTrace(ex);

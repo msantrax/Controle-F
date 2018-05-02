@@ -24,6 +24,7 @@ public class BaseService {
     public BaseService() {
     
          descriptors = new LinkedHashMap<>();
+         iframes = new LinkedHashMap<>();
         
         // crie nova janela de report na área de saida
 //        InputOutput io = IOProvider.getDefault().getIO("Report", false);
@@ -66,7 +67,11 @@ public class BaseService {
         return iframes.get(uid);
     }
     
-    
+    public void UpdateUI (String mes, String bduid){
+            
+            
+    }
+        
     
     
 }
