@@ -128,7 +128,8 @@ public class FileWriterService extends BaseService {
         private SMTraffic smm;
 
         private BaseDescriptor temp_bd;
-        FileWriterDescriptor fwdesc;
+        private FileWriterDescriptor fwdesc;
+        private com.virna5.filewriter.MonitorIFrame liframe;
         
 
         public SMThread(BlockingQueue<SMTraffic> tqueue) {
@@ -169,6 +170,9 @@ public class FileWriterService extends BaseService {
                                     state = smm.getState();
                                 }
                             }
+                            else{
+                                Thread.sleep(200);
+                            }
                             break;    
 
                         case CONFIG:
@@ -193,36 +197,44 @@ public class FileWriterService extends BaseService {
                             states_stack.push(VirnaServices.STATES.INIT);
                             break; 
                         
+                        case LOADRECORD:
+                            states_stack.push(VirnaServices.STATES.FWRITER_WRITE);
+                            break; 
+                            
                         case FWRITER_WRITE:
                             VirnaPayload vp = smm.getPayload();
                             String payload = vp.vstring;
-                            com.virna5.filewriter.MonitorIFrame liframe = 
-                                    (com.virna5.filewriter.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
                             
-                            if (liframe != null){
-                                liframe.updateUIDirect(new FileWriterUIUpdater()
-                                                            .setLedcolor(MonitorIFrameInterface.LED_GREEN_ON)
-                                                        );
-                                fwdesc = liframe.getDescriptor();
-                                try{
-                                    ContextUtils.saveFile(fwdesc.getOutputfile(), payload);
-                                    log.fine(String.format("Wrote file %s with :\n\r%s",fwdesc.getOutputfile(), payload));
+                            liframe = (com.virna5.filewriter.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
+                            fwdesc = (FileWriterDescriptor)descriptors.get(smm.getHandle());
+                            
+                            try{
+                                ContextUtils.saveFile(fwdesc.getOutputfile(), payload);
+                                log.fine(String.format("Wrote file %s with : %s",fwdesc.getOutputfile(), payload));
+                                if (liframe != null){
                                     liframe.updateUIDirect(new FileWriterUIUpdater()
-                                                            .setLedcolor(MonitorIFrameInterface.LED_GREEN_OFF)
+                                                            .setLedcolor(MonitorIFrameInterface.LED_GREEN_ON)
                                                             .setPayload(payload)
                                                         );
-                                }catch(Exception ex){
-                                    log.warning(String.format("Failed to write %s due %s", fwdesc.getOutputfile(), ex.toString()));
+                                 }
+                            }catch(Exception ex){
+                                log.warning(String.format("Failed to write %s due %s", fwdesc.getOutputfile(), ex.toString()));
+                                if (liframe != null){
                                     liframe.updateUIDirect(new FileWriterUIUpdater()
                                                             .setLedcolor(MonitorIFrameInterface.LED_RED)
                                                             .setPayload(ex.toString())
                                                         );
                                 }
                             }
-                                                
+                            
                             
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;
+    
+                            default:
+                                log.fine("Undefined state on QS4Generator : " + smm.getState().toString());
+                                states_stack.push(VirnaServices.STATES.IDLE);
+                                break;
  
 //                        case RESET:
 //                            

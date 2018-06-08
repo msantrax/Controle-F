@@ -10,13 +10,11 @@ import com.virna5.contexto.BaseDescriptor;
 import com.virna5.contexto.BaseService;
 import com.virna5.contexto.Controler;
 import com.virna5.contexto.MonitorIFrameInterface;
-import com.virna5.contexto.OutHandler;
 import com.virna5.contexto.SMTraffic;
 import com.virna5.contexto.VirnaPayload;
 import com.virna5.contexto.VirnaServices;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -90,7 +88,13 @@ public class QS4GeneratorService extends BaseService {
         }
  
         String sout = sb.toString();
-        sout = sout.substring(0, (sout.length()-1))+desc.getEndline();
+        sout = sout.substring(0, (sout.length()-1));
+        if (desc.getEndline().equals("Unix")){
+            sout = sout+"\r\n";
+        }
+        else{
+            sout = sout+"\n";
+        }
         
         return sout;
     }
@@ -177,6 +181,9 @@ public class QS4GeneratorService extends BaseService {
                                 if (cmd == VirnaServices.CMDS.LOADSTATE){
                                     state = smm.getState();
                                 }
+                            }
+                            else{
+                                Thread.sleep(200);
                             }                            
                             break;    
 
@@ -191,10 +198,7 @@ public class QS4GeneratorService extends BaseService {
                             states_stack.push(VirnaServices.STATES.INIT);
                             break;
                             
-                        case TSK_REQUESTALARM:
-                            
-                            break;
-                                    
+                         
                         case TSK_MANAGE:
                             Long lhandle = smm.getHandle();
                             temp_bd = getDescriptors().get(lhandle);
@@ -220,15 +224,16 @@ public class QS4GeneratorService extends BaseService {
                             log.fine("Generate result requested");
                             com.virna5.qs4generator.MonitorIFrame liframe = 
                                     (com.virna5.qs4generator.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
+                            qs4desc = (QS4GeneratorDescriptor)descriptors.get(smm.getHandle());
                             
                             if (liframe != null){
-                                liframe.updateUI(MonitorIFrameInterface.LED_GREEN_ON, " ");
+                                liframe.updateUI(MonitorIFrameInterface.LED_GREEN_ON, " ");    
                             }
-                            qs4desc = liframe.getDescriptor();
+                            
                             
                             String header = "";
                             if (qs4desc .isUseheader()){
-                                header = buildResultHeader(qs4desc );
+                                header = buildResultHeader(qs4desc);
                             }
                             String values = buildResultValues(qs4desc);
                             String rout = header+values;
@@ -238,12 +243,18 @@ public class QS4GeneratorService extends BaseService {
                                             VirnaServices.STATES.FWRITER_WRITE, 
                                             new VirnaPayload().setString(rout)
                             ));
-                            liframe.updateUI(MonitorIFrameInterface.LED_GREEN_OFF, null);
+                            //liframe.updateUI(MonitorIFrameInterface.LED_GREEN_OFF, null);
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;    
      
                             
-//                         case QS4GEN_GEN:
+                        default:
+                            log.fine("Undefined state on QS4Generator : " + smm.getState().toString());
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;
+                            
+                            
+//                           case QS4GEN_GEN:
 //                           
 //                           states_stack.push(VirnaServices.STATES.IDLE);
 //                           break;   
@@ -252,6 +263,7 @@ public class QS4GeneratorService extends BaseService {
                 }
             } catch (Exception ex) {
                 log.log(Level.WARNING, ex.toString());
+                startService();
             }
 
         }
@@ -263,8 +275,7 @@ public class QS4GeneratorService extends BaseService {
             
             alarm_handle = Controler.getAlarmID();
             
-            SMTraffic alarm_config = new SMTraffic(qs4desc.getUID(),
-                                            VirnaServices.CMDS.LOADSTATE, 0, 
+            SMTraffic alarm_config = new SMTraffic(qs4desc.getUID(),qs4desc.getUID(), 0,
                                             VirnaServices.STATES.QS4GEN_GEN, 
                                             null);
                                         

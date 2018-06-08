@@ -147,7 +147,7 @@ public class ResultRecord {
     public ResultField getField (int index){
         return fields.get(index);
     }
-    
+     
     public ArrayList<ResultField> getHeader(){
         
         ArrayList<ResultField> header = new ArrayList<>();
@@ -169,5 +169,8 @@ public class ResultRecord {
         }
         return values;
     }
+    
+    
+    
     
 }

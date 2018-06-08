@@ -74,8 +74,8 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
         tasks = new ArrayList<>();
         
         this.addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent e) {
-                
+            
+            public void componentResized(ComponentEvent e) {    
                 int w = lp1.getBounds().width;
                 int h = lp1.getBounds().height;
                 
@@ -83,6 +83,8 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
                 pnl_layer1.setBounds(0, 0, w, h );
             }
         });
+        
+        
         //pnl_runtable.setVisible(false);
         
         
@@ -105,8 +107,11 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
             public void valueChanged(ListSelectionEvent event) {
                 DefaultListSelectionModel dlsm = (DefaultListSelectionModel)event.getSource();            
                 tools_model.setGroup(dlsm.getLeadSelectionIndex());
+                bt_removetask.setEnabled(true);
             }
         });
+        
+        this.bt_removetask.setEnabled(false);
         
         ctrl = Controler.getInstance();
         ctrl.setView(this);
@@ -115,9 +120,26 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
      
         this.requestActive();
         
-        ctrl.addContext("/Bascon/BSW1/Testbench/Ctx/task9.tsk");
-        //ctrl.addContext("/Bascon/BSW1/Testbench/Ctx/task5.tsk");
+        //ctrl.addContext("/Bascon/BSW1/Testbench/Ctx/task9.tsk");
+        //ctrl.addContext("/Bascon/BSW1/Testbench/Ctx/task6.tsk");
         
+        this.pnl_runtable.setVisible(false);
+        
+        SMTraffic alarm_config = new SMTraffic(-1l,
+                                    VirnaServices.CMDS.LOADSTATE, 0, 
+                                    VirnaServices.STATES.CTRL_HOUSEKEEP, 
+                                    null);
+        
+        SMTraffic smtf = new SMTraffic(ctrl.getContext(),
+                                    VirnaServices.CMDS.LOADSTATE,
+                                    Controler.getAlarmID(), 
+                                    VirnaServices.STATES.CTRL_ADDALARM, 
+                                    new VirnaPayload()
+                                            .setObject(alarm_config)
+                                            .setObjectType("com.virna5.contexto.SMTraffic")
+                                            .setLong1(1000L)
+                                            .setLong2(1000L) );
+        ctrl.processSignal(smtf);
     
     }
     
@@ -128,6 +150,13 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
         tbl_running.updateUI();
     }
     
+    public void removeTask(long uid, int index){
+        
+        tasks.remove(index);
+        tbl_running.remove(index);
+        tools_model.removeGroup(index);
+        
+    }
     
     public class GroupsComboBoxModel extends DefaultComboBoxModel{
 
@@ -141,6 +170,10 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
         public void setGroup(int _group){
             //log.fine("Setting group to :"+ _group);
             this.group = _group; 
+        }
+        
+        public int getSelected(){
+            return group;
         }
         
         public void removeGroup(int _group){
@@ -287,6 +320,8 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
         }
     };
     
+    
+    
     public class RunTaskValue {
     
         public Long context;
@@ -339,7 +374,7 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
     }
     
     public void processSignal (SMTraffic signal){
-        smqueue.add(signal);
+        //smqueue.add(signal);
     }
     
      /** Método de registro do listener do dispositivo serial */
@@ -368,10 +403,6 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
     }
     
 
-    
-    
-    
-    
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
@@ -397,7 +428,7 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
         pnl_back.setLayout(new java.awt.BorderLayout());
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel1.setIcon(new javax.swing.ImageIcon("/Bascon/BSW1/Resources/ControlLogo/Controle_logo_80x520_A.png")); // NOI18N
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/virna5/graphimages/Controle_logo_80x520_A.png"))); // NOI18N
         jLabel1.setToolTipText(org.openide.util.NbBundle.getMessage(ControleTopComponent.class, "ControleTopComponent.jLabel1.toolTipText")); // NOI18N
         jLabel1.setOpaque(true);
         jLabel1.setPreferredSize(new java.awt.Dimension(44, 100));
@@ -407,11 +438,19 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/virna5/contexto/backdrop.png"))); // NOI18N
         jLabel2.setOpaque(true);
+        jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel2MouseClicked(evt);
+            }
+        });
         pnl_back.add(jLabel2, java.awt.BorderLayout.CENTER);
 
         jLabel3.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel3.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        jLabel3.setIcon(new javax.swing.ImageIcon("/Bascon/BSW1/Resources/ControlCanvas/bsw_label1.png")); // NOI18N
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/virna5/graphimages/bsw_label1.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel3, org.openide.util.NbBundle.getMessage(ControleTopComponent.class, "ControleTopComponent.jLabel3.text")); // NOI18N
+        jLabel3.setToolTipText(org.openide.util.NbBundle.getMessage(ControleTopComponent.class, "ControleTopComponent.jLabel3.toolTipText")); // NOI18N
         jLabel3.setOpaque(true);
         pnl_back.add(jLabel3, java.awt.BorderLayout.SOUTH);
 
@@ -514,29 +553,29 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
         
         SMTraffic smtf = new SMTraffic(ctrl.getContext(),
                                     VirnaServices.CMDS.LOADSTATE, 0, 
-                                    VirnaServices.STATES.CTRL_LOADTASK, 
+                                    VirnaServices.STATES.CTRL_AUTOLOAD, 
                                     null);
         ctrl.processSignal(smtf);
+        
     }//GEN-LAST:event_bt_addtaskActionPerformed
 
     private void bt_removetaskActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_removetaskActionPerformed
-        
-        SMTraffic alarm_config = new SMTraffic(-1l,
-                                    VirnaServices.CMDS.LOADSTATE, 0, 
-                                    VirnaServices.STATES.CTRL_HOUSEKEEP, 
-                                    null);
+       
+        int selected = tools_model.getSelected();
+        Long uid = tasks.get(selected).context;
         
         SMTraffic smtf = new SMTraffic(ctrl.getContext(),
-                                    VirnaServices.CMDS.LOADSTATE,
-                                    Controler.getAlarmID(), 
-                                    VirnaServices.STATES.CTRL_ADDALARM, 
-                                    new VirnaPayload()
-                                            .setObject(alarm_config)
-                                            .setObjectType("com.virna5.contexto.SMTraffic")
-                                            .setLong1(1000L)
-                                            .setLong2(1000L) );
+                                    VirnaServices.CMDS.LOADSTATE, 0, 
+                                    VirnaServices.STATES.CTRL_REMOVETASK, 
+                                    new VirnaPayload().setLong1(uid).setInt1(selected));
         ctrl.processSignal(smtf);
+        
     }//GEN-LAST:event_bt_removetaskActionPerformed
+
+    private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
+       
+        this.pnl_runtable.setVisible(!this.pnl_runtable.isVisible()); 
+    }//GEN-LAST:event_jLabel2MouseClicked
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bt_addtask;

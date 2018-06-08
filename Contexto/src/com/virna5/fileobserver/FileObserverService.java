@@ -7,6 +7,7 @@ package com.virna5.fileobserver;
 
 import com.virna5.contexto.BaseDescriptor;
 import com.virna5.contexto.BaseService;
+import com.virna5.contexto.ContextUtils;
 import com.virna5.contexto.Controler;
 import com.virna5.contexto.MonitorIFrameInterface;
 import com.virna5.contexto.SMTraffic;
@@ -16,13 +17,17 @@ import static com.virna5.contexto.VirnaServices.STATES.FOB_DOSCAN;
 import static com.virna5.contexto.VirnaServices.STATES.FOB_STOPSCAN;
 import static com.virna5.contexto.VirnaServices.STATES.IDLE;
 import static com.virna5.contexto.VirnaServices.STATES.INIT;
-import com.virna5.csvfilter.CSVFilterService;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.LinkedHashMap;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDesktopPane;
 
 public class FileObserverService extends BaseService {
 
@@ -31,8 +36,6 @@ public class FileObserverService extends BaseService {
     private static FileObserverService instance;    
    
     private FileObserverService.SMThread service_thread;
-    
-    private Integer alarm_handle = 0;
     
     public static FileObserverService getInstance(){
         if (instance == null) {instance = new FileObserverService();}
@@ -84,21 +87,7 @@ public class FileObserverService extends BaseService {
             }           
         }
     }
-    
-    
-    public void visitFile(FileObserverDescriptor lfod, long ct){
-          
-//        log.log(Level.FINE, "Observer Cicle called " 
-//                    + lfod.getInputfile_path().getFileName()
-//                    + "    @ " + dateFormat.format(new Date())
-//                    + "    gap : " + (ct - lfod.getLastseen()));
-//            lfod.setLastseen(ct);
-//            lfod.setTimespot(ct + lfod.getInterval());
-        
-    }
-    
-    
-    
+ 
     
     // ================================================================================================================
     private void stopService(){
@@ -122,10 +111,13 @@ public class FileObserverService extends BaseService {
         private SMTraffic smm;
         
         private BaseDescriptor temp_bd;
-        FileObserverDescriptor fodesc;
+        private FileObserverDescriptor fodesc;
+        private com.virna5.fileobserver.MonitorIFrame liframe;
         
         protected boolean doscan = false;
      
+        private LinkOption[] lkop = new LinkOption[]{ LinkOption.NOFOLLOW_LINKS};
+        
 
         public SMThread(BlockingQueue<SMTraffic> tqueue) {
             this.tqueue = tqueue;
@@ -163,7 +155,9 @@ public class FileObserverService extends BaseService {
                                     state = smm.getState();
                                 }
                             }
-                           
+                            else{
+                                Thread.sleep(200);
+                            }
                             
                             break;    
 
@@ -196,40 +190,164 @@ public class FileObserverService extends BaseService {
                             if (temp_bd !=null){
                                 fodesc = (FileObserverDescriptor) temp_bd;
                                 String action = (smm.getCode() == 1) ? "Activating" : "Deactivating;";
-                                log.fine(String.format("%s task %d on QS4GeneratorService using %s", action, lhandle, fodesc.getName()));
+                                log.fine(String.format("%s task %d on FileObserverService using %s", action, lhandle, fodesc.getName()));
                                 if (smm.getCode() == 1) {
                                     // Activate
                                     Long interv = fodesc.getInterval();
                                     if (interv > 800){ 
                                         requestAlarm(interv);
-                                    }  
+                                        fodesc.setAutomatic(true);
+                                        liframe = (com.virna5.fileobserver.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
+                                        if (liframe != null){
+                                            liframe.updateUIDirect(new FileObserverUIUpdater()
+                                                                        .setAuto(true)
+                                            );
+                                        }
+                                    }   
                                 }
                                 else{
                                     cancelAlarm();
+                                    fodesc.setAutomatic(false);
+                                    liframe = (com.virna5.fileobserver.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
+                                    if (liframe != null){
+                                        liframe.updateUIDirect(new FileObserverUIUpdater()
+                                                                    .setAuto(false)
+                                        );
+                                    }    
                                 }
                             }
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;    
                         
-                        case QS4GEN_GEN:
-                            log.fine("Requested to observ");
-                            com.virna5.fileobserver.MonitorIFrame liframe = 
-                                    (com.virna5.fileobserver.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
-                            
+                         case TSK_CLEAR:
+                            liframe = (com.virna5.fileobserver.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
                             if (liframe != null){
-                                //liframe.updateUI(MonitorIFrameInterface.LED_GREEN_ON, " ");
+                                JDesktopPane mon = liframe.getDesktopPane();
+                                mon.remove(liframe);
+                                log.fine("UI Interface removed @ FileObserver");
                             }
-                            fodesc = liframe.getDescriptor();
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;        
                             
-                            String fread = "teste";
+                        case TSK_INITUI:
+                            log.fine("FOB doing initui @ "+ smm.getHandle());
+                            liframe = (com.virna5.fileobserver.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
+                            fodesc = (FileObserverDescriptor)descriptors.get(smm.getHandle());
+                            if (liframe != null){
+                                liframe.updateUIDirect(new FileObserverUIUpdater()
+                                                            .setFilename(fodesc.getInputfile_path())
+                                                            .setDirbakup(fodesc.getOutputfile())
+                                                            .setInterval(fodesc.getInterval())
+                                                            .setTimeout(fodesc.getTimeout()/1000)
+                                                            .setAuto(false)               
+                                );
+                            }
                             
-                            fodesc.notifySignalListeners(0, new SMTraffic(fodesc.getUID(),
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;  
+                        
+                        case TSK_SUSPEND:
+                            
+                            fodesc = (FileObserverDescriptor)descriptors.get(smm.getHandle());
+                            fodesc.setAutomatic(smm.getCode() == 1);
+                            if (smm.getCode() == 1){
+                                log.fine("FOB RESUMING @ "+ smm.getHandle());
+                            }
+                            else{
+                                log.fine("FOB SUSPENDIG @ "+ smm.getHandle());
+                            }
+                            
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;
+                        
+                        case FOB_SETPATH:
+                            fodesc = (FileObserverDescriptor)descriptors.get(smm.getHandle());
+                            if (smm.getCode() == 0 ){
+                                fodesc.setInputfile_path(smm.getPayload().vstring);
+                            }
+                            else{
+                                fodesc.setOutputfile(smm.getPayload().vstring);
+                            }
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;
+                            
+                        case FOB_READ:
+                           
+                            liframe = (com.virna5.fileobserver.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
+                            fodesc = (FileObserverDescriptor)descriptors.get(smm.getHandle());
+                            
+                            boolean dorequest = false;
+                            if (fodesc.getAlarm_handle() != 0 && fodesc.getAutomatic() ){
+                                 log.fine("Observ Request - automatic mode :");
+                                 dorequest = true;
+                            }
+                            else if (fodesc.getAlarm_handle() != 0 && !fodesc.getAutomatic() ){
+                                if (smm.getCode() == 1){
+                                    log.fine("Observ Request - suspended manual mode :");
+                                    dorequest = true;
+                                }
+                                else{
+                                    log.fine("Observ Request - aborted :");
+                                }
+                            }
+                            else if (fodesc.getAlarm_handle() == 0 && smm.getCode() == 1 ){
+                                log.fine("Observ Request - inactive task manual mode :");
+                                dorequest = true;
+                            }
+                            
+                            if (dorequest){
+                                try{
+                                    Path obspath = Paths.get(fodesc.getInputfile_path());
+                                    Boolean phe = Files.exists(obspath, lkop);
+                                    log.fine(String.format("File %s exists=%b", obspath.toString(), phe));
+                                    boolean isdir = Files.isDirectory(obspath, lkop);
+                                    log.fine(String.format("Directory=%b", isdir));
+                                    if (phe && !isdir){
+                                        String pld = ContextUtils.loadFile(obspath.toString());
+                                        fodesc.setPayload(pld);
+                                        if (liframe != null){
+                                            liframe.updateUIDirect(new FileObserverUIUpdater()
+                                                                        .setLedcolor(MonitorIFrameInterface.LED_GREEN_ON)
+                                            );
+                                        }
+                                        if (!fodesc.getMultiline()){
+                                            Files.delete(obspath);
+                                        }
+                                        
+                                        fodesc.notifySignalListeners(0, new SMTraffic(fodesc.getUID(),
                                             VirnaServices.CMDS.LOADSTATE,
                                             0, 
-                                            VirnaServices.STATES.FWRITER_WRITE, 
-                                            new VirnaPayload().setString(fread)
-                            ));
-                            liframe.updateUI(MonitorIFrameInterface.LED_GREEN_OFF, null);
+                                            VirnaServices.STATES.CSV_CONVERT, 
+                                            new VirnaPayload().setString(pld)
+                                        ));
+                                     
+                                    }
+                                    else if (!phe){
+                                        fodesc.setPayload("Não há dados disponíveis ...");
+                                        if (liframe != null){
+                                            liframe.updateUIDirect(new FileObserverUIUpdater()
+                                                                        .setLedcolor(MonitorIFrameInterface.LED_YELLOW)
+                                            );
+                                        } 
+                                    }
+                                    
+                                    
+                                }catch (Exception ex){
+                                    log.fine(String.format("Failed to read due : %s", ex.toString()));
+                                    if (liframe != null){
+                                        liframe.updateUIDirect(new FileObserverUIUpdater()
+                                                                    .setLedcolor(MonitorIFrameInterface.LED_RED)
+                                        );
+                                    }  
+                                }
+                              
+                            }
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;    
+                        
+                            
+                        default:
+                            log.fine("Undefined state on FileObserver : " + smm.getState().toString());
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;    
                             
@@ -237,6 +355,7 @@ public class FileObserverService extends BaseService {
                 }
             } catch (Exception ex) {
                 log.log(Level.WARNING, ex.toString());
+                startService();
             }
 
         }
@@ -246,16 +365,15 @@ public class FileObserverService extends BaseService {
         
         private void requestAlarm(Long period){
             
-            alarm_handle = Controler.getAlarmID();
+            fodesc.setAlarm_handle(Controler.getAlarmID());
             
-            SMTraffic alarm_config = new SMTraffic(fodesc.getUID(),
-                                            VirnaServices.CMDS.LOADSTATE, 0, 
+            SMTraffic alarm_config = new SMTraffic(fodesc.getUID(),fodesc.getUID(), 0,
                                             VirnaServices.STATES.FOB_READ, 
                                             null);
                                         
             Controler.getInstance().processSignal(new SMTraffic(fodesc.getUID(),
                                             VirnaServices.CMDS.LOADSTATE,
-                                            alarm_handle, 
+                                            fodesc.getAlarm_handle(), 
                                             VirnaServices.STATES.CTRL_ADDALARM, 
                                             new VirnaPayload()
                                                     .setObject(alarm_config)
@@ -267,21 +385,21 @@ public class FileObserverService extends BaseService {
         
         private void cancelAlarm(){
             
-            if (alarm_handle == 0){
+            if (fodesc.getAlarm_handle() == 0){
                 log.warning("Trying to cancel non existent alarm on QS4Gen");
             }
             else{ 
                 Controler.getInstance().processSignal(new SMTraffic(fodesc.getUID(),
                                                     VirnaServices.CMDS.LOADSTATE,
-                                                    alarm_handle, 
+                                                    fodesc.getAlarm_handle(), 
                                                     VirnaServices.STATES.CTRL_REMOVEALARM, 
                                                     null
                 ));
-                alarm_handle = 0;
+                fodesc.setAlarm_handle(0);
             }
         }
         
-  
+        
         
         
         public void setDone(boolean done) {
@@ -311,3 +429,7 @@ public class FileObserverService extends BaseService {
 //            System.out.println ("Thread de serviços foi interrompida");
 //        }
 //    }
+
+
+//BasicFileAttributes attrs = Files.readAttributes(obspath, BasicFileAttributes.class);
+//                                log.fine(String.format("Directory attr=%b", attrs.isDirectory()));

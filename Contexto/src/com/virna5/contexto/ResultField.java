@@ -15,33 +15,52 @@ public class ResultField {
     public static enum FREALM {HEADER,VALUE,FLAG}
     
     private Long uid;
+    private Long record;
     private String name;
     private String realm;
     private String type;
-    private String format;
+    private String sequence;
+    private String format ;
     private String value;
-    private String rangeh;
-    private String rangel;
+    private String rangeh = "";
+    private String rangel = "";
     
     private transient Double dvalue;
-    protected transient boolean flag = false;
-    protected transient int iflag = 0;
+    protected boolean flag = false;
+    protected int iflag = 0;
 
+    
+    
     
     public ResultField() {
     }
 
-    public ResultField(String name, String realm, String type, String value) {
+    public ResultField(Long record,  String name, String realm, String type, String value, Integer seq) {
+        
+        this.uid = ContextUtils.getUID();
+        this.record = record;
         this.name = name;
         this.realm = realm;
-        if (realm == FREALM.HEADER.toString()){
-            
+        if (realm.equals(FREALM.HEADER.toString())){
+            this.format = "%s";
         }
         else{
-            
+            this.format = "%4.2f";
         }
+        
         this.type = type;
         this.value = value;
+        
+        try{
+            this.sequence = String.valueOf(seq);
+        }
+        catch (Exception ex){
+            this.sequence="0";
+        }
+        
+        
+        
+        
     }
     
     
@@ -209,6 +228,34 @@ public class ResultField {
     public ResultField setUid(Long uid) {
         this.uid = uid;
         return this;
+    }
+
+    /**
+     * @return the sequence
+     */
+    public String getSequence() {
+        return sequence;
+    }
+
+    /**
+     * @param sequence the sequence to set
+     */
+    public void setSequence(String sequence) {
+        this.sequence = sequence;
+    }
+
+    /**
+     * @return the record
+     */
+    public Long getRecord() {
+        return record;
+    }
+
+    /**
+     * @param record the record to set
+     */
+    public void setRecord(Long record) {
+        this.record = record;
     }
     
     

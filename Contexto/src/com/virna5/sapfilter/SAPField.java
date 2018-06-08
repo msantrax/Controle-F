@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.virna5.csvfilter;
+package com.virna5.sapfilter;
 
+import com.virna5.csvfilter.*;
 import com.virna5.contexto.ContextUtils;
 import com.virna5.contexto.ResultField;
 
@@ -12,7 +13,7 @@ import com.virna5.contexto.ResultField;
  *
  * @author opus
  */
-public class CSVField {
+public class SAPField {
 
     
     private String csvfield;
@@ -31,8 +32,8 @@ public class CSVField {
     private double number;
     
     
-    public static CSVField CSVFieldFactory(Integer seq){
-        CSVField instance = new CSVField();
+    public static SAPField CSVFieldFactory(Integer seq){
+        SAPField instance = new SAPField();
         String ids = String.valueOf(ContextUtils.getUID());
         instance.csvfield = ids.substring(12);
         instance.resultfield= ids.substring(10);
@@ -87,19 +88,19 @@ public class CSVField {
     
     
     
-    public CSVField() {    
+    public SAPField() {    
         
     }
 
-    public CSVField (String name, String realm, String type){
+    public SAPField (String name, String realm, String type){
         this.csvfield = name;
         this.realm = realm;
         this.type = type;
     }
     
     
-    public CSVField clone(){
-        CSVField cl = new CSVField();
+    public SAPField clone(){
+        SAPField cl = new SAPField();
         cl.csvfield = new String(csvfield);
         cl.csvseq = new Integer(csvseq);
         cl.readcsv = new Boolean(readcsv);

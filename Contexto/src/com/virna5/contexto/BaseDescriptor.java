@@ -49,6 +49,8 @@ public class BaseDescriptor implements SignalListener{
     protected String[] dependencies;
     
     protected UIInterface[] interfaces;
+    
+    private transient Integer alarm_handle = 0;
 
     
     public BaseDescriptor() {
@@ -404,6 +406,20 @@ public class BaseDescriptor implements SignalListener{
      */
     public void setService(BaseService service) {
         this.service = service;
+    }
+
+    /**
+     * @return the alarm_handle
+     */
+    public Integer getAlarm_handle() {
+        return alarm_handle;
+    }
+
+    /**
+     * @param alarm_handle the alarm_handle to set
+     */
+    public void setAlarm_handle(Integer alarm_handle) {
+        this.alarm_handle = alarm_handle;
     }
 
     

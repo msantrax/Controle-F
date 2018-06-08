@@ -21,7 +21,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
@@ -30,7 +29,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import static java.util.concurrent.TimeUnit.SECONDS;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.DialogDisplayer;
@@ -332,6 +330,7 @@ public class Controler implements SignalListener{
         for (ContextControl cc : contextpool){
             if (cc.getContextid() == uid){
                 RootDescriptor rd = cc.getDescriptor();
+                cc.setRunning(activate);
                 for (BaseDescriptor bd : rd.getContextNodes()){
                     if (!(bd instanceof EdgeDescriptor)){ 
                         bd.processSignal(new SMTraffic(bd.uid, bd.uid, ac, 
@@ -342,6 +341,20 @@ public class Controler implements SignalListener{
             }         
         }
     }
+    
+     private void removeTask (ContextControl cc){
+      
+        RootDescriptor rd = cc.getDescriptor();
+        for (BaseDescriptor bd : rd.getContextNodes()){
+            if (!(bd instanceof EdgeDescriptor)){ 
+                bd.processSignal(new SMTraffic(bd.uid, bd.uid, 0, 
+                            VirnaServices.STATES.TSK_CLEAR, 
+                            null));
+            }
+        }
+    }
+    
+    
     
     public void addContext(String filename){
         
@@ -523,10 +536,6 @@ public class Controler implements SignalListener{
     }
 
     
-    
-    
-    
-    
     private class SMThread extends Thread {
     
         private VirnaServices.STATES state;
@@ -575,7 +584,10 @@ public class Controler implements SignalListener{
                                 if (cmd == VirnaServices.CMDS.LOADSTATE){
                                     state = smm.getState();
                                 }
-                            }                          
+                            }
+                            else{
+                                Thread.sleep(200);
+                            }
                             break;    
 
                         case CONFIG:
@@ -606,12 +618,30 @@ public class Controler implements SignalListener{
                             
                         case CTRL_HOUSEKEEP:
                             payload = smm.getPayload();
-                            
-                            log.fine("Doing housekeeping");
+                            //log.fine("Doing Housekeep...");
                             
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;    
+                        
+                        case CTRL_AUTOLOAD:
+                            try{
+                                //addContext("/Bascon/BSW1/Testbench/Ctx/task6.tsk");
+                                addContext("/Bascon/BSW1/Testbench/Ctx/task9.tsk");
+                                
+                            } catch (Exception ex) {
+                                NotifyDescriptor nd = new NotifyDescriptor.Message(
+                                    "<html>Erro na carga da tarefa, verifique se : "
+                                  + "<ul>"
+                                  + "<li>Há permissões de leitura no diretório e no arquivo</li>"
+                                  + "<li>Esse é realmente um arquivo de descrição de tarefas (.tsk).</li>"
+                                  + "</ul>"
+                                  + "</html>", 
+                                    NotifyDescriptor.ERROR_MESSAGE);
+                                    Object retval = DialogDisplayer.getDefault().notify(nd);
+                            }                          
+                            states_stack.push(VirnaServices.STATES.IDLE);
                             
+                            break;
                         
                         case CTRL_LOADTASK:
                             log.log(Level.FINE, "Loading Task");
@@ -639,6 +669,33 @@ public class Controler implements SignalListener{
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;    
 
+                        case CTRL_REMOVETASK:
+                            log.log(Level.FINE, "Removing Task");
+                            VirnaPayload pld = smm.getPayload();
+                            Long uid = pld.long1;
+                            int selected = pld.int1;
+                            
+                            for (ContextControl cc : contextpool){
+                                if (cc.getContextid() == uid){
+                                    if(cc.isRunning()){
+                                        NotifyDescriptor nd = new NotifyDescriptor.Message(
+                                        "<html><h3 style=\"color:red;\">A Tarefa está em execução. Desative-a primeiro por favor.</h2></html>", 
+                                        NotifyDescriptor.ERROR_MESSAGE);
+                                        nd.setTitle("Ooops !! - Mensagem do Gerente de Processos");
+                                        Object retval = DialogDisplayer.getDefault().notify(nd); 
+                                    }
+                                    else{
+                                        removeTask (cc);
+                                        contextpool.remove(cc);
+                                        top.removeTask(uid, selected);
+                                    }
+                                }
+                            }
+                            
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;   
+                            
+                            
                         case CTRL_LOADMONITOR:
                             String artifact = smm.getPayload().vstring;  
                             mon = getMonitorCanvas();          
@@ -647,7 +704,6 @@ public class Controler implements SignalListener{
                                         "<html><h2 style=\"color:red;\">A ferramenta já está carregada...</h2></html>", 
                                         NotifyDescriptor.ERROR_MESSAGE);
                                 nd.setTitle("Ooops !! - Mensagem do Gerente de Processos");
-                                
                                 Object retval = DialogDisplayer.getDefault().notify(nd); 
                             }
                             else{
@@ -662,11 +718,13 @@ public class Controler implements SignalListener{
                             }
                             log.log(Level.FINE, "Loading tool :"+ smm.getPayload().vstring);
                             states_stack.push(VirnaServices.STATES.IDLE);
-                            break;     
-                            
-                            
-                            
-                            
+                            break;
+                        
+                        default:
+                            log.warning("Undefined state on Controler : " + smm.getState().toString());
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;      
+ 
                     }
                 }
             } catch (Exception ex) {

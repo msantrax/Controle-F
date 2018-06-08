@@ -61,6 +61,11 @@ public class FileObserverNode  extends DescriptorNode implements ChangeListener 
             psr.setShortDescription("Caminho para o diretorio da cópia de segurança/auditoria - Deixe em branco para cancelar a ação");
             set.put(psr);
             
+            psr = new PropertySupport.Reflection<>(obj, Boolean.class, "multiline");
+            psr.setName("Multiline");
+            psr.setShortDescription("Quando marcado, usa somente a ultima linha do arquivo e o mantem no diretório");
+            set.put(psr);
+            
             psr = new PropertySupport.Reflection<>(obj, Long.class, "interval");
             psr.setName("Intervalo");
             psr.setShortDescription("Período (em milisegundos) entre as verificações peródicas da presença "

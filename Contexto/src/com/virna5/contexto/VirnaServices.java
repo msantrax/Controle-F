@@ -51,16 +51,19 @@ public class VirnaServices {
     public static enum STATES { INIT, IDLE, CONFIG, RESET,
                                 ATTACH, ATTACHED, DETACH, DETACHED,
                                 FOB_DOSCAN, FOB_STOPSCAN,
-                                CTRL_LOADTASK, CTRL_REMOVETASK,
+                                CTRL_LOADTASK, CTRL_REMOVETASK, CTRL_AUTOLOAD,
                                 CTRL_LOADMONITOR, CTRL_REMOVEMONITOR,
                                 CTRL_ADDALARM, CTRL_REMOVEALARM,
                                 CTRL_ACTIVATETASK, CTRL_DEACTIVATETASK,
                                 CTRL_HOUSEKEEP,
                                 
-                                TSK_MANAGE, TSK_REQUESTALARM, TASK_CANCLELARM,
-         
-                                QS4GEN_GEN,FWRITER_WRITE,FOB_READ,CSV_CONVERT
+                                TSK_MANAGE, TSK_REQUESTALARM, TASK_CANCELALARM,
+                                TSK_INITUI, TSK_SUSPEND, TSK_CLEAR,
                                 
+                                FOB_READ,FOB_SETPATH,
+                                QS4GEN_GEN,FWRITER_WRITE,CSV_CONVERT,
+                                
+                                LOADRECORD
                                 
                                 
                               };

@@ -89,9 +89,15 @@ public final class MonitorTopComponent extends TopComponent  implements Internal
             
             mif.setService(bs);
             bs.addIFrame(String.valueOf(bd.getUID()), mif);           
-            bs.UpdateUI(null, String.valueOf(bd.getUID()));
+            //bs.UpdateUI(null, String.valueOf(bd.getUID()));
                 
             frames.put(artifact, internal_frame);
+            
+            SMTraffic initui_req = new SMTraffic(bd.getUID(),bd.getUID(),0,
+                                            VirnaServices.STATES.TSK_INITUI, 
+                                            null);
+            bs.processSignal(initui_req, bd);
+            
     
             return internal_frame;
             

@@ -29,8 +29,13 @@ public class FileObserverDescriptor extends BaseDescriptor{
     private boolean triggered;
     private long timeout;
     
+    private Boolean multiline;
+    
     private String inputfile_path;
     private String outputfile;
+    
+    private transient Boolean automatic = false;
+    private transient String payload;
     
 
     public FileObserverDescriptor() {
@@ -45,15 +50,17 @@ public class FileObserverDescriptor extends BaseDescriptor{
         nodetype = "fileobserver.FileObserverDescriptor";
         version = "1.0.0";
         
-        this.inputfile_path = "/Bascon/BSW1";
-        this.outputfile="";
+        this.inputfile_path = "/Bascon/BSW1/Testbench/area1/qs4a.csv";
+        this.outputfile = "/Bascon/BSW1/Testbench/area2";
         this.triggered = false;
         this.lag = 250;
         this.timeout = 60000;
         
         this.timespot = 0l;
         this.interval = 2000;
-          
+        
+        this.multiline = false;
+        
     }
 
     
@@ -182,6 +189,48 @@ public class FileObserverDescriptor extends BaseDescriptor{
      */
     public void setLastseen(long lastseen) {
         this.lastseen = lastseen;
+    }
+
+    /**
+     * @return the multiline
+     */
+    public Boolean getMultiline() {
+        return multiline;
+    }
+
+    /**
+     * @param multiline the multiline to set
+     */
+    public void setMultiline(Boolean multiline) {
+        this.multiline = multiline;
+    }
+
+    /**
+     * @return the automatic
+     */
+    public Boolean getAutomatic() {
+        return automatic;
+    }
+
+    /**
+     * @param automatic the automatic to set
+     */
+    public void setAutomatic(Boolean automatic) {
+        this.automatic = automatic;
+    }
+
+    /**
+     * @return the payload
+     */
+    public String getPayload() {
+        return payload;
+    }
+
+    /**
+     * @param payload the payload to set
+     */
+    public void setPayload(String payload) {
+        this.payload = payload;
     }
 
     

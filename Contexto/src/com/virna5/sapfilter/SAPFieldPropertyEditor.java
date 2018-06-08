@@ -3,13 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.virna5.qs4generator;
+package com.virna5.sapfilter;
 
 import com.virna5.csvfilter.*;
 import java.awt.Component;
 import java.beans.PropertyEditorSupport;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
 import org.openide.explorer.propertysheet.ExPropertyEditor;
+import org.openide.explorer.propertysheet.InplaceEditor;
 import org.openide.explorer.propertysheet.PropertyEnv;
 
 /**
@@ -17,35 +19,36 @@ import org.openide.explorer.propertysheet.PropertyEnv;
  * @author opus
  */
 //public class CSVFieldPropertyEditor extends PropertyEditorSupport implements ExPropertyEditor, InplaceEditor.Factory {
-public class QS4GeneratorPropertyEditor extends PropertyEditorSupport implements ExPropertyEditor {    
+public class SAPFieldPropertyEditor extends PropertyEditorSupport implements ExPropertyEditor {    
 
-    private static final Logger log = Logger.getLogger(QS4GeneratorPropertyEditor.class.getName());
+    private static final Logger log = Logger.getLogger(SAPFieldPropertyEditor.class.getName());
    
-    protected QS4GeneratorFieldsWrapper cfw;
+    protected CSVFieldsWrapper cfw;
     
     @Override
     public void attachEnv(PropertyEnv pe) {
         
        Object[] beans = pe.getBeans();
-       QS4GeneratorNode cfn = (QS4GeneratorNode) beans[0];
+       CSVFilterNode cfn = (CSVFilterNode) beans[0];
        cfw = cfn.getCfw();      
-       log.info(String.format("Attaching Gen env : %d with %d fields", cfw.hashCode(), cfw.size()));
+       log.info(String.format("Attaching CSV env : %d with %d fields", cfw.hashCode(), cfw.size()));
     }  
     
     
     @Override
     public String getAsText() {
-        return String.format("%d campos",cfw.size());
+        return String.format("%d campos", cfw.size());
     }
 
     @Override
     public void setAsText(String s) {
         
     }
+ 
     
     @Override
     public Component getCustomEditor() {
-        return new QS4GeneratorFieldsPanel(cfw);
+        return new CSVFieldsPanel(cfw);
     }
 
     @Override

@@ -3,45 +3,38 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.virna5.qs4generator;
+package com.virna5.sapfilter;
 
+import com.virna5.csvfilter.*;
+import com.virna5.fileobserver.*;
+import com.virna5.contexto.BaseDescriptor;
 import com.virna5.contexto.DescriptorNode;
-import java.awt.Component;
-import java.awt.event.ActionListener;
 import java.beans.IntrospectionException;
-import java.beans.PropertyEditor;
-import java.beans.PropertyEditorSupport;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.KeyStroke;
 import javax.swing.event.ChangeListener;
 import org.openide.ErrorManager;
-import org.openide.explorer.propertysheet.ExPropertyEditor;
-import org.openide.explorer.propertysheet.InplaceEditor;
-import org.openide.explorer.propertysheet.PropertyEnv;
-import org.openide.explorer.propertysheet.PropertyModel;
+import org.openide.nodes.Node.Property;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
 
 
-public class QS4GeneratorNode  extends DescriptorNode implements ChangeListener {
+public class SAPFilterNode  extends DescriptorNode implements ChangeListener {
 
-    private static final Logger log = Logger.getLogger(QS4GeneratorNode.class.getName());
+    private static final Logger log = Logger.getLogger(SAPFilterNode.class.getName());
  
-    protected QS4GeneratorFieldsWrapper cfw;
+    protected CSVFieldsWrapper cfw;
     
-    public QS4GeneratorNode(QS4GeneratorDescriptor fod) throws IntrospectionException{
+    public SAPFilterNode(CSVFilterDescriptor fod) throws IntrospectionException{
         super (fod);
-        cfw = fod.getGeneratorfields();
+        cfw = fod.getCsvfields();
         log.setLevel(Level.FINE);
     }
     
     
     @Override
-    public QS4GeneratorDescriptor getDescriptor(){
-        return getLookup().lookup(QS4GeneratorDescriptor.class);
+    public CSVFilterDescriptor getDescriptor(){
+        return getLookup().lookup(CSVFilterDescriptor.class);
     }
  
     @Override
@@ -56,14 +49,14 @@ public class QS4GeneratorNode  extends DescriptorNode implements ChangeListener 
         PropertySupport.Reflection psr;
    
         //BaseDescriptor obj = (BaseDescriptor)this.getBean(); //getLookup().lookup(CSVFilterDescriptor.class);
-        QS4GeneratorDescriptor obj = getLookup().lookup(QS4GeneratorDescriptor.class);
+        CSVFilterDescriptor obj = getLookup().lookup(CSVFilterDescriptor.class);
         
         try {
         
-            psr = new PropertySupport.Reflection<>(obj, QS4GeneratorFieldsWrapper.class, "getGeneratorfields", null);
+            psr = new PropertySupport.Reflection<>(obj, CSVFieldsWrapper.class, "getCsvfields", null);
             psr.setName("Campos de dados");
             psr.setShortDescription("Gabarito de translação da estrutura de dados");
-            psr.setPropertyEditorClass(QS4GeneratorPropertyEditor.class);
+            psr.setPropertyEditorClass(CSVFieldPropertyEditor.class);
             set.put(psr);
             
             psr = new PropertySupport.Reflection<>(obj, String.class, "locale");
@@ -82,22 +75,6 @@ public class QS4GeneratorNode  extends DescriptorNode implements ChangeListener 
             psr.setShortDescription("Caracter utilizado para a separação dos campos (usualmente , ou ;");
             set.put(psr);
             
-            psr = new PropertySupport.Reflection<>(obj, String.class, "endline");
-            psr.setName("Terminador de linha");
-            psr.setPropertyEditorClass(TerminatorPropertyEditor.class);
-            psr.setShortDescription("Tipo Caracter terminador de linha (usualmente \\n no windows ou \\n\\r no unix/mac/android");
-            set.put(psr);
-            
-            psr = new PropertySupport.Reflection<>(obj, Boolean.class, "automatic");
-            psr.setName("Geração automatica");
-            psr.setShortDescription("Gdera resultados a cada <intervalo> milisdegunfos");
-            set.put(psr);
-            
-            psr = new PropertySupport.Reflection<>(obj, Long.class, "interval");
-            psr.setName("Intervalo");
-            psr.setShortDescription("Periodo dpara a emissão de novo resultado em milisdegunfos");
-            set.put(psr);
-            
         } catch (NoSuchMethodException noSuchMethodException) {
             ErrorManager.getDefault().notify(noSuchMethodException);
         } 
@@ -106,9 +83,14 @@ public class QS4GeneratorNode  extends DescriptorNode implements ChangeListener 
         return sheet;
     }
 
-    public QS4GeneratorFieldsWrapper getCfw() {
+    /**
+     * @return the cfw
+     */
+    public CSVFieldsWrapper getCfw() {
         return cfw;
     }
+    
+    
     
     
 }
