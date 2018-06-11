@@ -37,6 +37,8 @@ public class FileObserverService extends BaseService {
    
     private FileObserverService.SMThread service_thread;
     
+    protected LinkedBlockingQueue<SMTraffic> smqueue;
+    
     public static FileObserverService getInstance(){
         if (instance == null) {instance = new FileObserverService();}
         return instance;
@@ -71,6 +73,11 @@ public class FileObserverService extends BaseService {
     }
     
     
+    @Override
+    public void processSignal (SMTraffic signal, BaseDescriptor bd){
+        
+        smqueue.add(signal);
+    }
      
     @Override
     public void UpdateUI (String mes, String bduid){

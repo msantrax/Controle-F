@@ -103,9 +103,8 @@ public class BaseDescriptor implements SignalListener{
     }
     
     public void processSignal (SMTraffic signal){
-        String mstate = signal.getState().toString();
-        
-        log.finest(String.format("Processing message of type %s to %d @ %s ", mstate, signal.handle, this.toString()));
+        //String mstate = signal.getState().toString();
+        //log.info(String.format("Processing message of type %s to %d @ %s ", mstate, signal.handle, this.toString()));
         service.processSignal(signal, this);
     }
     
@@ -127,7 +126,7 @@ public class BaseDescriptor implements SignalListener{
             for (SignalListener sl : listeners){
                 if (sl.getUID() == uid || uid == 0){
                     signal.setHandle(sl.getUID());
-                    sl.processSignal(signal);
+                    sl.processSignal(signal.clone());
                 }
             }
         }

@@ -28,6 +28,8 @@ public class QS4GeneratorService extends BaseService {
     
     private QS4GeneratorService.SMThread service_thread;    
     
+    protected LinkedBlockingQueue<SMTraffic> smqueue;
+    
     private static QS4GeneratorService instance;    
     public static QS4GeneratorService getInstance(){
         if (instance == null) {instance = new QS4GeneratorService();}
@@ -75,6 +77,12 @@ public class QS4GeneratorService extends BaseService {
         }
         getDescriptors().put(uid, fod);
         log.info(String.format("Configuring QS4GeneratorDescriptor [%s] to context : %s", bd.toString(),uid));
+    }
+    
+    @Override
+    public void processSignal (SMTraffic signal, BaseDescriptor bd){
+        
+        smqueue.add(signal);
     }
     
     

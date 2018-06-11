@@ -28,6 +28,7 @@ import com.virna5.edge.EdgeConnector;
 import com.virna5.fileobserver.FileObserverConnector;
 import com.virna5.filewriter.FileWriterConnector;
 import com.virna5.qs4generator.QS4GeneratorConnector;
+import com.virna5.sapfilter.SAPFilterConnector;
 import java.util.logging.Logger;
 
 public class GraphEditor extends BasicGraphEditor{
@@ -86,6 +87,11 @@ public class GraphEditor extends BasicGraphEditor{
         shapesPalette.addTemplate("Filtro CSV",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/filter.png")),
                                         "icon;image=/com/virna5/graphimages/filter.png",
                                         120, 70, new CSVFilterConnector() );
+        
+        shapesPalette.addTemplate("Filtro SAP",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/filter.png")),
+                                        "icon;image=/com/virna5/graphimages/filter.png",
+                                        120, 70, new SAPFilterConnector() );
+        
         
         shapesPalette.addTemplate("Gravador de Arquivos",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/hd-48x48.png")),
                                         "icon;image=/com/virna5/graphimages/save.gif",

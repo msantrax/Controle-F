@@ -30,6 +30,9 @@ public class CSVFilterService extends BaseService {
     private static final Logger log = Logger.getLogger(CSVFilterService.class.getName());
     private CSVFilterService.SMThread service_thread;    
    
+    protected LinkedBlockingQueue<SMTraffic> smqueue;
+    
+    
     private static CSVFilterService instance;    
     public static CSVFilterService getInstance(){
         if (instance == null) {instance = new CSVFilterService();}
@@ -63,6 +66,13 @@ public class CSVFilterService extends BaseService {
         log.info(String.format("Configuring CVSFilterService [%s] to context : %s", bd.toString(),uid));
     }
  
+    
+    
+    @Override
+    public void processSignal (SMTraffic signal, BaseDescriptor bd){
+        
+        smqueue.add(signal);
+    }
     
     public String parseLoad(String pld, CSVFilterDescriptor fodesc){
       
@@ -105,9 +115,9 @@ public class CSVFilterService extends BaseService {
             Gson gson = builder.create();
             sjson = gson.toJson(rr);
 
-            log.info("========== JSON : ==================\n\r");
-            log.info(sjson);
-            log.info(String.format("Json parser loaded %d chars", sjson.length()));
+//            log.info("========== JSON : ==================\n\r");
+//            log.info(sjson);
+//            log.info(String.format("Json parser loaded %d chars", sjson.length()));
         }
         else{
             // Single Line

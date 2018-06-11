@@ -48,7 +48,12 @@ public class SMTraffic {
         this.state=state;
     }
     
-    
+    public SMTraffic clone(){
+        
+        SMTraffic smt = new SMTraffic(new Long(this.addr), new Long(this.handle), new Integer(code).intValue(), this.state, this.payload);
+        smt.command = this.getCommand();
+        return smt;
+    }
     
     public VirnaServices.CMDS getCommand() {
         return command;

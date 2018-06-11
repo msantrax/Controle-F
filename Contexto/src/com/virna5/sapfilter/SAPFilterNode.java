@@ -23,18 +23,18 @@ public class SAPFilterNode  extends DescriptorNode implements ChangeListener {
 
     private static final Logger log = Logger.getLogger(SAPFilterNode.class.getName());
  
-    protected CSVFieldsWrapper cfw;
+    protected SAPFieldsWrapper cfw;
     
-    public SAPFilterNode(CSVFilterDescriptor fod) throws IntrospectionException{
+    public SAPFilterNode(SAPFilterDescriptor fod) throws IntrospectionException{
         super (fod);
-        cfw = fod.getCsvfields();
+        cfw = fod.getSapfields();
         log.setLevel(Level.FINE);
     }
     
     
     @Override
-    public CSVFilterDescriptor getDescriptor(){
-        return getLookup().lookup(CSVFilterDescriptor.class);
+    public SAPFilterDescriptor getDescriptor(){
+        return getLookup().lookup(SAPFilterDescriptor.class);
     }
  
     @Override
@@ -48,32 +48,17 @@ public class SAPFilterNode  extends DescriptorNode implements ChangeListener {
 
         PropertySupport.Reflection psr;
    
-        //BaseDescriptor obj = (BaseDescriptor)this.getBean(); //getLookup().lookup(CSVFilterDescriptor.class);
-        CSVFilterDescriptor obj = getLookup().lookup(CSVFilterDescriptor.class);
+        //BaseDescriptor obj = (BaseDescriptor)this.getBean(); //getLookup().lookup(SAPFilterDescriptor.class);
+        SAPFilterDescriptor obj = getLookup().lookup(SAPFilterDescriptor.class);
         
         try {
         
-            psr = new PropertySupport.Reflection<>(obj, CSVFieldsWrapper.class, "getCsvfields", null);
+            psr = new PropertySupport.Reflection<>(obj, SAPFieldsWrapper.class, "getSapfields", null);
             psr.setName("Campos de dados");
             psr.setShortDescription("Gabarito de translação da estrutura de dados");
-            psr.setPropertyEditorClass(CSVFieldPropertyEditor.class);
+            psr.setPropertyEditorClass(SAPFieldPropertyEditor.class);
             set.put(psr);
             
-            psr = new PropertySupport.Reflection<>(obj, String.class, "locale");
-            psr.setName("Linguagem");
-            psr.setShortDescription("Configuração do país (separador decimal, formato de data, etc) utilizado no arquivo");
-            set.put(psr);
-            
-            
-            psr = new PropertySupport.Reflection<>(obj, Boolean.class, "isUseheader", "setUseheader");
-            psr.setName("Cabeçalho presente");
-            psr.setShortDescription("Assumir que o cabeçalho com a identificação dos campos está presente");
-            set.put(psr);
-          
-            psr = new PropertySupport.Reflection<>(obj, String.class, "separator");
-            psr.setName("Separador de Campos");
-            psr.setShortDescription("Caracter utilizado para a separação dos campos (usualmente , ou ;");
-            set.put(psr);
             
         } catch (NoSuchMethodException noSuchMethodException) {
             ErrorManager.getDefault().notify(noSuchMethodException);
@@ -86,7 +71,7 @@ public class SAPFilterNode  extends DescriptorNode implements ChangeListener {
     /**
      * @return the cfw
      */
-    public CSVFieldsWrapper getCfw() {
+    public SAPFieldsWrapper getCfw() {
         return cfw;
     }
     

@@ -10,8 +10,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.virna5.contexto.BaseDescriptor;
 import com.virna5.contexto.BaseService;
+import com.virna5.contexto.ContextNodes;
+import com.virna5.contexto.ContextNodesDeserializer;
 import com.virna5.contexto.ResultField;
 import com.virna5.contexto.ResultRecord;
+import com.virna5.contexto.RootDescriptor;
 import com.virna5.contexto.SMTraffic;
 import com.virna5.contexto.VirnaPayload;
 import com.virna5.contexto.VirnaServices;
@@ -30,6 +33,8 @@ public class SAPFilterService extends BaseService {
 
     private static final Logger log = Logger.getLogger(SAPFilterService.class.getName());
     private SAPFilterService.SMThread service_thread;    
+    
+    protected LinkedBlockingQueue<SMTraffic> smqueue;
    
     private static SAPFilterService instance;    
     public static SAPFilterService getInstance(){
@@ -55,67 +60,106 @@ public class SAPFilterService extends BaseService {
      @Override
     public void configService(BaseDescriptor bd){
         
-        CSVFilterDescriptor fod = (CSVFilterDescriptor) bd;
+        SAPFilterDescriptor fod = (SAPFilterDescriptor) bd;
         Long uid = fod.getUID();
         if (descriptors.containsKey(uid)){
             descriptors.remove(uid);
         }
         descriptors.put(uid, fod);
-        log.info(String.format("Configuring CVSFilterService [%s] to context : %s", bd.toString(),uid));
+        //log.info(String.format("Configuring SAPFilterService [%s] to context : %s", bd.toString(),uid));
     }
  
     
-    public String parseLoad(String pld, CSVFilterDescriptor fodesc){
-      
+    
+    @Override
+    public void processSignal (SMTraffic signal, BaseDescriptor bd){
         
-        ResultRecord rr = ResultRecord.ResultRecordFactory();
-        ArrayList<ResultField> fields = rr.getFields();
-        String sjson = "";
-     
-        rr.setName(fodesc.getName());
-        
-        if (pld.contains("\r\n") || pld.contains("\n")){
-            // Has header
-            pld = pld.replace("\r", "");
-            String[] lpld = pld.split("\n");
-            
-            String [] cheaders = lpld[0].split(fodesc.getSeparator());;
-            String [] cfields = lpld[1].split(fodesc.getSeparator());
-            
-            if (cfields.length != fodesc.getCsvfields().size()){
-                log.fine("CSVFields size do not match");
-            }
-            
-            int counter=0;
-            for (CSVField csvf : fodesc.getCsvfields()){
-                //csvf.setValue(cfields[counter]);
-                if (csvf.isReadcsv()){
-                    ResultField rf = new ResultField(   rr.getUid(),
-                                                        csvf.getResultfield(), 
-                                                        CSVField.getRealmEnum(csvf.getRealm()),
-                                                        CSVField.getTypeEnum(csvf.getType()),
-                                                        cfields[counter],
-                                                        csvf.getResultseq());
-                    fields.add(rf);
-                }
-                counter++;
-            }
-            
-            GsonBuilder builder = new GsonBuilder(); 
-            builder.setPrettyPrinting(); 
-            Gson gson = builder.create();
-            sjson = gson.toJson(rr);
-
-            log.info("========== JSON : ==================\n\r");
-            log.info(sjson);
-            log.info(String.format("Json parser loaded %d chars", sjson.length()));
-        }
-        else{
-            // Single Line
-        }
-
-        return sjson;
+        smqueue.add(signal);
     }
+    
+    public String parseLoad(String pld, SAPFilterDescriptor fodesc){
+    
+        GsonBuilder builder = new GsonBuilder(); 
+        builder.setPrettyPrinting(); 
+        Gson gson = builder.create();
+       
+        ResultRecord rr = gson.fromJson(pld,  ResultRecord.class);
+        //ArrayList<ResultField> fields = rr.getFields();
+        String value;
+        String saprec;
+        StringBuilder sb = new StringBuilder();
+                
+        for (SAPField csvf : fodesc.getSapfields()){
+            value = getRecordValue (rr, csvf.getFieldname().trim());
+            if (value != null){
+                saprec = buildSAPRecord(csvf.getFieldname().trim(), value, csvf.getTemplate());
+                if (saprec != null) sb.append(saprec);
+            }
+        }
+
+        return sb.toString();
+        
+    }
+ 
+    private String buildSAPRecord(String field, String value, String template){
+        
+        String temp = "";
+        StringBuilder sb = new StringBuilder();
+        
+        String[] tplfs = template.split("@");
+        
+        for (String tplf: tplfs){
+            if (tplf.contains("[")){
+                String[] cnvfields = tplf.split(":");
+                if (cnvfields.length == 2){
+                    temp = cnvfields[0].replace("[", "");
+                    if (temp.equals("nome")){
+                        temp = cnvfields[1].replace("]", "");
+                        sb.append(String.format(temp, field));
+                        sb.append("@");
+                    }
+                    else if (temp.equals("valor")){
+                        temp = cnvfields[1].replace("]", "");
+                        try{
+                            Double vl = Double.parseDouble(value);
+                            sb.append(String.format(temp, vl));
+                            sb.append("@");
+                        }
+                        catch (Exception ex ){
+                            sb.append("erro de conversão na template@");
+                        }
+                    } 
+                }
+                else{
+                    sb.append("erro de sintaxe na template@");
+                }
+            }
+            else{
+                sb.append(tplf);
+                sb.append("@");
+            }
+            
+        }
+        
+        sb.append("\r\n");
+        temp = sb.toString();
+        return temp;
+    }
+    
+    
+    
+    private String getRecordValue (ResultRecord rr, String fieldname){
+        
+        ArrayList<ResultField> fields = rr.getFields();
+        
+        for (ResultField rf : fields){
+            if (rf.getName().equals(fieldname)){
+                return rf.getValue();
+            }
+        }
+        return null;
+    }
+    
     
     
     
@@ -123,7 +167,6 @@ public class SAPFilterService extends BaseService {
     
     // ================================================================================================================
     private void stopService(){
-        //services.removeUsbServicesListener(this);
         service_thread.setDone(true);    
     }
     
@@ -143,8 +186,8 @@ public class SAPFilterService extends BaseService {
         private SMTraffic smm;
         
         private BaseDescriptor temp_bd;
-        private CSVFilterDescriptor fodesc;
-        private com.virna5.csvfilter.MonitorIFrame liframe;
+        private SAPFilterDescriptor fodesc;
+        //private com.virna5.csvfilter.MonitorIFrame liframe;
         
 
         public SMThread(BlockingQueue<SMTraffic> tqueue) {
@@ -171,7 +214,7 @@ public class SAPFilterService extends BaseService {
                     switch (state){
                         
                         case INIT:
-                            log.log(Level.FINE, "CSVF em INIT");
+                            log.log(Level.FINE, "SAPF em INIT");
                             break;
                             
                         case IDLE:
@@ -203,26 +246,25 @@ public class SAPFilterService extends BaseService {
                             temp_bd = descriptors.get(lhandle);
                             if (temp_bd !=null){
                                 String action = (smm.getCode() == 1) ? "Activating" : "Deactivating;";
-                                log.fine(String.format("%s task %d on FileWriterService using %s", action, lhandle, temp_bd.getName()));
+                                log.fine(String.format("%s task %d on SAPFilterService using %s", action, lhandle, temp_bd.getName()));
                             }
                             
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;    
                         
                        case TSK_CLEAR:
-                            liframe = (com.virna5.csvfilter.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
-                            if (liframe != null){
-                                JDesktopPane mon = liframe.getDesktopPane();
-                                mon.remove(liframe);
-                                log.fine("UI Interface removed @ CSVFilter");
-                            }
+//                            liframe = (com.virna5.csvfilter.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
+//                            if (liframe != null){
+//                                JDesktopPane mon = liframe.getDesktopPane();
+//                                mon.remove(liframe);
+//                                log.fine("UI Interface removed @ CSVFilter");
+//                            }
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;        
-                               
-                            
-                        case CSV_CONVERT:
-                            log.fine("CSVFilter is converting");                       
-                            fodesc = (CSVFilterDescriptor)descriptors.get(smm.getHandle());
+ 
+                        case LOADRECORD:  
+                            log.fine("SAPFilter is converting");                       
+                            fodesc = (SAPFilterDescriptor)descriptors.get(smm.getHandle());
                             VirnaPayload vp = smm.getPayload();
                             String pld = vp.vstring;
                             String record = parseLoad(pld, fodesc);
@@ -230,7 +272,7 @@ public class SAPFilterService extends BaseService {
                                 fodesc.notifySignalListeners(0, new SMTraffic(fodesc.getUID(),
                                             VirnaServices.CMDS.LOADSTATE,
                                             0, 
-                                            VirnaServices.STATES.LOADRECORD, 
+                                            VirnaServices.STATES.FWRITER_WRITE, 
                                             new VirnaPayload().setString(record)
                                         ));
                             }
@@ -238,7 +280,7 @@ public class SAPFilterService extends BaseService {
                             break;    
                             
                         default:
-                            log.fine("Undefined state on CSVFilter : " + smm.getState().toString());
+                            log.fine("Undefined state on SAPFilter : " + smm.getState().toString());
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;  
                             
@@ -251,7 +293,7 @@ public class SAPFilterService extends BaseService {
         }
 
         public void setDone(boolean done) {
-            if (done) log.log(Level.FINE, "FOB Stopping Service");
+            if (done) log.log(Level.FINE, "SAPFilter Stopping Service");
             this.done = done;
         }   
     };

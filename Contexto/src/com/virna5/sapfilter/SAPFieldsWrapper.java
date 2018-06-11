@@ -14,13 +14,13 @@ import java.util.Collection;
  *
  * @author opus
  */
-public class SAPFieldsWrapper extends ArrayList<CSVField> {
+public class SAPFieldsWrapper extends ArrayList<SAPField> {
     
     public SAPFieldsWrapper() {
          
     }
 
-    public SAPFieldsWrapper(Collection<? extends CSVField> c) {
+    public SAPFieldsWrapper(Collection<? extends SAPField> c) {
         super(c);
     }
  

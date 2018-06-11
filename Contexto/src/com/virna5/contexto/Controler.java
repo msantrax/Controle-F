@@ -626,7 +626,8 @@ public class Controler implements SignalListener{
                         case CTRL_AUTOLOAD:
                             try{
                                 //addContext("/Bascon/BSW1/Testbench/Ctx/task6.tsk");
-                                addContext("/Bascon/BSW1/Testbench/Ctx/task9.tsk");
+                                addContext("/Bascon/BSW1/Testbench/Ctx/task11.tsk");
+                                
                                 
                             } catch (Exception ex) {
                                 NotifyDescriptor nd = new NotifyDescriptor.Message(

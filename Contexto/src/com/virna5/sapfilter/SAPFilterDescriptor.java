@@ -26,34 +26,34 @@ public class SAPFilterDescriptor extends BaseDescriptor {
     
     private String output = "result";
     
-    protected CSVFieldsWrapper csvfields;
+    protected SAPFieldsWrapper sapfields;
     
     
     public SAPFilterDescriptor() {
         
-        csvfields = new CSVFieldsWrapper();
+        sapfields = new SAPFieldsWrapper();
         
-        dependencies = new String[] { "com.virna5.csvfilter.CSVFilterService" };
+        dependencies = new String[] { "com.virna5.sapfilter.SAPFilterService" };
         
-        interfaces = new UIInterface[] { new UIInterface("Filtro CSV", "com.virna5.csvfilter.MonitorIFrame", "iframe") };
+        interfaces = new UIInterface[] { new UIInterface("Filtro SAP", "com.virna5.sapfilter.MonitorIFrame", "iframe") };
         
         
-        name="Filtro CSV";
-        desc = "Processador de dados em arquivos tipo CSV";
+        name="Filtro SAP";
+        desc = "Processador de dados em arquivos tipo SAP";
         
-        nodetype = "csvfilter.CSVFilterDescriptor";
+        nodetype = "sapfilter.SAPFilterDescriptor";
         version = "1.0.0";
         
-        csvfields.add(CSVField.CSVFieldFactory(0));
+        sapfields.add(SAPField.SAPFieldFactory(0));
         
     }
 
     @Override
     public DescriptorConnector buildConnector(){
         
-        CSVFilterConnector foc = new CSVFilterConnector();
+        SAPFilterConnector foc = new SAPFilterConnector();
         try {
-            foc.setNode(new CSVFilterNode(this));
+            foc.setNode(new SAPFilterNode(this));
             foc.setID(ContextUtils.getUID());
         } catch (IntrospectionException ex) {
             Exceptions.printStackTrace(ex);
@@ -158,17 +158,17 @@ public class SAPFilterDescriptor extends BaseDescriptor {
     }
 
     /**
-     * @return the csvfields
+     * @return the sapfields
      */
-    public CSVFieldsWrapper getCsvfields() {
-        return csvfields;
+    public SAPFieldsWrapper getSapfields() {
+        return sapfields;
     }
 
     /**
-     * @param csvfields the csvfields to set
+     * @param sapfields the sapfields to set
      */
-    public void setCsvfields(CSVFieldsWrapper csvfields) {
-        this.csvfields = csvfields;
+    public void setSapfields(SAPFieldsWrapper sapfields) {
+        this.sapfields = sapfields;
     }
 
     

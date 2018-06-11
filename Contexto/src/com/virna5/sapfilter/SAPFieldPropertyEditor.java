@@ -23,13 +23,13 @@ public class SAPFieldPropertyEditor extends PropertyEditorSupport implements ExP
 
     private static final Logger log = Logger.getLogger(SAPFieldPropertyEditor.class.getName());
    
-    protected CSVFieldsWrapper cfw;
+    protected SAPFieldsWrapper cfw;
     
     @Override
     public void attachEnv(PropertyEnv pe) {
         
        Object[] beans = pe.getBeans();
-       CSVFilterNode cfn = (CSVFilterNode) beans[0];
+       SAPFilterNode cfn = (SAPFilterNode) beans[0];
        cfw = cfn.getCfw();      
        log.info(String.format("Attaching CSV env : %d with %d fields", cfw.hashCode(), cfw.size()));
     }  
@@ -48,7 +48,7 @@ public class SAPFieldPropertyEditor extends PropertyEditorSupport implements ExP
     
     @Override
     public Component getCustomEditor() {
-        return new CSVFieldsPanel(cfw);
+        return new SAPFieldsPanel(cfw);
     }
 
     @Override

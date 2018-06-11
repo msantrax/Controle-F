@@ -35,6 +35,7 @@ public class FileWriterService extends BaseService {
  
     private Long current_handle;
     
+    protected LinkedBlockingQueue<SMTraffic> smqueue;
     
     public static FileWriterService getInstance(){
         if (instance == null) {instance = new FileWriterService();}
@@ -83,11 +84,7 @@ public class FileWriterService extends BaseService {
             }           
         }
     }
-       
-    
-    
-    
-    
+  
     public void visitFile(FileObserverDescriptor lfod, long ct){
           
 //        log.log(Level.FINE, "Observer Cicle called " 
@@ -100,10 +97,13 @@ public class FileWriterService extends BaseService {
     }
     
     
-//    public void processSignal (SMTraffic signal, BaseDescriptor bd){
-//        
-//        smqueue.add(signal);
-//    }
+    @Override
+    public void processSignal (SMTraffic signal, BaseDescriptor bd){
+        
+        smqueue.add(signal);
+        log.info(String.format("File writer registered %s to %d @ %s ", signal.getState().toString(), signal.getHandle(), this.toString()));
+        
+    }
     
     
     // ================================================================================================================
@@ -166,6 +166,7 @@ public class FileWriterService extends BaseService {
                             smm = tqueue.poll();                         
                             if (smm != null){
                                 cmd = smm.getCommand();
+                                log.info(String.format("File writer pumped %s to %d @ %s ", smm.getState().toString(), smm.getHandle(), this.toString()));
                                 if (cmd == VirnaServices.CMDS.LOADSTATE){
                                     state = smm.getState();
                                 }
@@ -198,8 +199,40 @@ public class FileWriterService extends BaseService {
                             break; 
                         
                         case LOADRECORD:
-                            states_stack.push(VirnaServices.STATES.FWRITER_WRITE);
-                            break; 
+                            VirnaPayload vp1 = smm.getPayload();
+                            String payload1 = vp1.vstring;
+                            
+                            liframe = (com.virna5.filewriter.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
+                            fwdesc = (FileWriterDescriptor)descriptors.get(smm.getHandle());
+                            if (fwdesc != null){
+                                try{
+                                    ContextUtils.saveFile(fwdesc.getOutputfile(), payload1);
+                                    log.fine(String.format("LOADRecord Wrote file %s with : %s",fwdesc.getOutputfile(), payload1));
+                                    if (liframe != null){
+                                        liframe.updateUIDirect(new FileWriterUIUpdater()
+                                                                .setLedcolor(MonitorIFrameInterface.LED_GREEN_ON)
+                                                                .setPayload(payload1)
+                                                            );
+                                     }
+                                    }catch(Exception ex){
+                                        log.warning(String.format("Failed to write %s due %s", fwdesc.getOutputfile(), ex.toString()));
+                                        if (liframe != null){
+                                            liframe.updateUIDirect(new FileWriterUIUpdater()
+                                                                    .setLedcolor(MonitorIFrameInterface.LED_RED)
+                                                                    .setPayload(ex.toString())
+                                                                );
+                                        }
+                                    }
+                                
+                            }
+                          
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;
+                            
+                            
+                            
+//                            states_stack.push(VirnaServices.STATES.FWRITER_WRITE);
+//                            break; 
                             
                         case FWRITER_WRITE:
                             VirnaPayload vp = smm.getPayload();
@@ -207,27 +240,28 @@ public class FileWriterService extends BaseService {
                             
                             liframe = (com.virna5.filewriter.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
                             fwdesc = (FileWriterDescriptor)descriptors.get(smm.getHandle());
-                            
-                            try{
-                                ContextUtils.saveFile(fwdesc.getOutputfile(), payload);
-                                log.fine(String.format("Wrote file %s with : %s",fwdesc.getOutputfile(), payload));
-                                if (liframe != null){
-                                    liframe.updateUIDirect(new FileWriterUIUpdater()
-                                                            .setLedcolor(MonitorIFrameInterface.LED_GREEN_ON)
-                                                            .setPayload(payload)
-                                                        );
-                                 }
-                            }catch(Exception ex){
-                                log.warning(String.format("Failed to write %s due %s", fwdesc.getOutputfile(), ex.toString()));
-                                if (liframe != null){
-                                    liframe.updateUIDirect(new FileWriterUIUpdater()
-                                                            .setLedcolor(MonitorIFrameInterface.LED_RED)
-                                                            .setPayload(ex.toString())
-                                                        );
-                                }
+                            if (fwdesc != null){
+                                try{
+                                    ContextUtils.saveFile(fwdesc.getOutputfile(), payload);
+                                    log.fine(String.format("Wrote file %s with : %s",fwdesc.getOutputfile(), payload));
+                                    if (liframe != null){
+                                        liframe.updateUIDirect(new FileWriterUIUpdater()
+                                                                .setLedcolor(MonitorIFrameInterface.LED_GREEN_ON)
+                                                                .setPayload(payload)
+                                                            );
+                                     }
+                                    }catch(Exception ex){
+                                        log.warning(String.format("Failed to write %s due %s", fwdesc.getOutputfile(), ex.toString()));
+                                        if (liframe != null){
+                                            liframe.updateUIDirect(new FileWriterUIUpdater()
+                                                                    .setLedcolor(MonitorIFrameInterface.LED_RED)
+                                                                    .setPayload(ex.toString())
+                                                                );
+                                        }
+                                    }
+                                
                             }
-                            
-                            
+                          
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;
     

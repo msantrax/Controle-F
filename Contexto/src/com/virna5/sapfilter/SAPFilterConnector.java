@@ -26,7 +26,7 @@ public class SAPFilterConnector extends DescriptorConnector implements Serializa
     @Override
     public String toString() { 
         if (node == null){
-            return "CSVF:"+ this.hashCode();
+            return "SAPF:"+ this.hashCode();
         }
         else{
             return node.getDescriptor().getName();        
@@ -35,22 +35,22 @@ public class SAPFilterConnector extends DescriptorConnector implements Serializa
 
    
     @Override
-    public CSVFilterNode getNode() {
-        return (CSVFilterNode)node;
+    public SAPFilterNode getNode() {
+        return (SAPFilterNode)node;
     }
 
     
     @Override
     public void setNode(DescriptorNode node) {
-        this.node = (CSVFilterNode)node;
+        this.node = (SAPFilterNode)node;
     }
     
     @Override
     public void initNode(){
     
         try {
-            node = new CSVFilterNode(new CSVFilterDescriptor());
-            CSVFilterDescriptor fod = (CSVFilterDescriptor)node.getDescriptor();
+            node = new SAPFilterNode(new SAPFilterDescriptor());
+            SAPFilterDescriptor fod = (SAPFilterDescriptor)node.getDescriptor();
             fod.setUID(ContextUtils.getUID());
         } catch (IntrospectionException ex) {
             Exceptions.printStackTrace(ex);

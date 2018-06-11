@@ -16,7 +16,7 @@ public class BaseService {
 
     //protected static final Logger log = Logger.getLogger(BaseService.class.getName());
 
-    protected LinkedBlockingQueue<SMTraffic> smqueue;
+    //protected LinkedBlockingQueue<SMTraffic> smqueue;
     protected LinkedHashMap<Long, BaseDescriptor> descriptors;
     
     protected LinkedHashMap<String, MonitorIFrameInterface> iframes;
@@ -41,8 +41,8 @@ public class BaseService {
     }
     
     public void processSignal (SMTraffic signal, BaseDescriptor bd){
-        //System.err.println("Error ! - Processing on  base class ...");
-        smqueue.add(signal);
+        System.err.println("Error ! - Processing on  base class ...");
+        //smqueue.add(signal);
     }
     
   

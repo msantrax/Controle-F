@@ -553,7 +553,7 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
         
         SMTraffic smtf = new SMTraffic(ctrl.getContext(),
                                     VirnaServices.CMDS.LOADSTATE, 0, 
-                                    VirnaServices.STATES.CTRL_AUTOLOAD, 
+                                    VirnaServices.STATES.CTRL_LOADTASK, 
                                     null);
         ctrl.processSignal(smtf);
         
