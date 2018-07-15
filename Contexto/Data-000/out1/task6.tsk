@@ -1,0 +1,334 @@
+{
+  "obs": "Observações iniciais",
+  "contextnodes": [
+    {
+      "source_widget": "2",
+      "target_widget": "3",
+      "nodetype": "edge.EdgeDescriptor",
+      "version": "1.0.0",
+      "context": 1599544603139339756,
+      "uid": 1599544603140163456,
+      "name": "Conector",
+      "desc": "Conector para transmissão de dados e comandos",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1525208194695,
+      "loaded": 1525208194695,
+      "graph_widget": "4",
+      "style": "entity",
+      "observ": "Observações gerais",
+      "dependencies": []
+    },
+    {
+      "outputfile": "/Temp/test1.csv",
+      "multiline": false,
+      "nodetype": "filewriter.FileWriterDescriptor",
+      "version": "1.0.0",
+      "context": 1599544603139339756,
+      "uid": 1599544603140320156,
+      "name": "Gravador de Arquivos",
+      "desc": "Dispositivo para gravaçãode novos arquivos em um diretorio no disco",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1525208191670,
+      "loaded": 1525208191670,
+      "graph_widget": "3",
+      "xpos": 480.0,
+      "ypos": 280.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/save.gif",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.filewriter.FileWriterService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Gravador de Arquivos",
+          "class_name": "com.virna5.filewriter.MonitorIFrame",
+          "type": "iframe"
+        }
+      ]
+    },
+    {
+      "useheader": true,
+      "encoding": "UTF-8",
+      "separator": ";",
+      "endline": "Unix",
+      "locale": "pt-BR",
+      "output": "csv",
+      "automatic": true,
+      "interval": 4000,
+      "generatorfields": [
+        {
+          "fieldname": "AnalysisTimestamp",
+          "fieldtype": "instante",
+          "format": "%1$td-%1$tm-%1$tY %1$tH:%1$tM:%1$tS",
+          "range": ""
+        },
+        {
+          "fieldname": "Nome:",
+          "fieldtype": "texto",
+          "format": "%s",
+          "range": "Nome de teste"
+        },
+        {
+          "fieldname": "Amostra:",
+          "fieldtype": "texto",
+          "format": "%s",
+          "range": "Pre_forno3"
+        },
+        {
+          "fieldname": "Operador:",
+          "fieldtype": "texto",
+          "format": "%s",
+          "range": "Borba"
+        },
+        {
+          "fieldname": "Obs:",
+          "fieldtype": "texto",
+          "format": "%s",
+          "range": ""
+        },
+        {
+          "fieldname": "Sequência:",
+          "fieldtype": "texto",
+          "format": "%1$s%2$d",
+          "range": "Seq_"
+        },
+        {
+          "fieldname": "C",
+          "fieldtype": "numero",
+          "format": "%2.2f",
+          "range": "2.30:2.40"
+        },
+        {
+          "fieldname": "Si",
+          "fieldtype": "numero",
+          "format": "%2.2f",
+          "range": "1.30:1.35"
+        },
+        {
+          "fieldname": "Mn",
+          "fieldtype": "numero",
+          "format": "%2.3f",
+          "range": "0.3:0.7"
+        },
+        {
+          "fieldname": "P",
+          "fieldtype": "numero",
+          "format": "%2.4f",
+          "range": "0.002:0.004"
+        },
+        {
+          "fieldname": "S",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Cr",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Mo",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Ni",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Cu",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Al",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "As",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "B",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Bi",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Ce",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Co",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Mg",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Nb",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Pb",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Sb",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Sn",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Ta",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "La",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Ti",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "V",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "W",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Zn",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Zr",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Se",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "N",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Ca",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Te",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Fe",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        }
+      ],
+      "nodetype": "qs4generator.QS4GeneratorDescriptor",
+      "version": "1.0.0",
+      "context": 1599544603139339756,
+      "uid": 1599544603140448656,
+      "name": "Gerador de teste 6",
+      "desc": "Cria arquivo CSV de resultados randomicos para teste",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1525208188092,
+      "loaded": 1525208188092,
+      "graph_widget": "2",
+      "xpos": 180.0,
+      "ypos": 150.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/gear.png",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.qs4generator.QS4GeneratorService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Gerador de Resultados",
+          "class_name": "com.virna5.qs4generator.MonitorIFrame",
+          "type": "iframe"
+        }
+      ]
+    }
+  ],
+  "nodetype": "contexto.RootDescriptor",
+  "version": "1.0.0",
+  "context": 1599544603139339756,
+  "uid": 1599544603140512356,
+  "name": "Root",
+  "desc": "Root",
+  "designer": "msantos",
+  "owner": "BSW",
+  "created": 1525444558870,
+  "loaded": 1525444558870,
+  "graph_widget": "1",
+  "observ": "Observações gerais",
+  "dependencies": []
+}

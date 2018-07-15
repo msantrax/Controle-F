@@ -55,7 +55,7 @@ public final class MonitorTopComponent extends TopComponent  implements Internal
         
         initComponents();
         setName("Monitor");
-        setToolTipText(Bundle.HINT_MonitorTopComponent());
+        setToolTipText("tooltip");
         //setContentPane(dpmain);
         
         frames = new LinkedHashMap<>();

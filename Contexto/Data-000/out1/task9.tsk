@@ -1,0 +1,537 @@
+{
+  "obs": "Observações iniciais",
+  "contextnodes": [
+    {
+      "source_widget": "3",
+      "target_widget": "4",
+      "nodetype": "edge.EdgeDescriptor",
+      "version": "1.0.0",
+      "context": 1599508055774683200,
+      "uid": 1599508055774845748,
+      "name": "Conector",
+      "desc": "Conector para transmissão de dados e comandos",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1525294957939,
+      "loaded": 1525294957939,
+      "graph_widget": "6",
+      "style": "entity",
+      "observ": "Observações gerais",
+      "dependencies": []
+    },
+    {
+      "source_widget": "2",
+      "target_widget": "3",
+      "nodetype": "edge.EdgeDescriptor",
+      "version": "1.0.0",
+      "context": 1599508055774683200,
+      "uid": 1599508055774864987,
+      "name": "Conector",
+      "desc": "Conector para transmissão de dados e comandos",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1525294949238,
+      "loaded": 1525294949238,
+      "graph_widget": "5",
+      "style": "entity",
+      "observ": "Observações gerais",
+      "dependencies": []
+    },
+    {
+      "nodetype": "filewriter.FileWriterDescriptor",
+      "version": "1.0.0",
+      "context": 1599508055774683200,
+      "uid": 1599508055774879906,
+      "name": "Gravador de Arquivos",
+      "desc": "Dispositivo para gravaçãode novos arquivos em um diretorio no disco",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1525294945917,
+      "loaded": 1525294945917,
+      "graph_widget": "4",
+      "xpos": 550.0,
+      "ypos": 330.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/save.gif",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.filewriter.FileWriterService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Gravador de Arquivos",
+          "class_name": "com.virna5.filewriter.MonitorIFrame",
+          "type": "iframe"
+        }
+      ]
+    },
+    {
+      "useheader": true,
+      "encoding": "UTF-8",
+      "separator": ";",
+      "locale": "PT-BR",
+      "output": "result",
+      "csvfields": [
+        {
+          "csvfield": "AnalysisTimestamp",
+          "realm": "cabecalho",
+          "type": "instante",
+          "readcsv": true,
+          "resultfield": "Horario",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Nome:",
+          "realm": "cabecalho",
+          "type": "texto",
+          "readcsv": true,
+          "resultfield": "Nome",
+          "resultseq": 1,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Amostra:",
+          "realm": "cabecalho",
+          "type": "texto",
+          "readcsv": true,
+          "resultfield": "Amostra",
+          "resultseq": 3,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Operador:",
+          "realm": "cabecalho",
+          "type": "texto",
+          "readcsv": true,
+          "resultfield": "Operador",
+          "resultseq": 4,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Obs:",
+          "realm": "cabecalho",
+          "type": "texto",
+          "readcsv": true,
+          "resultfield": "Obs",
+          "resultseq": 5,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Sequência:",
+          "realm": "cabecalho",
+          "type": "texto",
+          "readcsv": true,
+          "resultfield": "Sequencia",
+          "resultseq": 6,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "C",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "C",
+          "resultseq": 2,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Si",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Si",
+          "resultseq": 7,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Mn",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Mn",
+          "resultseq": 8,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "P",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "P",
+          "resultseq": 9,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "S",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "S",
+          "resultseq": 24,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Cr",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Cr",
+          "resultseq": 23,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Mo",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Mo ",
+          "resultseq": 22,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ni",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Ni",
+          "resultseq": 21,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Cu",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Cu",
+          "resultseq": 20,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Al",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Al",
+          "resultseq": 19,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "As",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "As",
+          "resultseq": 18,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "B",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "B",
+          "resultseq": 17,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Bi",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Bi",
+          "resultseq": 16,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ce",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Ce",
+          "resultseq": 15,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Co",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Co",
+          "resultseq": 14,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Mg",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Mg",
+          "resultseq": 13,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Nb",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Nb",
+          "resultseq": 12,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Pb",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Pb",
+          "resultseq": 29,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Sb",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Sb",
+          "resultseq": 28,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Sn",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Sn",
+          "resultseq": 27,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ta",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Ta",
+          "resultseq": 26,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "La",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "La",
+          "resultseq": 25,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ti",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Ti",
+          "resultseq": 11,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "V",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "V",
+          "resultseq": 36,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "W",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "W",
+          "resultseq": 35,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Zn",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Zn",
+          "resultseq": 34,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Zr",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Zr",
+          "resultseq": 33,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Se",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Sn",
+          "resultseq": 32,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "N",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "N",
+          "resultseq": 31,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ca",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Ca",
+          "resultseq": 30,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Te",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Te",
+          "resultseq": 37,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Fe",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Fe",
+          "resultseq": 10,
+          "writeresult": true,
+          "number": 0.0
+        }
+      ],
+      "nodetype": "csvfilter.CSVFilterDescriptor",
+      "version": "1.0.0",
+      "context": 1599508055774683200,
+      "uid": 1599508055774924503,
+      "name": "Filtro CSV",
+      "desc": "Processador de dados em arquivos tipo CSV",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1525294942723,
+      "loaded": 1525294942723,
+      "graph_widget": "3",
+      "xpos": 330.0,
+      "ypos": 50.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/filter.png",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.csvfilter.CSVFilterService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Filtro CSV",
+          "class_name": "com.virna5.csvfilter.MonitorIFrame",
+          "type": "iframe"
+        }
+      ]
+    },
+    {
+      "timespot": 0,
+      "lastseen": 0,
+      "interval": 2000,
+      "lag": 250,
+      "triggered": false,
+      "timeout": 60000,
+      "multiline": true,
+      "inputfile_path": "/Bascon/BSW1/Testbench/area1/qs4a.csv",
+      "outputfile": "",
+      "nodetype": "fileobserver.FileObserverDescriptor",
+      "version": "1.0.0",
+      "context": 1599508055774683200,
+      "uid": 1599508055774946541,
+      "name": "Observador de Arquivos",
+      "desc": "Dispositivo para verificação e leitura de novos arquivos em um diratorio.",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1525294938109,
+      "loaded": 1525294938109,
+      "graph_widget": "2",
+      "xpos": 110.0,
+      "ypos": 160.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/triangle.png",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.fileobserver.FileObserverService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Observador de Arquivos",
+          "class_name": "com.virna5.fileobserver.MonitorIFrame",
+          "type": "iframe"
+        }
+      ]
+    }
+  ],
+  "nodetype": "contexto.RootDescriptor",
+  "version": "1.0.0",
+  "context": 1599508055774683200,
+  "uid": 1599508055774965940,
+  "name": "Root",
+  "desc": "Root",
+  "designer": "msantos",
+  "owner": "BSW",
+  "created": 1525409363797,
+  "loaded": 1525409363797,
+  "graph_widget": "1",
+  "observ": "Observações gerais",
+  "dependencies": []
+}

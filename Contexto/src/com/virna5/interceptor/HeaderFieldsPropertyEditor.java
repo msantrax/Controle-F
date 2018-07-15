@@ -1,0 +1,176 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.virna5.interceptor;
+
+import com.virna5.sapfilter.*;
+import com.virna5.csvfilter.*;
+import java.awt.Component;
+import java.beans.PropertyEditorSupport;
+import java.util.ArrayList;
+import java.util.logging.Logger;
+import javax.swing.JLabel;
+import org.openide.explorer.propertysheet.ExPropertyEditor;
+import org.openide.explorer.propertysheet.InplaceEditor;
+import org.openide.explorer.propertysheet.PropertyEnv;
+
+/**
+ *
+ * @author opus
+ */
+//public class CSVFieldPropertyEditor extends PropertyEditorSupport implements ExPropertyEditor, InplaceEditor.Factory {
+public class HeaderFieldsPropertyEditor extends PropertyEditorSupport implements ExPropertyEditor {    
+
+    private static final Logger log = Logger.getLogger(HeaderFieldsPropertyEditor.class.getName());
+   
+    //protected InterceptorTemplate cfw;
+    protected ArrayList<ItemDescriptor> header_items; 
+    
+    
+    @Override
+    public void attachEnv(PropertyEnv pe) {
+        
+        Object[] beans = pe.getBeans();
+        InterceptorNode cfn = (InterceptorNode) beans[0];
+        header_items = cfn.getHeader_items();
+       
+        if (header_items == null){
+            header_items = new ArrayList<>();
+            ItemDescriptor id = new ItemDescriptor();
+            header_items.add(id);
+        }
+        log.info(String.format("Attaching Interceptpr env : %d with %d fields", header_items.hashCode(), header_items.size()));
+    }  
+    
+    
+    @Override
+    public String getAsText() {
+        return String.format("%d campos", header_items.size());
+    }
+
+    @Override
+    public void setAsText(String s) {
+        
+    }
+ 
+    
+    @Override
+    public Component getCustomEditor() {
+        return new HeaderFieldsPanel(header_items);
+    }
+
+    @Override
+    public boolean supportsCustomEditor() {
+        return true;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    //    private InplaceEditor ed = null;
+    
+//    public void attachEnv(PropertyEnv propertyEnv) {
+//        propertyEnv.registerInplaceEditorFactory(this);
+//    }    
+    
+    
+//    @Override
+//    public InplaceEditor getInplaceEditor() {
+//        if(ed == null)
+//        ed = new CSVFieldPropertyEditor.Inplace();
+//        
+//        return ed;
+//    }
+   
+//    private static class Inplace implements InplaceEditor {
+//        
+//        private PropertyEditor editor = null;
+//        private PropertyModel model = null;
+//        
+//        private JComboBox genres = new JComboBox(
+//            new String[] {"Techno", "Trance", "Rock", "Pop"});
+//        
+//        @Override
+//        public JComponent getComponent() {
+//            return this.genres;
+//        }
+//        
+//        @Override
+//        public Object getValue() {
+//            return this.genres.getSelectedItem();
+//        }
+//        
+//        @Override
+//        public void setValue(Object object) {
+//            this.genres.setSelectedItem(object);
+//        }
+//        
+//        @Override
+//        public void reset() {
+//            String genre = (String) editor.getValue();
+//            if(genre != null)
+//            this.genres.setSelectedItem(genre);
+//        }
+//
+//        @Override
+//        public boolean isKnownComponent(Component cmpnt) {
+//            return true;
+//        }
+//
+//        @Override
+//        public void connect(PropertyEditor pe, PropertyEnv pe1) {
+//            //log.info("Caling connect");
+//            this.editor = pe;
+//            this.reset();
+//        }
+//
+//        @Override
+//        public void clear() {
+//            this.editor=null;
+//            this.model=null;
+//        }
+//
+//        @Override
+//        public boolean supportsTextEntry() {
+//            return true;
+//        }
+//
+//        @Override
+//        public void addActionListener(ActionListener al) {
+//            log.info("Adding Listener");
+//        }
+//
+//        @Override
+//        public void removeActionListener(ActionListener al) {
+//            log.info("Removing listener");
+//        }
+//
+//        @Override
+//        public KeyStroke[] getKeyStrokes() {
+//            return new KeyStroke[0];
+//        }
+//
+//        @Override
+//        public PropertyEditor getPropertyEditor() {
+//            return this.editor;
+//        }
+//
+//        @Override
+//        public PropertyModel getPropertyModel() {
+//            return this.model;
+//        }
+//
+//        @Override
+//        public void setPropertyModel(PropertyModel pm) {
+//            this.model = pm;
+//        }
+//    }
+    
+    
+}

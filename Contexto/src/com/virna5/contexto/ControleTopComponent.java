@@ -27,6 +27,8 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.windows.TopComponent;
 import org.openide.util.NbBundle.Messages;
+import org.openide.util.lookup.AbstractLookup;
+import org.openide.util.lookup.InstanceContent;
 
 /**
  * Top component which displays something.
@@ -44,7 +46,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Window", id = "com.virna5.context.ControleTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(
-        displayName = "#CTL_ControleAction",
+        displayName = "Controle",
         preferredID = "ControleTopComponent"
 )
 @Messages({
@@ -64,14 +66,20 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
     
     ArrayList<RunTaskValue> tasks;
     
+    private final InstanceContent content = new InstanceContent();
+    
+    
     public ControleTopComponent() {
         
         log.setLevel(Level.FINE);
+        //ContextUtils.loadConfig();
         initComponents();
         setName("Janela Controle");
         setToolTipText("Painel de comando do Controle");
        
         tasks = new ArrayList<>();
+        
+        associateLookup (new AbstractLookup (content)); 
         
         this.addComponentListener(new ComponentAdapter() {
             
@@ -83,10 +91,6 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
                 pnl_layer1.setBounds(0, 0, w, h );
             }
         });
-        
-        
-        //pnl_runtable.setVisible(false);
-        
         
         TableColumn tc;
         TableColumnModel tcm = tbl_running.getColumnModel();
@@ -116,12 +120,16 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
         ctrl = Controler.getInstance();
         ctrl.setView(this);
         ctrl.addSignalListener(this);
-        ctrl.startService();
+        //ctrl.startService();
      
         this.requestActive();
         
-        //ctrl.addContext("/Bascon/BSW1/Testbench/Ctx/task9.tsk");
-        //ctrl.addContext("/Bascon/BSW1/Testbench/Ctx/task6.tsk");
+        if (!ContextUtils.AUTOLOAD.equals("")){
+            ctrl.addContext(ContextUtils.AUTOLOAD);
+            //ctrl.
+        }
+        
+        
         
         this.pnl_runtable.setVisible(false);
         
@@ -148,6 +156,7 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
         tasks.add(new RunTaskValue(uid, desc, start, owner, false, tools, obs));
         tools_model.addGroup(tools);
         tbl_running.updateUI();
+        
     }
     
     public void removeTask(long uid, int index){

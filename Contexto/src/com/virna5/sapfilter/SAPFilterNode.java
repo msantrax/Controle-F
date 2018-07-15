@@ -52,7 +52,7 @@ public class SAPFilterNode  extends DescriptorNode implements ChangeListener {
         SAPFilterDescriptor obj = getLookup().lookup(SAPFilterDescriptor.class);
         
         try {
-        
+            
             psr = new PropertySupport.Reflection<>(obj, SAPFieldsWrapper.class, "getSapfields", null);
             psr.setName("Campos de dados");
             psr.setShortDescription("Gabarito de translação da estrutura de dados");
@@ -74,57 +74,7 @@ public class SAPFilterNode  extends DescriptorNode implements ChangeListener {
     public SAPFieldsWrapper getCfw() {
         return cfw;
     }
-    
-    
-    
+ 
     
 }
 
-
-
-
-//    public FileObserverNode(Children children) {
-//        //super(children);
-//    }
-    
-    
-    
-     
-    
-    
-//    public FileObserverNode(BaseDescriptor c, Index.ArrayChildren child){
-//        this (c, child, new InstanceContent());
-//        log.setLevel(Level.ALL);
-//    }
-//
-//    private FileObserverNode (BaseDescriptor c, Index.ArrayChildren child, InstanceContent ct){
-//        super (child, new AbstractLookup(ct));
-//        ct.set(Arrays.asList(c,this), null);
-//        //c.addPropertyChangeListener(WeakListeners.propertyChange(this, c));
-//        this.content = ct;
-//        
-//    }
-     
-
-//
-//    @Override
-//    public void updateProp(){
-//        log.info("updating properties");
-//        this.firePropertySetsChange(null, this.getPropertySets()); 
-//        
-//    }
-//    
-//    
-//    @Override
-//    @SuppressWarnings("unchecked")
-//    public void stateChanged(ChangeEvent e) {
-////        Set newcontent = new HashSet<Classmap>();
-////        @SuppressWarnings("unchecked")
-////        boolean add = newcontent.add(getClassmap());
-////        content.set(newcontent, null);
-//    }
-//
-//    
-    
-    
-    

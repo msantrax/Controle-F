@@ -1,0 +1,1062 @@
+{
+  "obs": "Observações iniciais",
+  "contextnodes": [
+    {
+      "useheader": true,
+      "encoding": "UTF-8",
+      "separator": ",",
+      "locale": "PT-BR",
+      "output": "result",
+      "sapfields": [
+        {
+          "ids": "1604179451739118816",
+          "fieldname": "9118816",
+          "template": "739118816"
+        },
+        {
+          "ids": "1602828431701393907",
+          "fieldname": "C",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "ids": "1602828431074502665",
+          "fieldname": "Si",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "ids": "1602828430443226792",
+          "fieldname": "Mn",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "ids": "1602828429855826361",
+          "fieldname": "P",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "ids": "1602828429243416704",
+          "fieldname": "S",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "ids": "1602828428673264662",
+          "fieldname": "Ni",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "ids": "1602828428085865351",
+          "fieldname": "Cr",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "ids": "1602828427573947625",
+          "fieldname": "Mo",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "ids": "1602828426953512084",
+          "fieldname": "Cu",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "ids": "1602828426349549294",
+          "fieldname": "Al",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "ids": "1602828425703633002",
+          "fieldname": "Ti",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "ids": "1602828425040700904",
+          "fieldname": "V",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "ids": "1602828424176983176",
+          "fieldname": "Nb",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "ids": "1602808627524478348",
+          "fieldname": "B",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "ids": "1602808627272454949",
+          "fieldname": "W",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "ids": "1602808626777647552",
+          "fieldname": "Co",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "ids": "1602808621333628646",
+          "fieldname": "Pb",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        },
+        {
+          "fieldname": "Mg",
+          "template": "17723506@11@[nome:%-2s]@[valor:%010.5f]@"
+        }
+      ],
+      "nodetype": "sapfilter.SAPFilterDescriptor",
+      "version": "1.0.0",
+      "context": 1604276060039795444,
+      "uid": 1604276060042658201,
+      "name": "Filtro SAP",
+      "desc": "Processador de dados em arquivos tipo SAP",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1529864742027,
+      "loaded": 1529864742027,
+      "graph_widget": "9",
+      "xpos": 650.0,
+      "ypos": 130.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/filter.png",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.sapfilter.SAPFilterService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Filtro SAP",
+          "class_name": "com.virna5.sapfilter.MonitorIFrame",
+          "type": "iframe"
+        }
+      ]
+    },
+    {
+      "source_widget": "6",
+      "target_widget": "2",
+      "nodetype": "edge.EdgeDescriptor",
+      "version": "1.0.0",
+      "context": 1604276060039795444,
+      "uid": 1604276060044759327,
+      "name": "Conector",
+      "desc": "Conector para transmissão de dados e comandos",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1529864712724,
+      "loaded": 1529864712724,
+      "graph_widget": "8",
+      "style": "entity",
+      "observ": "Observações gerais",
+      "dependencies": []
+    },
+    {
+      "source_widget": "3",
+      "target_widget": "6",
+      "nodetype": "edge.EdgeDescriptor",
+      "version": "1.0.0",
+      "context": 1604276060039795444,
+      "uid": 1604276060044862199,
+      "name": "Conector",
+      "desc": "Conector para transmissão de dados e comandos",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1529864704531,
+      "loaded": 1529864704531,
+      "graph_widget": "7",
+      "style": "entity",
+      "observ": "Observações gerais",
+      "dependencies": []
+    },
+    {
+      "useheader": true,
+      "encoding": "UTF-8",
+      "separator": ",",
+      "locale": "PT-BR",
+      "output": "result",
+      "csvfields": [
+        {
+          "csvfield": "0313422",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "580313422",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "AnalysisTimestamp",
+          "realm": "cabecalho",
+          "type": "instante",
+          "readcsv": true,
+          "resultfield": "Horario",
+          "resultseq": 1,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Nome:",
+          "realm": "cabecalho",
+          "type": "texto",
+          "readcsv": true,
+          "resultfield": "Nome",
+          "resultseq": 2,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Amostra:",
+          "realm": "cabecalho",
+          "type": "texto",
+          "readcsv": true,
+          "resultfield": "Amostra",
+          "resultseq": 3,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Operador:",
+          "realm": "cabecalho",
+          "type": "texto",
+          "readcsv": true,
+          "resultfield": "Operador",
+          "resultseq": 4,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Obs:",
+          "realm": "cabecalho",
+          "type": "texto",
+          "readcsv": true,
+          "resultfield": "Obs",
+          "resultseq": 5,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Sequência:",
+          "realm": "cabecalho",
+          "type": "texto",
+          "readcsv": true,
+          "resultfield": "Sequencia",
+          "resultseq": 6,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "C",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "C",
+          "resultseq": 7,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Si",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Si",
+          "resultseq": 8,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Mn",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Mn",
+          "resultseq": 9,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "P",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "P",
+          "resultseq": 10,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "S",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "S",
+          "resultseq": 11,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Cr",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Cr",
+          "resultseq": 12,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Mo",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Mo ",
+          "resultseq": 13,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ni",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Ni",
+          "resultseq": 14,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Cu",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Cu",
+          "resultseq": 15,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Al",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Al",
+          "resultseq": 16,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "As",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "As",
+          "resultseq": 17,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "B",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "B",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Bi",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Bi",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ce",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Ce",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Co",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Co",
+          "resultseq": 18,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Mg",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Mg",
+          "resultseq": 19,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Nb",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Nb",
+          "resultseq": 20,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Pb",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Pb",
+          "resultseq": 21,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Sb",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Sb",
+          "resultseq": 22,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Sn",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Sn",
+          "resultseq": 23,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ta",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Ta",
+          "resultseq": 24,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "La",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "La",
+          "resultseq": 25,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ti",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Ti",
+          "resultseq": 26,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "V",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "V",
+          "resultseq": 27,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "W",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "W",
+          "resultseq": 28,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Zn",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Zn",
+          "resultseq": 29,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Zr",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Zr",
+          "resultseq": 30,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Se",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Sn",
+          "resultseq": 31,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "N",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "N",
+          "resultseq": 32,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ca",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Ca",
+          "resultseq": 33,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Te",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Te",
+          "resultseq": 34,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Fe",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Fe",
+          "resultseq": 35,
+          "writeresult": true,
+          "number": 0.0
+        }
+      ],
+      "nodetype": "csvfilter.CSVFilterDescriptor",
+      "version": "1.0.0",
+      "context": 1604276060039795444,
+      "uid": 1604276060044886398,
+      "name": "Filtro CSV",
+      "desc": "Processador de dados em arquivos tipo CSV",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1529864697051,
+      "loaded": 1529864697052,
+      "graph_widget": "6",
+      "xpos": 230.0,
+      "ypos": 160.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/filter.png",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.csvfilter.CSVFilterService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Filtro CSV",
+          "class_name": "com.virna5.csvfilter.MonitorIFrame",
+          "type": "iframe"
+        }
+      ]
+    },
+    {
+      "source_widget": "9",
+      "target_widget": "11",
+      "nodetype": "edge.EdgeDescriptor",
+      "version": "1.0.0",
+      "context": 1604276060039795444,
+      "uid": 1604276060044980871,
+      "name": "Conector",
+      "desc": "Conector para transmissão de dados e comandos",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1529864792730,
+      "loaded": 1529864792730,
+      "graph_widget": "12",
+      "style": "entity",
+      "observ": "Observações gerais",
+      "dependencies": []
+    },
+    {
+      "timespot": 0,
+      "lastseen": 0,
+      "interval": 2000,
+      "lag": 250,
+      "triggered": false,
+      "timeout": 60000,
+      "multiline": false,
+      "inputfile_path": "/Bascon/BSW1/Testbench/area1/qs4a.csv",
+      "outputfile": "/Bascon/BSW1/Testbench/area2",
+      "nodetype": "fileobserver.FileObserverDescriptor",
+      "version": "1.0.0",
+      "context": 1604276060039795444,
+      "uid": 1604276060048888865,
+      "name": "Observador de Arquivos",
+      "desc": "Dispositivo para verificação e leitura de novos arquivos em um diratorio.",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1529864682478,
+      "loaded": 1529864682478,
+      "graph_widget": "3",
+      "xpos": 30.0,
+      "ypos": 110.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/triangle.png",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.fileobserver.FileObserverService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Observador de Arquivos",
+          "class_name": "com.virna5.fileobserver.MonitorIFrame",
+          "type": "iframe"
+        }
+      ]
+    },
+    {
+      "nodetype": "filewriter.FileWriterDescriptor",
+      "version": "1.0.0",
+      "context": 1604276060039795444,
+      "uid": 1604276060049002096,
+      "name": "Gravador de Arquivos",
+      "desc": "Dispositivo para gravaçãode novos arquivos em um diretorio no disco",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1529864788903,
+      "loaded": 1529864788903,
+      "graph_widget": "11",
+      "xpos": 860.0,
+      "ypos": 100.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/save.gif",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.filewriter.FileWriterService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Gravador de Arquivos",
+          "class_name": "com.virna5.filewriter.MonitorIFrame",
+          "type": "iframe"
+        }
+      ]
+    },
+    {
+      "interceptor": {
+        "uid": 1603078363742866826,
+        "created": 1528814662688,
+        "title": "Interceptor Linha 4 - Nodular",
+        "indextemplate": "TIMESTAMP:Nome:Amostra",
+        "header_items": [
+          {
+            "record_item": "Horario",
+            "record_source": "QS4-",
+            "label": "Horario",
+            "length": "280",
+            "qualify_type": "NONE"
+          },
+          {
+            "record_item": "Nome",
+            "record_source": "QS4-",
+            "label": "Nome",
+            "length": "400",
+            "qualify_type": "ACCEPT",
+            "qualify_var1": "FOFO"
+          },
+          {
+            "record_item": "Amostra",
+            "record_source": "QS4-",
+            "label": "Amostra",
+            "length": "200",
+            "qualify_type": "INDEX"
+          },
+          {
+            "record_item": "Operador",
+            "record_source": "QS4-",
+            "label": "Operador",
+            "length": "200",
+            "qualify_type": "CONTAINS",
+            "qualify_var1": "zeca"
+          },
+          {
+            "record_item": "Sequencia",
+            "record_source": "QS4-",
+            "label": "Sequencia",
+            "length": "200",
+            "qualify_type": "NONE"
+          },
+          {
+            "record_item": "Obs",
+            "record_source": "QS4-",
+            "label": "Obs",
+            "length": "500",
+            "qualify_type": "NONE"
+          },
+          {
+            "record_item": "Teste",
+            "record_source": "QS4-",
+            "label": "Teste",
+            "length": "280",
+            "qualify_type": "NONE"
+          }
+        ],
+        "alloyfilters": {
+          "alloys": [
+            {
+              "accept_tag": "default",
+              "sendto": "BROADCAST",
+              "sendtag": "INTERCEPTED",
+              "items": [
+                {
+                  "record_item": "C",
+                  "record_source": "QS4-",
+                  "label": "C",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Si",
+                  "record_source": "QS4-",
+                  "label": "Si",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Mn",
+                  "record_source": "QS4-",
+                  "label": "Mn",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "P",
+                  "record_source": "QS4-",
+                  "label": "P",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "S",
+                  "record_source": "QS4-",
+                  "label": "S",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Cr",
+                  "record_source": "QS4-",
+                  "label": "Cr",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Mo ",
+                  "record_source": "QS4-",
+                  "label": "Mo ",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Ni",
+                  "record_source": "QS4-",
+                  "label": "Ni",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Cu",
+                  "record_source": "QS4-",
+                  "label": "Cu",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Al",
+                  "record_source": "QS4-",
+                  "label": "Al",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "As",
+                  "record_source": "QS4-",
+                  "label": "As",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Co",
+                  "record_source": "QS4-",
+                  "label": "Co",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Mg",
+                  "record_source": "QS4-",
+                  "label": "Mg",
+                  "length": "250",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Nb",
+                  "record_source": "QS4-",
+                  "label": "Nb",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Pb",
+                  "record_source": "QS4-",
+                  "label": "Pb",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Sb",
+                  "record_source": "QS4-",
+                  "label": "Sb",
+                  "length": "250",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Sn",
+                  "record_source": "QS4-",
+                  "label": "Sn",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Ti",
+                  "record_source": "QS4-",
+                  "label": "Ti",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "V",
+                  "record_source": "QS4-",
+                  "label": "V",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "W",
+                  "record_source": "QS4-",
+                  "label": "W",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Zn",
+                  "record_source": "QS4-",
+                  "label": "Zn",
+                  "length": "250",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Zr",
+                  "record_source": "QS4-",
+                  "label": "Zr",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Sn",
+                  "record_source": "QS4-",
+                  "label": "Sn",
+                  "length": "250",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "N",
+                  "record_source": "QS4-",
+                  "label": "N",
+                  "qualify_type": "NONE"
+                },
+                {
+                  "record_item": "Fe",
+                  "record_source": "QS4-",
+                  "label": "Fe",
+                  "qualify_type": "NONE"
+                }
+              ]
+            },
+            {
+              "accept_tag": "FOFO Nodular",
+              "sendto": "BROADCAST",
+              "sendtag": "INTERCEPTED",
+              "items": [
+                {
+                  "record_item": "C",
+                  "record_source": "QS4-",
+                  "label": "C",
+                  "qualify_type": "RANGE",
+                  "qualify_var1": "2.7511",
+                  "qualify_var2": "2.2508999999999997"
+                },
+                {
+                  "record_item": "C",
+                  "record_source": "CSA",
+                  "label": "C-(CSA)",
+                  "qualify_type": "RANGE",
+                  "qualify_var1": "2.7511",
+                  "qualify_var2": "2.2508999999999997"
+                },
+                {
+                  "record_item": "Si",
+                  "record_source": "QS4-",
+                  "label": "Si",
+                  "qualify_type": "RANGE",
+                  "qualify_var1": "0.5632",
+                  "qualify_var2": "0.4608"
+                },
+                {
+                  "record_item": "Mn",
+                  "record_source": "QS4-",
+                  "label": "Mn",
+                  "qualify_type": "RANGE",
+                  "qualify_var1": "1.0934",
+                  "qualify_var2": "0.8946"
+                },
+                {
+                  "record_item": "P",
+                  "record_source": "QS4-",
+                  "label": "P",
+                  "qualify_type": "RANGE",
+                  "qualify_var1": "0.0418",
+                  "qualify_var2": "0.0342"
+                },
+                {
+                  "record_item": "S",
+                  "record_source": "QS4-",
+                  "label": "S",
+                  "qualify_type": "RANGE",
+                  "qualify_var1": "0.0209",
+                  "qualify_var2": "0.0171"
+                },
+                {
+                  "record_item": "Cr",
+                  "record_source": "QS4-",
+                  "label": "Cr",
+                  "qualify_type": "RANGE",
+                  "qualify_var1": "17.589",
+                  "qualify_var2": "14.391"
+                },
+                {
+                  "record_item": "Mo ",
+                  "record_source": "QS4-",
+                  "label": "Mo ",
+                  "qualify_type": "RANGE",
+                  "qualify_var1": "1.5037",
+                  "qualify_var2": "1.2303"
+                },
+                {
+                  "record_item": "Ni",
+                  "record_source": "QS4-",
+                  "label": "Ni",
+                  "qualify_type": "RANGE",
+                  "qualify_var1": "1.0472",
+                  "qualify_var2": "0.8568"
+                },
+                {
+                  "record_item": "Mg",
+                  "record_source": "QS4-",
+                  "label": "Mg",
+                  "length": "250",
+                  "qualify_type": "NONE",
+                  "qualify_var1": "0",
+                  "qualify_var2": "0"
+                },
+                {
+                  "record_item": "Fe",
+                  "record_source": "QS4-",
+                  "label": "Fe",
+                  "qualify_type": "RANGE",
+                  "qualify_var1": "84.007",
+                  "qualify_var2": "68.733"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "nodetype": "interceptor.InterceptorDescriptor",
+      "version": "1.0.0",
+      "context": 1604276060039795444,
+      "uid": 1604276060049058692,
+      "name": "Interceptor de Resultados",
+      "desc": "Dispositivo de tratamente de resultados",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1529860458184,
+      "loaded": 1529860458184,
+      "graph_widget": "2",
+      "xpos": 420.0,
+      "ypos": 210.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/gear.png",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.interceptor.InterceptorService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Interceptor de Resultados",
+          "class_name": "com.virna5.interceptor.InterceptorIFrame",
+          "type": "iframe"
+        }
+      ]
+    },
+    {
+      "source_widget": "2",
+      "target_widget": "9",
+      "nodetype": "edge.EdgeDescriptor",
+      "version": "1.0.0",
+      "context": 1604276060039795444,
+      "uid": 1604276060049115648,
+      "name": "Conector",
+      "desc": "Conector para transmissão de dados e comandos",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1529864745122,
+      "loaded": 1529864745122,
+      "graph_widget": "10",
+      "style": "entity",
+      "observ": "Observações gerais",
+      "dependencies": []
+    }
+  ],
+  "nodetype": "contexto.RootDescriptor",
+  "version": "1.0.0",
+  "context": 1604276060039795444,
+  "uid": 1604276060049185723,
+  "name": "Root",
+  "desc": "Root",
+  "designer": "msantos",
+  "owner": "BSW",
+  "created": 1529956478617,
+  "loaded": 1529956478617,
+  "graph_widget": "1",
+  "observ": "Observações gerais",
+  "dependencies": []
+}

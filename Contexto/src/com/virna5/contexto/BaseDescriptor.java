@@ -52,6 +52,8 @@ public class BaseDescriptor implements SignalListener{
     
     private transient Integer alarm_handle = 0;
 
+    private boolean autoloadui = false;
+    
     
     public BaseDescriptor() {
         
@@ -419,6 +421,20 @@ public class BaseDescriptor implements SignalListener{
      */
     public void setAlarm_handle(Integer alarm_handle) {
         this.alarm_handle = alarm_handle;
+    }
+
+    /**
+     * @return the autoloadui
+     */
+    public boolean isAutoloadui() {
+        return autoloadui;
+    }
+
+    /**
+     * @param autoloadui the autoloadui to set
+     */
+    public void setAutoloadui(boolean autoloadui) {
+        this.autoloadui = autoloadui;
     }
 
     

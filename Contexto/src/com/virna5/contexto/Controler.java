@@ -72,6 +72,8 @@ public class Controler implements SignalListener{
         
         log.setLevel(Level.FINE);
         
+        ContextUtils.loadConfig();
+        
         contextpool = new ContextPool();
         
         artifacts = new LinkedHashMap<>();
@@ -84,7 +86,6 @@ public class Controler implements SignalListener{
         alarms = new LinkedHashMap<>();
         scheduler = Executors.newScheduledThreadPool(5);
         
-        log.setLevel(Level.FINE);
         loghandler = OutHandler.getInstance();
         log.addHandler(loghandler);
     
@@ -111,8 +112,6 @@ public class Controler implements SignalListener{
     }
     
     
-    
-    
     public void setView(ControleTopComponent top){
         this.top = top;
         //top.addContextEventListener(this);
@@ -127,8 +126,6 @@ public class Controler implements SignalListener{
         }
         return null;
     }
-    
-    
     
     
     // ================================================================ALARMS  =====================================================
@@ -299,6 +296,9 @@ public class Controler implements SignalListener{
                         service.configService(bd);
                         cc.addMap(bd.getGraph_widget(), bd);
                         listeners.add(bd);
+                        
+                        
+                        
                     }
                 }
             }              
