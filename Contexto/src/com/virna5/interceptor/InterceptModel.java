@@ -8,6 +8,9 @@ package com.virna5.interceptor;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.virna5.contexto.ContextUtils;
+import com.virna5.contexto.SMTraffic;
+import com.virna5.contexto.VirnaPayload;
+import com.virna5.contexto.VirnaServices;
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,6 +45,8 @@ public class InterceptModel {
     private InterceptorTemplate master_interceptor_template;
     private InterceptorTemplate cit;
     private String indexid;
+    
+    private Boolean intercept = true;
    
     private int indexgroup;
     private List<LinkedHashMap<String,InterceptorTemplate>> indexes;
@@ -51,9 +56,18 @@ public class InterceptModel {
     private LinkedHashMap<String,InterceptorTemplate> defaultruns;
    
     private InterceptorIFrame view;
+    private InterceptorDescriptor descriptor;
+    private InterceptorService service;
+    private String last_alloy = "";
+    private String last_sample = "";
+    
+    
      
-    public InterceptModel(InterceptorIFrame _view) {
+    public InterceptModel(InterceptorIFrame _view, InterceptorDescriptor desc) {
         this.view = _view;
+        this.descriptor = desc;
+        service = (InterceptorService)desc.getService();
+        
         initModel(); 
     }
     
@@ -62,9 +76,9 @@ public class InterceptModel {
         initModel(); 
     }
     
-     public InterceptModel(InterceptorTemplate it) {
+    public InterceptModel(InterceptorTemplate it) {
         
-         this.view = null;
+        this.view = null;
         
         holdruns = new LinkedHashMap<>();
         validatedruns = new LinkedHashMap<>();
@@ -115,9 +129,9 @@ public class InterceptModel {
         indexgroup = 3;
       
         
-        if ( loadTemplate(ContextUtils.CONTEXTDIR+ContextUtils.file_separator+"default_interceptor.tmpl")){  
-        //if ( loadTemplate("/Bascon/BSW1/Testbench/area3/record6.tmpl")){  
-            
+        //if ( loadTemplate(ContextUtils.CONTEXTDIR+ContextUtils.file_separator+"default_interceptor.tmpl")){
+        if (descriptor.getInterceptor() != null){
+            master_interceptor_template = descriptor.getInterceptor();
             for (ItemDescriptor id : master_interceptor_template.getHeader_items()){
                 id.setValue(null);
                 if (id.getQualify_type() == null){
@@ -271,12 +285,18 @@ public class InterceptModel {
                     id.setValue(value);
                     id.setEditied(true);
                     id.getVpanel().setColor(Color.RED);
-                      if (id.isValid()){
-                          id.getVpanel().setStatus(id.getIcon());
-                      }
-                      else{
-                          id.getVpanel().setStatus(id.getIcon());
-                      }
+                    if (id.isValid()){
+                        id.getVpanel().setStatus(id.getIcon());
+                    }
+                    else{
+                        id.getVpanel().setStatus(id.getIcon());
+                    }
+                    for (ResultField rf : rr.getFields()){
+                        if (rf.getName().equals(field)){
+                            rf.setValue(value);
+                        }
+                    }
+                      
                     break;
                 }
             }
@@ -284,39 +304,44 @@ public class InterceptModel {
         
     }
     
-    private boolean isQualifiedRun(){
+    private int isQualifiedRun(){
         
-       String tag;
-       ItemDescriptor id = master_interceptor_template.getAcceptItem();
+        String tag;
+        last_alloy = "";
         
+        ItemDescriptor id = master_interceptor_template.getAcceptItem();
+     
         if (id != null){
             for (ResultField rf : rr.getHeader()){
-                if (rf.getName().equals(id.getRecord_item())){
+                if (id.getQualify_type().equals("*") || rf.getName().equals(id.getRecord_item())){
                     tag = master_interceptor_template.hasFilter(rf.getValue());
                     if (tag != null){
                         id.getHpanel().setColor(new java.awt.Color(0, 153, 153));
                         master_interceptor_template.setCurrentFilter(tag);
                         indexid = ContextUtils.getTimestamp()+" ! "+rf.getValue();
-                        return true;
+                        last_alloy = tag;
+                        return 1;
                     }
                     else{
                         indexid = ContextUtils.getTimestamp()+" ! "+"default";
                         id.getHpanel().setColor(new java.awt.Color(255, 0, 0));
                         master_interceptor_template.setCurrentFilter(master_interceptor_template.getdefaultFilter());
-                        return false;
+                        return 0;
                     }
 
                 }
             }
         }
+        
         master_interceptor_template.setCurrentFilter(master_interceptor_template.getdefaultFilter());
-        return false;
+        return -1;
     }
     
     
     private boolean isLoadedRun(){
         
         String tag;
+        last_sample = "";
         
         //if (holdruns.isEmpty()) return false;
         ItemDescriptor id = master_interceptor_template.getIndexItem();
@@ -326,16 +351,19 @@ public class InterceptModel {
                 if (rf.getName().equals(id.getRecord_item())){
                     if (holdruns.isEmpty()){
                         indexid = indexid + " ! "+ rf.getValue();
+                        last_sample = rf.getValue();
                         return false;
                     }
                     else{
                         tag = locateHoldRun(rf.getValue());
                         if (tag == null){
                             indexid = indexid + " ! "+ rf.getValue();
+                            last_sample = rf.getValue();
                             return false;
                         }
                         else{
                             indexid = tag;
+                            last_sample = rf.getValue();
                             return true;
                         } 
                     } 
@@ -343,6 +371,7 @@ public class InterceptModel {
             }
         }
         indexid = indexid + " | sem index";
+        last_sample = "";
         return false;
     }
     
@@ -375,19 +404,28 @@ public class InterceptModel {
         return null;
     }
     
-    public boolean loadRecord(String file){
+    public boolean loadRecord(String file , boolean isgson){
      
+        String payload="";
+        
         try {
             GsonBuilder builder = new GsonBuilder();
             builder.setPrettyPrinting();
             Gson gson = builder.create();
-            
-            String payload = ContextUtils.loadFile (file);
+       
+            if (isgson){
+                payload = file;
+            }
+            else{
+                payload = ContextUtils.loadFile(file);
+            }
             rr = gson.fromJson(payload,  ResultRecord.class);
  
-            if (isQualifiedRun()){
+       
+            if (isQualifiedRun() == 1){  // Qualified and alloy found
                 if (isLoadedRun()){
-                    LOG.info("Qualified and loaded");
+                    LOG.info("Alloy Qualified and Loaded");
+                    view.updateStatusBar("Amostra " + last_sample + "  foi atualizada");
                     cit = holdruns.get(indexid);
                     updateTemplate();
                     if (validateRun()){
@@ -399,7 +437,8 @@ public class InterceptModel {
                     }
                 }
                 else{
-                    LOG.info("Qualified and not loaded"); 
+                    LOG.info("Alloy Qualified and not loaded");
+                    view.updateStatusBar("Liga " + last_alloy + " Qualificada");
                     cit = this.master_interceptor_template.clone();               
                     updateTemplate();
                     if (validateRun()){
@@ -412,12 +451,33 @@ public class InterceptModel {
                     }
                 }
             }
-            else{
-                LOG.info("Not Qualified");
+            else if (isQualifiedRun() == 0){  // Qualified
+                LOG.info("Not Qualified ");
+                view.updateStatusBar("Analise não foi qualificada");
                 cit = this.master_interceptor_template.clone();
                 updateTemplate();
-                defaultruns.put(this.indexid, cit);
-                view.addIndexItem(indexid, 0);
+                
+                if (!intercept){
+                    validatedruns.put(this.indexid, cit);
+                    view.addIndexItem(indexid, 1);
+                    SMTraffic signal = new SMTraffic(descriptor.getUID(),
+                                            VirnaServices.CMDS.LOADSTATE,
+                                            0, 
+                                            VirnaServices.STATES.SENDRECORD, 
+                                            new VirnaPayload().setString(payload)
+                                );
+                    service.processSignal(signal, descriptor);
+                }
+                else{
+                    defaultruns.put(this.indexid, cit);
+                    view.addIndexItem(indexid, 0);
+                }
+                
+            }
+            else {  // Not intercepted
+                LOG.info("Not Intercepted");
+                view.updateStatusBar("Analise não foi interceptada");
+                return false;
             }
             return true;
             
@@ -425,6 +485,47 @@ public class InterceptModel {
             Exceptions.printStackTrace(ex);
         }
         return false;
+    }
+    
+    
+    public void sendRecord(){
+        
+        String sjson;
+  
+        GsonBuilder builder = new GsonBuilder(); 
+        builder.setPrettyPrinting(); 
+        Gson gson = builder.create();
+        sjson = gson.toJson(rr);
+        
+//        LOG.info("========== JSON : ==================\n\r");
+//        LOG.info(sjson);
+//        LOG.info(String.format("Json parser sent Result Record", sjson.length()));
+     
+        SMTraffic signal = new SMTraffic(descriptor.getUID(),
+                                            VirnaServices.CMDS.LOADSTATE,
+                                            0, 
+                                            VirnaServices.STATES.SENDRECORD, 
+                                            new VirnaPayload().setString(sjson)
+                                         );
+        
+        service.processSignal(signal, descriptor);
+        
+        int group = view.getIndexGroup();
+        String elm = view.getActiveElement();
+        
+        if (elm.contains("Não há")){
+            view.updateStatusBar("Não há analises a enviar !");
+            return;
+        }
+  
+        InterceptorTemplate itp = indexes.get(group).get(elm);
+        indexes.get(group).remove(elm);
+        indexes.get(1).put(elm, itp);
+        
+        view.removeIndexItem(elm);
+        view.setIndexGroup(1);
+        view.addIndexItem(elm, 1);
+    
     }
     
     
@@ -469,6 +570,7 @@ public class InterceptModel {
     }
     
     public void updateView(String run, int group){
+
         
         cit = indexes.get(group).get(run);
         indexgroup = group;
@@ -482,6 +584,14 @@ public class InterceptModel {
             id.getVpanel().setValue(id.getValue());
         }
         
+    }
+
+    public Boolean getIntercept() {
+        return intercept;
+    }
+
+    public void setIntercept(Boolean intercept) {
+        this.intercept = intercept;
     }
     
     

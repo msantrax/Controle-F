@@ -13,9 +13,11 @@ import com.virna5.contexto.SMTraffic;
 import com.virna5.contexto.VirnaPayload;
 import com.virna5.contexto.VirnaServices;
 import java.awt.Color;
+import java.beans.PropertyVetoException;
 import javax.swing.JInternalFrame;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.Exceptions;
 
 
 public class MonitorIFrame extends JInternalFrame implements MonitorIFrameInterface{
@@ -33,7 +35,15 @@ public class MonitorIFrame extends JInternalFrame implements MonitorIFrameInterf
           
     }
 
-    
+    public void iconifyFrame(boolean icon){
+        
+        try {
+            this.setIcon(icon);
+        } catch (PropertyVetoException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        
+    }
     
     // ============================================== POINTERS DE MANEJAMENTO ================================================
     /**

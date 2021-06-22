@@ -31,8 +31,6 @@ import org.openide.util.Exceptions;
 public class QS4GeneratorFieldsPanel extends javax.swing.JPanel implements TableModelListener{
 
     private static final Logger log = Logger.getLogger(QS4GeneratorFieldsPanel.class.getName());
-
-    
     protected QS4GeneratorFieldsWrapper cfw;
     
     

@@ -295,10 +295,7 @@ public class Controler implements SignalListener{
                         bd.setService(service);
                         service.configService(bd);
                         cc.addMap(bd.getGraph_widget(), bd);
-                        listeners.add(bd);
-                        
-                        
-                        
+                        listeners.add(bd);  
                     }
                 }
             }              
@@ -393,6 +390,7 @@ public class Controler implements SignalListener{
                                 rd.getObs());      
                 
                 log.fine(String.format("Adding context %s to contextpool", filename));
+                
             }
             else{
                 //cc.loadDescriptor(lcd, filename);
@@ -687,7 +685,7 @@ public class Controler implements SignalListener{
                                     }
                                     else{
                                         removeTask (cc);
-                                        contextpool.remove(cc);
+                                        //contextpool.remove(cc);
                                         top.removeTask(uid, selected);
                                     }
                                 }
@@ -730,8 +728,9 @@ public class Controler implements SignalListener{
                 }
             } catch (Exception ex) {
                 log.log(Level.WARNING, "Falha na maquina de estados do Controle : " + ex.toString());
+                ex.printStackTrace();
                 NotifyDescriptor nd = new NotifyDescriptor.Message(
-                                        "<html><h3 style=\"color:red;\">Erro na maquina de estados no modulo controle :</h2></html>", 
+                                        "<html><h3 style=\"color:red;\">Erro na maquina de estados no modulo controle :</h3></html>", 
                                         NotifyDescriptor.ERROR_MESSAGE);
                                 nd.setTitle("Ooops !! - Mensagem do Gerente de Processos");
                                 

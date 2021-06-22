@@ -1,0 +1,93 @@
+<?xml version="1.0" standalone="yes"?>
+<NewDataSet>
+  <xs:schema id="NewDataSet" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true">
+      <xs:complexType>
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="limitcard">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="limitcard_name" type="xs:string" />
+                <xs:element name="limit_group" type="xs:string" />
+                <xs:element name="limit_kind" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="limits">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="limitcard_name" type="xs:string" />
+                <xs:element name="limit_group" type="xs:string" />
+                <xs:element name="compoundinfo_name" type="xs:string" />
+                <xs:element name="warning_low" type="xs:double" minOccurs="0" />
+                <xs:element name="warning_high" type="xs:double" minOccurs="0" />
+                <xs:element name="nominal_value" type="xs:double" minOccurs="0" />
+                <xs:element name="alarm_low" type="xs:double" minOccurs="0" />
+                <xs:element name="alarm_high" type="xs:double" minOccurs="0" />
+                <xs:element name="weight" type="xs:double" minOccurs="0" />
+                <xs:element name="symbol" type="xs:string" minOccurs="0" />
+                <xs:element name="pmi_max_rsd" type="xs:double" minOccurs="0" />
+                <xs:element name="type_stdz_corr_mode" type="xs:int" minOccurs="0" />
+                <xs:element name="is_used" type="xs:boolean" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="localized_limitcard_names">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="limitcard_name" type="xs:string" />
+                <xs:element name="localized_standard" type="xs:string" />
+                <xs:element name="material_name" type="xs:string" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="version">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="version" type="xs:int" minOccurs="0" />
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//limitcard" />
+        <xs:field xpath="limitcard_name" />
+        <xs:field xpath="limit_group" />
+      </xs:unique>
+      <xs:unique name="Constraint2">
+        <xs:selector xpath=".//limitcard" />
+        <xs:field xpath="limitcard_name" />
+      </xs:unique>
+      <xs:unique name="limits_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//limits" />
+        <xs:field xpath="limitcard_name" />
+        <xs:field xpath="limit_group" />
+        <xs:field xpath="compoundinfo_name" />
+      </xs:unique>
+      <xs:unique name="localized_limitcard_names_Constraint1" msdata:ConstraintName="Constraint1" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//localized_limitcard_names" />
+        <xs:field xpath="limitcard_name" />
+        <xs:field xpath="localized_standard" />
+      </xs:unique>
+      <xs:keyref name="Relation_limitcards_localnames" refer="Constraint2">
+        <xs:selector xpath=".//localized_limitcard_names" />
+        <xs:field xpath="limitcard_name" />
+      </xs:keyref>
+      <xs:keyref name="Relation_limitcards_limits" refer="Constraint1">
+        <xs:selector xpath=".//limits" />
+        <xs:field xpath="limitcard_name" />
+        <xs:field xpath="limit_group" />
+      </xs:keyref>
+    </xs:element>
+  </xs:schema>
+  <limitcard>
+    <limitcard_name>token:limitcard_name</limitcard_name>
+    <limit_group>token:limit_group</limit_group>
+    <limit_kind>1</limit_kind>
+  </limitcard>
+token:body    
+  <version>
+    <version>1</version>
+  </version>
+</NewDataSet>

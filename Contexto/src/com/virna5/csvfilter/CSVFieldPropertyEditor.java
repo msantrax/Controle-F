@@ -30,8 +30,21 @@ public class CSVFieldPropertyEditor extends PropertyEditorSupport implements ExP
        Object[] beans = pe.getBeans();
        CSVFilterNode cfn = (CSVFilterNode) beans[0];
        cfw = cfn.getCfw();      
-       log.info(String.format("Attaching CSV env : %d with %d fields", cfw.hashCode(), cfw.size()));
+       //log.info(String.format("Attaching CSV env : %d with %d fields", cfw.hashCode(), cfw.size()));
+       sanityzeFields();
+       
     }  
+    
+    public void sanityzeFields(){
+        
+        for (CSVField csvf : cfw){
+            if (!csvf.isReadcsv()){
+                csvf.resultseq=0;
+            }
+        }
+        
+    }
+    
     
     
     @Override

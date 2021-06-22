@@ -63,7 +63,8 @@ public class VirnaServices {
                                 FOB_READ,FOB_SETPATH,
                                 QS4GEN_GEN,FWRITER_WRITE,CSV_CONVERT,
                                 
-                                LOADRECORD
+                                LOADRECORD, SENDRECORD
+                                
                                 
                                 
                               };

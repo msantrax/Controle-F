@@ -268,9 +268,6 @@
                   <SubComponents>
                     <Component class="javax.swing.JButton" name="bt_removetask">
                       <Properties>
-                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/com/virna5/graphimages/remove.png"/>
-                        </Property>
                         <Property name="text" type="java.lang.String" value="Remover Tarefa" noResource="true"/>
                       </Properties>
                       <Events>
@@ -279,9 +276,6 @@
                     </Component>
                     <Component class="javax.swing.JButton" name="bt_addtask">
                       <Properties>
-                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                          <Image iconType="3" name="/com/virna5/contexto/exec.png"/>
-                        </Property>
                         <Property name="text" type="java.lang.String" value="Adicionar Tarefa"/>
                       </Properties>
                       <Events>

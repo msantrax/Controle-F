@@ -51,6 +51,11 @@ public class QS4GeneratorDescriptor extends BaseDescriptor {
         
         generatorfields.add(QS4GeneratorField.QS4GeneratorFieldFactory(0));
         
+        autoloadui = true;
+        iconifyui = true;
+        uilandx = 150;
+        uilandy = 180;
+        
     }
 
     @Override

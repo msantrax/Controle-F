@@ -50,8 +50,6 @@ public class ContextUtils {
     private static final Logger LOG = Logger.getLogger(ContextUtils.class.getName());
     
     
-    
-    
     public static String CONTEXTDIR;// = "/Bascon/BSW1/Testbench/";
     public static String TASKSDIR;//= CONTEXTDIR + "Ctx/";
     public static String TEMPLATESDIR;// = CONTEXTDIR + "Templates/";
@@ -65,11 +63,9 @@ public class ContextUtils {
     public static final DateFormat dateFormat = new SimpleDateFormat("d-MMM-yyyy HH:mm:ss"); 
     
     public static final String timestamp_format = "%1$td-%1$tm-%1$tY %1$tH:%1$tM:%1$tS:%1$tL";
+    public static final String compact_timestamp_format = "%1$td%1$tm%1$ty%1$tH%1$tM%1$tS";
     
     public static String OWNER = "BSW";
-    
-    
-    
     
     
     private static final Preferences config = NbPreferences.root();
@@ -101,6 +97,10 @@ public class ContextUtils {
         return String.format(ContextUtils.timestamp_format,Calendar.getInstance());
     }
     
+    
+    public static String getCompactTimestamp(){
+        return String.format(ContextUtils.compact_timestamp_format,Calendar.getInstance());
+    }
     public static String loadFile (String filename) throws IOException{
                
         Path p = Paths.get( filename);
@@ -198,20 +198,20 @@ public class ContextUtils {
         if (file_separator.equals("/")){
             // Linux
             //CONTEXTDIR = "/Bascon/BSW1/Testbench/";
-            CONTEXTDIR = app_dir+"/Data";
+            CONTEXTDIR = "/Bascon/BSW1/Controle";
             TASKSDIR = CONTEXTDIR + "/Ctx";
             TEMPLATESDIR = CONTEXTDIR + "/Templates";
             SAMPLESDIR = CONTEXTDIR + "/area3";
-            AUTOLOAD = TASKSDIR + "/task19.tsk" ;
+            AUTOLOAD = TASKSDIR + "/unx_bsw3_qefgen_qsgen_interceptor.tsk" ;
             CONFIGFILE = netbeans_config + "/config/Preferences.properties";         
         }
         else{
             // Windows
-            CONTEXTDIR = app_dir + "\\Data";
+            CONTEXTDIR = "C:\\Controle";
             TASKSDIR = CONTEXTDIR + "\\Ctx";
             TEMPLATESDIR = CONTEXTDIR + "\\Templates";
             SAMPLESDIR = CONTEXTDIR + "\\area3";
-            AUTOLOAD = TASKSDIR + "\\task19.tsk" ;
+            AUTOLOAD = TASKSDIR + "\\w_bsw3_qefgen_qsgen_nointercept.tsk" ;
             CONFIGFILE = netbeans_config + "\\config\\Preferences.properties";
         }
         
@@ -226,6 +226,7 @@ public class ContextUtils {
             CONTEXTDIR = config.get("context_dir", CONTEXTDIR);
             TASKSDIR = config.get("tasks_dir", TASKSDIR);
             TEMPLATESDIR = config.get("templates_dir", TEMPLATESDIR);
+            AUTOLOAD = config.get("AUTOLOAD", AUTOLOAD);
         }
         
         Path p = Paths.get(CONTEXTDIR);
@@ -356,8 +357,6 @@ public class ContextUtils {
         config.put("samples_dir", SAMPLESDIR);
         config.put("AUTOLOAD", AUTOLOAD);
         
-        
-       
         try {
             config.flush();
             publishDLGLog ( "Arquivo de config primário criado em : " + CONFIGFILE);

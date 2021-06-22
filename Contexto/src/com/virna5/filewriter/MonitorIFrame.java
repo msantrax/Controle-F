@@ -11,13 +11,11 @@ import com.virna5.contexto.ContextUtils;
 import com.virna5.contexto.MonitorIFrameInterface;
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.beans.PropertyVetoException;
 import javax.swing.JInternalFrame;
-import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.Exceptions;
 
 
 public class MonitorIFrame extends JInternalFrame implements MonitorIFrameInterface{
@@ -35,7 +33,15 @@ public class MonitorIFrame extends JInternalFrame implements MonitorIFrameInterf
           
     }
 
-    
+    public void iconifyFrame(boolean icon){
+        
+        try {
+            this.setIcon(icon);
+        } catch (PropertyVetoException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        
+    }
     
     // ============================================== POINTERS DE MANEJAMENTO ================================================
     /**

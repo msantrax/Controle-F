@@ -75,14 +75,14 @@ public class HeaderItemPanel  extends javax.swing.JPanel{
         setOpaque(false);
         setPreferredSize(new java.awt.Dimension(size, 30));
 
-        flabel.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
-        flabel.setForeground(new java.awt.Color(255, 255, 255));
+        flabel.setFont(new java.awt.Font("DejaVu Sans", 1, 10)); // NOI18N
+        flabel.setForeground(new java.awt.Color(153, 153, 153));
         flabel.setText(_label); // NOI18N
         //flabel.setIcon(InterceptModel.ICON_OK); // NOI18N
 
-        fvalue.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
+        fvalue.setFont(new java.awt.Font("DejaVu Sans", 0, 10)); // NOI18N
         fvalue.setText(_value); // NOI18N
-        fvalue.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        fvalue.setBorder(javax.swing.BorderFactory.createEmptyBorder());//   createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         fvalue.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 fvalueActionPerformed(evt);

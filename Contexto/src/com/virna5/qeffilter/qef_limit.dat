@@ -1,0 +1,16 @@
+  <limits>
+    <limitcard_name>token:limitcard_name</limitcard_name>
+    <limit_group>token:limit_group</limit_group>
+    <compoundinfo_name>token:compoundinfo_name</compoundinfo_name>
+    <warning_low>token:warning_low</warning_low>
+    <warning_high>token:warning_high</warning_high>
+    <nominal_value>token:nominal_value</nominal_value>
+    <alarm_low>token:alarm_low</alarm_low>
+    <alarm_high>token:alarm_high</alarm_high>
+    <weight>1</weight>
+    <symbol>%</symbol>
+    <pmi_max_rsd>50</pmi_max_rsd>
+    <type_stdz_corr_mode>1</type_stdz_corr_mode>
+    <is_used>true</is_used>
+  </limits>
+

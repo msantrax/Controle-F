@@ -226,11 +226,15 @@ public class FileObserverService extends BaseService {
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;    
                         
-                         case TSK_CLEAR:
+                        case TSK_CLEAR:
                             liframe = (com.virna5.fileobserver.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
                             if (liframe != null){
                                 JDesktopPane mon = liframe.getDesktopPane();
-                                mon.remove(liframe);
+                                //liframe.iconifyFrame(false);
+//                                mon.getDesktopManager().deiconifyFrame(liframe); 
+//                                mon.remove(liframe);
+                                
+                                mon.getDesktopManager().closeFrame(liframe);
                                 log.fine("UI Interface removed @ FileObserver");
                             }
                             states_stack.push(VirnaServices.STATES.IDLE);
@@ -240,6 +244,9 @@ public class FileObserverService extends BaseService {
                             log.fine("FOB doing initui @ "+ smm.getHandle());
                             liframe = (com.virna5.fileobserver.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
                             fodesc = (FileObserverDescriptor)descriptors.get(smm.getHandle());
+                            liframe.setIcon(fodesc.getIconifyui());
+                            liframe.setLocation(fodesc.getUilandx(), fodesc.getUilandy());
+                            
                             if (liframe != null){
                                 liframe.updateUIDirect(new FileObserverUIUpdater()
                                                             .setFilename(fodesc.getInputfile_path())
@@ -285,12 +292,12 @@ public class FileObserverService extends BaseService {
                             
                             boolean dorequest = false;
                             if (fodesc.getAlarm_handle() != 0 && fodesc.getAutomatic() ){
-                                 log.fine("Observ Request - automatic mode :");
+                                 //log.fine("Observ Request - automatic mode :");
                                  dorequest = true;
                             }
                             else if (fodesc.getAlarm_handle() != 0 && !fodesc.getAutomatic() ){
                                 if (smm.getCode() == 1){
-                                    log.fine("Observ Request - suspended manual mode :");
+                                    //log.fine("Observ Request - suspended manual mode :");
                                     dorequest = true;
                                 }
                                 else{
@@ -306,9 +313,9 @@ public class FileObserverService extends BaseService {
                                 try{
                                     Path obspath = Paths.get(fodesc.getInputfile_path());
                                     Boolean phe = Files.exists(obspath, lkop);
-                                    log.fine(String.format("File %s exists=%b", obspath.toString(), phe));
+                                    //log.fine(String.format("File %s exists=%b", obspath.toString(), phe));
                                     boolean isdir = Files.isDirectory(obspath, lkop);
-                                    log.fine(String.format("Directory=%b", isdir));
+                                    //log.fine(String.format("Directory=%b", isdir));
                                     if (phe && !isdir){
                                         String pld = ContextUtils.loadFile(obspath.toString());
                                         fodesc.setPayload(pld);
@@ -316,9 +323,17 @@ public class FileObserverService extends BaseService {
                                             liframe.updateUIDirect(new FileObserverUIUpdater()
                                                                         .setLedcolor(MonitorIFrameInterface.LED_GREEN_ON)
                                             );
+                                            
                                         }
                                         if (!fodesc.getMultiline()){
                                             Files.delete(obspath);
+                                        }
+                                        
+                                        if (fodesc.getOutputfile() != null || !fodesc.getOutputfile().equals("") ){
+                                            String tstamp = ContextUtils.getCompactTimestamp();
+                                            String outpath = fodesc.getOutputfile() + "/" + tstamp + "_" + obspath.getFileName();
+                                            ContextUtils.saveFile(outpath, pld);
+                                            
                                         }
                                         
                                         fodesc.notifySignalListeners(0, new SMTraffic(fodesc.getUID(),
@@ -340,7 +355,7 @@ public class FileObserverService extends BaseService {
                                     
                                     
                                 }catch (Exception ex){
-                                    log.fine(String.format("Failed to read due : %s", ex.toString()));
+                                    log.fine(String.format("File I/O fault detected : " + ex.toString()));
                                     if (liframe != null){
                                         liframe.updateUIDirect(new FileObserverUIUpdater()
                                                                     .setLedcolor(MonitorIFrameInterface.LED_RED)
@@ -361,7 +376,7 @@ public class FileObserverService extends BaseService {
                     }
                 }
             } catch (Exception ex) {
-                log.log(Level.WARNING, ex.toString());
+                log.log(Level.SEVERE,"Falha na máquina de estados no Observador de Arquivos : " + ex.toString());
                 startService();
             }
 

@@ -34,9 +34,9 @@ import org.openide.windows.WindowManager;
 @TopComponent.Description(
         preferredID = "GraphTopComponent",
         iconBase = "com/virna5/graph/frame_edit.png",
-        persistenceType = TopComponent.PERSISTENCE_ONLY_OPENED
+        persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
-@TopComponent.Registration(mode = "editor", openAtStartup = false)
+@TopComponent.Registration(mode = "editor", openAtStartup = true)
 @ActionID(category = "Window", id = "com.virna5.graph.GraphTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(

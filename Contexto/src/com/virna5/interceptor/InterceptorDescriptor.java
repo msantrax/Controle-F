@@ -33,10 +33,10 @@ public class InterceptorDescriptor extends BaseDescriptor{
         
         super();
         dependencies = new String[] { "com.virna5.interceptor.InterceptorService" };
-        interfaces = new UIInterface[] { new UIInterface("Iterceptor de resultados", "com.virna5.interceptor.InterceptorIFrame", "iframe") };
+        interfaces = new UIInterface[] { new UIInterface("Interceptor de resultados", "com.virna5.interceptor.InterceptorIFrame", "iframe") };
             
         name="Interceptor de Resultados";
-        desc = "Dispositivo de tratamente de resultados";
+        desc = "Dispositivo de tratamento de resultados";
         
         nodetype = "interceptor.InterceptorDescriptor";
         version = "1.0.0";

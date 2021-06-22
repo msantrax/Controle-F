@@ -13,7 +13,7 @@ public class Installer extends ModuleInstall {
     public void restored() {
         
         LoginHandler.getDefault().showLoginDlg();
-       
+        System.setProperty("netbeans.buildnumber", "101218003712");
     }
 
 }

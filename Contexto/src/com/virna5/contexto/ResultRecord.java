@@ -170,7 +170,13 @@ public class ResultRecord {
         return values;
     }
     
-    
+    public ResultField findField(String name){
+        
+        for (ResultField rf : fields){
+            if (rf.getName().equals(name)) return rf;
+        }
+        return null;
+    }
     
     
 }

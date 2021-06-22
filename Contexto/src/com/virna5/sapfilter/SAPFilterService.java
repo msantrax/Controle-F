@@ -5,20 +5,15 @@
  */
 package com.virna5.sapfilter;
 
-import com.virna5.csvfilter.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.virna5.contexto.BaseDescriptor;
 import com.virna5.contexto.BaseService;
-import com.virna5.contexto.ContextNodes;
-import com.virna5.contexto.ContextNodesDeserializer;
 import com.virna5.contexto.ResultField;
 import com.virna5.contexto.ResultRecord;
-import com.virna5.contexto.RootDescriptor;
 import com.virna5.contexto.SMTraffic;
 import com.virna5.contexto.VirnaPayload;
 import com.virna5.contexto.VirnaServices;
-import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -187,7 +182,7 @@ public class SAPFilterService extends BaseService {
         
         private BaseDescriptor temp_bd;
         private SAPFilterDescriptor fodesc;
-        //private com.virna5.csvfilter.MonitorIFrame liframe;
+        private com.virna5.sapfilter.MonitorIFrame liframe;
         
 
         public SMThread(BlockingQueue<SMTraffic> tqueue) {
@@ -253,12 +248,14 @@ public class SAPFilterService extends BaseService {
                             break;    
                         
                        case TSK_CLEAR:
-//                            liframe = (com.virna5.csvfilter.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
-//                            if (liframe != null){
-//                                JDesktopPane mon = liframe.getDesktopPane();
-//                                mon.remove(liframe);
-//                                log.fine("UI Interface removed @ CSVFilter");
-//                            }
+                            liframe = (com.virna5.sapfilter.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
+                            if (liframe != null){
+                                JDesktopPane mon = liframe.getDesktopPane();
+                                //mon.remove(liframe);
+                                
+                                mon.getDesktopManager().closeFrame(liframe);
+                                log.fine("UI Interface removed @ SAPFilter");
+                            }
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;        
  
@@ -287,7 +284,8 @@ public class SAPFilterService extends BaseService {
                     }
                 }
             } catch (Exception ex) {
-                log.log(Level.WARNING, ex.toString());
+                log.log(Level.SEVERE,"Falha na máquina de estados no Filtro SAP : " + ex.toString());
+                startService();
             }
 
         }

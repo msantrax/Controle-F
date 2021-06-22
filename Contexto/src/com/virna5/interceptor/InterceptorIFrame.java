@@ -10,12 +10,14 @@ import com.virna5.contexto.BaseService;
 import com.virna5.contexto.ContextUtils;
 import com.virna5.contexto.MonitorIFrameInterface;
 import java.awt.Color;
+import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JInternalFrame;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -43,14 +45,35 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
         this.cb_index.setSelectedIndex(0);
         this.cb_index.updateUI();
         
-        vm = new InterceptModel(this);
-        this.setTitle(vm.getTemplate().getTitle());
         
-        populateHeader();
         //populateValues();
         
     }
 
+    public void initModel(InterceptorDescriptor desc){
+        
+        vm = new InterceptModel(this, desc);
+        this.setTitle(vm.getTemplate().getTitle());        
+        populateHeader();
+    }
+    
+    
+    public void iconifyFrame(boolean icon){
+        
+        try {
+            this.setIcon(icon);
+        } catch (PropertyVetoException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        
+    }
+    
+    public void updateStatusBar(String mes){
+        
+        this.statusbar.setText(ContextUtils.getCompactTimestamp()+" => "+mes);
+    }
+    
+    
     // ============================================== POINTERS DE MANEJAMENTO ================================================
     /**
      * @return the descriptor
@@ -64,6 +87,7 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
      */
     public void setDescriptor(BaseDescriptor _descriptor) {
         this.descriptor = (InterceptorDescriptor)_descriptor;
+        initModel(descriptor);
         
     }
 
@@ -96,16 +120,25 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
         this.iframeid = iframeid;
     }
     
-    
-    
+ 
     // ============================================== Particular  ================================================
     
     public void addIndexItem (String item, int group){  
         setIndexGroup(group);
         index_cbmodel.addItem(item);
         this.cb_index.setSelectedIndex(this.cb_index.getItemCount()-1);
-        this.cb_index.updateUI();
+        //this.cb_index.updateUI();
     }
+    
+    public void removeIndexItem (String item){  
+        
+        index_cbmodel.removeItem(item);
+        
+        //this.cb_index.setSelectedIndex(this.cb_index.getItemCount()-1);
+        //this.cb_index.updateUI();
+    }
+    
+    
   
     public void setIndexGroup(int group) {
         index_cbmodel.setGroup(group);
@@ -123,6 +156,10 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
         
     }
     
+    public int getIndexGroup() { return index_cbmodel.group;}
+    
+    public String getActiveElement() { return index_cbmodel.getActive(); }
+    
     public void activateIndexGroup (int group){
         
         index_cbmodel.setGroup(group);
@@ -132,7 +169,7 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
 
     @Override
     public void updateUI(Color ledcolor, String message) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     
@@ -184,20 +221,33 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
             return groups.get(group).get(pos);
         }
         
+        public String getActive(){
+            
+            String out = (String)getSelectedItem();
+            return out;
+        }
+        
         @Override
         public int getSize(){
             return groups.get(group).size();
         }
     };
   
+    public void clearCanvas(){
+        
+        pnl_id.removeAll();
+        pnl_values.removeAll();
+        
+    }
+    
     
     public void populateHeader(){
         
         HeaderItemPanel hip;
         pnl_id.removeAll();
         
-        for (ItemDescriptor id : vm.getHeaderItems()){
-            hip = new HeaderItemPanel(id.getLength(), id.getLabel(), id.getValue(), vm);
+        for (ItemDescriptor id : getModel().getHeaderItems()){
+            hip = new HeaderItemPanel(id.getLength(), id.getLabel(), id.getValue(), getModel());
             id.setHpanel(hip);
             hip.setStatus(id.getIcon());
             //hip.setStatus(vm.getStatusIcon(id.getQualify_type()));
@@ -212,8 +262,8 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
         ValuePanel vp;
         pnl_values.removeAll();
         
-        for (ItemDescriptor id : vm.getValueItems()){
-            vp = new ValuePanel(id.getLabel(), id.getValue(), vm);
+        for (ItemDescriptor id : getModel().getValueItems()){
+            vp = new ValuePanel(id.getLabel(), id.getValue(), getModel());
             vp.setStatus(id.getIcon());
             //vp.setStatus(vm.getStatusIcon(id.getQualify_type()));
             id.setVpanel(vp);
@@ -239,28 +289,35 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
         rb_default = new javax.swing.JRadioButton();
         rb_validated = new javax.swing.JRadioButton();
         rb_hold = new javax.swing.JRadioButton();
-        tb_edit = new javax.swing.JToggleButton();
         pnl_header = new javax.swing.JPanel();
         pnl_id = new javax.swing.JPanel();
+        pnl_calib = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jTextField3 = new javax.swing.JTextField();
         pnl_values = new javax.swing.JPanel();
         pnl_buttons = new javax.swing.JPanel();
         bt_loadrecord = new javax.swing.JButton();
-        bt_savetemplate = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        bt_saverecord = new javax.swing.JButton();
+        statusbar = new javax.swing.JLabel();
+        bt_sendrecord = new javax.swing.JButton();
+        cb_intercept = new javax.swing.JCheckBox();
 
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
         setTitle(org.openide.util.NbBundle.getMessage(InterceptorIFrame.class, "InterceptorIFrame.title")); // NOI18N
-        setPreferredSize(new java.awt.Dimension(1200, 600));
+        setPreferredSize(new java.awt.Dimension(1000, 480));
         getContentPane().setLayout(new javax.swing.BoxLayout(getContentPane(), javax.swing.BoxLayout.Y_AXIS));
 
-        pnl_index.setBackground(new java.awt.Color(0, 153, 153));
+        pnl_index.setBackground(new java.awt.Color(255, 255, 255));
         pnl_index.setForeground(new java.awt.Color(0, 102, 0));
-        pnl_index.setPreferredSize(new java.awt.Dimension(1028, 50));
 
-        cb_index.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
+        cb_index.setFont(new java.awt.Font("DejaVu Sans", 0, 10)); // NOI18N
+        cb_index.setForeground(new java.awt.Color(102, 102, 102));
         cb_index.setModel(index_cbmodel);
         cb_index.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -268,10 +325,10 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
             }
         });
 
-        rb_default.setBackground(new java.awt.Color(0, 153, 153));
+        rb_default.setBackground(new java.awt.Color(255, 255, 255));
         btg_indextypes.add(rb_default);
-        rb_default.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
-        rb_default.setForeground(new java.awt.Color(255, 255, 255));
+        rb_default.setFont(new java.awt.Font("DejaVu Sans", 1, 10)); // NOI18N
+        rb_default.setForeground(new java.awt.Color(102, 102, 102));
         rb_default.setSelected(true);
         org.openide.awt.Mnemonics.setLocalizedText(rb_default, "Não Qualificadas"); // NOI18N
         rb_default.addActionListener(new java.awt.event.ActionListener() {
@@ -280,10 +337,10 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
             }
         });
 
-        rb_validated.setBackground(new java.awt.Color(0, 153, 153));
+        rb_validated.setBackground(new java.awt.Color(255, 255, 255));
         btg_indextypes.add(rb_validated);
-        rb_validated.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
-        rb_validated.setForeground(new java.awt.Color(255, 255, 255));
+        rb_validated.setFont(new java.awt.Font("DejaVu Sans", 1, 10)); // NOI18N
+        rb_validated.setForeground(new java.awt.Color(102, 102, 102));
         org.openide.awt.Mnemonics.setLocalizedText(rb_validated, "Processadas"); // NOI18N
         rb_validated.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -291,18 +348,16 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
             }
         });
 
-        rb_hold.setBackground(new java.awt.Color(0, 153, 153));
+        rb_hold.setBackground(new java.awt.Color(255, 255, 255));
         btg_indextypes.add(rb_hold);
-        rb_hold.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
-        rb_hold.setForeground(new java.awt.Color(255, 255, 255));
+        rb_hold.setFont(new java.awt.Font("DejaVu Sans", 1, 10)); // NOI18N
+        rb_hold.setForeground(new java.awt.Color(102, 102, 102));
         org.openide.awt.Mnemonics.setLocalizedText(rb_hold, "Aguardando"); // NOI18N
         rb_hold.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rb_holdActionPerformed(evt);
             }
         });
-
-        org.openide.awt.Mnemonics.setLocalizedText(tb_edit, "Editar"); // NOI18N
 
         javax.swing.GroupLayout pnl_indexLayout = new javax.swing.GroupLayout(pnl_index);
         pnl_index.setLayout(pnl_indexLayout);
@@ -316,9 +371,7 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(rb_hold)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(cb_index, 0, 487, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tb_edit, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cb_index, 0, 686, Short.MAX_VALUE)
                 .addContainerGap())
         );
         pnl_indexLayout.setVerticalGroup(
@@ -329,8 +382,7 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
                     .addComponent(cb_index, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(rb_default)
                     .addComponent(rb_validated)
-                    .addComponent(rb_hold)
-                    .addComponent(tb_edit))
+                    .addComponent(rb_hold))
                 .addGap(13, 13, 13))
         );
 
@@ -343,39 +395,115 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
         pnl_header.setPreferredSize(new java.awt.Dimension(853, 150));
         pnl_header.setLayout(new javax.swing.BoxLayout(pnl_header, javax.swing.BoxLayout.Y_AXIS));
 
-        pnl_id.setBackground(new java.awt.Color(215, 215, 225));
-        pnl_id.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)), org.openide.util.NbBundle.getMessage(InterceptorIFrame.class, "InterceptorIFrame.pnl_id.border.title"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("DejaVu Sans", 1, 14), new java.awt.Color(255, 255, 255))); // NOI18N
-        pnl_id.setOpaque(false);
+        pnl_id.setBackground(new java.awt.Color(255, 255, 255));
+        pnl_id.setBorder(javax.swing.BorderFactory.createTitledBorder(null, org.openide.util.NbBundle.getMessage(InterceptorIFrame.class, "InterceptorIFrame.pnl_id.border.title_1"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("DejaVu Sans", 1, 10), new java.awt.Color(102, 102, 102))); // NOI18N
         pnl_id.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 5));
         pnl_header.add(pnl_id);
 
         getContentPane().add(pnl_header);
 
-        pnl_values.setBorder(javax.swing.BorderFactory.createTitledBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 3, true), org.openide.util.NbBundle.getMessage(InterceptorIFrame.class, "InterceptorIFrame.pnl_values.border.title"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("DejaVu Sans", 1, 14))); // NOI18N
+        pnl_calib.setBackground(new java.awt.Color(255, 255, 255));
+        pnl_calib.setBorder(javax.swing.BorderFactory.createTitledBorder(null, org.openide.util.NbBundle.getMessage(InterceptorIFrame.class, "InterceptorIFrame.pnl_calib.border.title"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("DejaVu Sans", 1, 10), new java.awt.Color(102, 102, 102))); // NOI18N
+        pnl_calib.setPreferredSize(new java.awt.Dimension(1037, 70));
+
+        jLabel1.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel1.setFont(new java.awt.Font("DejaVu Sans", 0, 10)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(153, 153, 153));
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/virna5/interceptor/no.png"))); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, "Calibração associada a liga : "); // NOI18N
+        jLabel1.setOpaque(true);
+
+        jTextField1.setFont(new java.awt.Font("DejaVu Sans", 0, 10)); // NOI18N
+        jTextField1.setText("Nenhum registro associado"); // NOI18N
+        jTextField1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 5));
+
+        jLabel3.setFont(new java.awt.Font("DejaVu Sans", 0, 10)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(153, 153, 153));
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel3, "Por : "); // NOI18N
+
+        jTextField2.setFont(new java.awt.Font("DejaVu Sans", 0, 10)); // NOI18N
+        jTextField2.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
+        jTextField2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
+        jLabel4.setFont(new java.awt.Font("DejaVu Sans", 0, 10)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(153, 153, 153));
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel4, "Analise de Validação : "); // NOI18N
+
+        jTextField3.setFont(new java.awt.Font("DejaVu Sans", 0, 10)); // NOI18N
+        jTextField3.setHorizontalAlignment(javax.swing.JTextField.TRAILING);
+        jTextField3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+
+        javax.swing.GroupLayout pnl_calibLayout = new javax.swing.GroupLayout(pnl_calib);
+        pnl_calib.setLayout(pnl_calibLayout);
+        pnl_calibLayout.setHorizontalGroup(
+            pnl_calibLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnl_calibLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pnl_calibLayout.setVerticalGroup(
+            pnl_calibLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnl_calibLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(pnl_calibLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel3)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        getContentPane().add(pnl_calib);
+
+        pnl_values.setBackground(new java.awt.Color(255, 255, 255));
+        pnl_values.setBorder(javax.swing.BorderFactory.createTitledBorder(null, org.openide.util.NbBundle.getMessage(InterceptorIFrame.class, "InterceptorIFrame.pnl_values.border.title_1"), javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("DejaVu Sans", 1, 10), new java.awt.Color(102, 102, 102))); // NOI18N
         pnl_values.setPreferredSize(new java.awt.Dimension(853, 300));
-        pnl_values.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+        pnl_values.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 7, 7));
         getContentPane().add(pnl_values);
 
-        org.openide.awt.Mnemonics.setLocalizedText(bt_loadrecord, "Load Record"); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(bt_loadrecord, "Recuperar"); // NOI18N
         bt_loadrecord.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bt_loadrecordActionPerformed(evt);
             }
         });
 
-        org.openide.awt.Mnemonics.setLocalizedText(bt_savetemplate, "Save Template"); // NOI18N
-        bt_savetemplate.addActionListener(new java.awt.event.ActionListener() {
+        org.openide.awt.Mnemonics.setLocalizedText(bt_saverecord, "Arquivar"); // NOI18N
+        bt_saverecord.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bt_savetemplateActionPerformed(evt);
+                bt_saverecordActionPerformed(evt);
             }
         });
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, "Interceptor"); // NOI18N
+        statusbar.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(statusbar, "Interceptor ativado"); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(jButton1, "Teste"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        org.openide.awt.Mnemonics.setLocalizedText(bt_sendrecord, "Enviar Análise"); // NOI18N
+        bt_sendrecord.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                bt_sendrecordActionPerformed(evt);
+            }
+        });
+
+        cb_intercept.setFont(new java.awt.Font("DejaVu Sans", 1, 12)); // NOI18N
+        cb_intercept.setSelected(true);
+        org.openide.awt.Mnemonics.setLocalizedText(cb_intercept, org.openide.util.NbBundle.getMessage(InterceptorIFrame.class, "InterceptorIFrame.cb_intercept.text")); // NOI18N
+        cb_intercept.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cb_interceptActionPerformed(evt);
             }
         });
 
@@ -385,14 +513,16 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
             pnl_buttonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pnl_buttonsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 662, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(statusbar, javax.swing.GroupLayout.DEFAULT_SIZE, 565, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(bt_loadrecord)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(bt_savetemplate)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
-                .addGap(56, 56, 56))
+                .addComponent(bt_saverecord)
+                .addGap(18, 18, 18)
+                .addComponent(bt_sendrecord)
+                .addGap(18, 18, 18)
+                .addComponent(cb_intercept)
+                .addContainerGap())
         );
         pnl_buttonsLayout.setVerticalGroup(
             pnl_buttonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -400,9 +530,10 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
                 .addGap(5, 5, 5)
                 .addGroup(pnl_buttonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bt_loadrecord)
-                    .addComponent(jLabel2)
-                    .addComponent(bt_savetemplate)
-                    .addComponent(jButton1))
+                    .addComponent(bt_saverecord)
+                    .addComponent(bt_sendrecord)
+                    .addComponent(cb_intercept)
+                    .addComponent(statusbar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(1, 1, 1))
         );
 
@@ -413,57 +544,91 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
 
     private void bt_loadrecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_loadrecordActionPerformed
        
-        String loadpath = ContextUtils.selectFile(false, ContextUtils.CONTEXTDIR+"area3", "rec");
-        vm.loadRecord(loadpath);
+        String loadpath = ContextUtils.selectFile(false, ContextUtils.CONTEXTDIR + ContextUtils.file_separator+"records" , "rec");
+        if (loadpath != null){
+            getModel().loadRecord(loadpath, false);
+        }
+        
     }//GEN-LAST:event_bt_loadrecordActionPerformed
 
-    private void bt_savetemplateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_savetemplateActionPerformed
+    private void bt_saverecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_saverecordActionPerformed
         
-        String loadpath = ContextUtils.selectFile(true,ContextUtils.CONTEXTDIR+"area3", "tmpl");
-        vm.saveTemplate(loadpath);
-        
-    }//GEN-LAST:event_bt_savetemplateActionPerformed
+        String loadpath = ContextUtils.selectFile(true,ContextUtils.CONTEXTDIR + ContextUtils.file_separator+"records" , "rec"); 
+        if (loadpath != null){
+            getModel().saveTemplate(loadpath);
+        }   
+    }//GEN-LAST:event_bt_saverecordActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void bt_sendrecordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_sendrecordActionPerformed
 
-        //vm.TestHook1();
-    }//GEN-LAST:event_jButton1ActionPerformed
+        getModel().sendRecord();
+    }//GEN-LAST:event_bt_sendrecordActionPerformed
 
     private void rb_defaultActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rb_defaultActionPerformed
         activateIndexGroup (0);
+        //if (cb_index != null){
+             //updateResultsView(cb_index);
+        //}
     }//GEN-LAST:event_rb_defaultActionPerformed
 
     private void rb_validatedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rb_validatedActionPerformed
         activateIndexGroup (1);
+        //updateResultsView(cb_index);
     }//GEN-LAST:event_rb_validatedActionPerformed
 
     private void rb_holdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rb_holdActionPerformed
         activateIndexGroup (2);
+        //updateResultsView(cb_index);
     }//GEN-LAST:event_rb_holdActionPerformed
 
     private void cb_indexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_indexActionPerformed
         
         JComboBox jcb = (JComboBox)evt.getSource();
-        String s = jcb.getSelectedItem().toString();
+        updateResultsView(jcb);
         
-        if (!s.equals(IndexComboBoxModel.EMPTYLABEL)){
-            //LOG.info("Index Selected");
-            vm.updateView(s, index_cbmodel.getGroup());
-        }
-        
-        
-        
+   
     }//GEN-LAST:event_cb_indexActionPerformed
+
+    private void updateResultsView(JComboBox jcb){
+        
+        if (getModel() ==  null) return;
+        
+        if (jcb != null){
+            Object obj = jcb.getSelectedItem();
+            if (obj != null) {
+                String s = jcb.getSelectedItem().toString();
+                if (!s.equals(IndexComboBoxModel.EMPTYLABEL)){
+                    //LOG.info("Index Selected");
+                    getModel().updateView(s, index_cbmodel.getGroup());
+                }
+                else{
+                    clearCanvas();
+                }
+            }   
+        }
+    }
+    
+    
+    private void cb_interceptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cb_interceptActionPerformed
+        getModel().setIntercept(cb_intercept.isSelected());
+    }//GEN-LAST:event_cb_interceptActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bt_loadrecord;
-    private javax.swing.JButton bt_savetemplate;
+    private javax.swing.JButton bt_saverecord;
+    private javax.swing.JButton bt_sendrecord;
     private javax.swing.ButtonGroup btg_indextypes;
     private javax.swing.JComboBox<String> cb_index;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JCheckBox cb_intercept;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
     private javax.swing.JPanel pnl_buttons;
+    private javax.swing.JPanel pnl_calib;
     private javax.swing.JPanel pnl_header;
     private javax.swing.JPanel pnl_id;
     private javax.swing.JPanel pnl_index;
@@ -471,6 +636,13 @@ public class InterceptorIFrame extends JInternalFrame implements MonitorIFrameIn
     private javax.swing.JRadioButton rb_default;
     private javax.swing.JRadioButton rb_hold;
     private javax.swing.JRadioButton rb_validated;
-    private javax.swing.JToggleButton tb_edit;
+    private javax.swing.JLabel statusbar;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * @return the vm
+     */
+    public InterceptModel getModel() {
+        return vm;
+    }
 }

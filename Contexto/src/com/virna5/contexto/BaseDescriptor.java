@@ -47,13 +47,17 @@ public class BaseDescriptor implements SignalListener{
     protected String observ;
     
     protected String[] dependencies;
-    
     protected UIInterface[] interfaces;
     
     private transient Integer alarm_handle = 0;
 
-    private boolean autoloadui = false;
+    protected Boolean autoloadui = true;
+    protected Boolean iconifyui = false;
+    protected Integer uilandx = 100;
+    protected Integer uilandy = 100;
+
     
+
     
     public BaseDescriptor() {
         
@@ -423,18 +427,39 @@ public class BaseDescriptor implements SignalListener{
         this.alarm_handle = alarm_handle;
     }
 
-    /**
-     * @return the autoloadui
-     */
-    public boolean isAutoloadui() {
+    
+    public void setAutoloadui(Boolean autoloadui) {
+        this.autoloadui = autoloadui;
+    }
+
+    public Boolean getAutoloadui() {
         return autoloadui;
     }
 
-    /**
-     * @param autoloadui the autoloadui to set
-     */
-    public void setAutoloadui(boolean autoloadui) {
-        this.autoloadui = autoloadui;
+    
+
+    public Integer getUilandx() {
+        return uilandx;
+    }
+
+    public void setUilandx(Integer uilandx) {
+        this.uilandx = uilandx;
+    }
+
+    public Integer getUilandy() {
+        return uilandy;
+    }
+
+    public void setUilandy(Integer uilandy) {
+        this.uilandy = uilandy;
+    }
+
+    public Boolean getIconifyui() {
+        return iconifyui;
+    }
+
+    public void setIconifyui(Boolean iconifyui) {
+        this.iconifyui = iconifyui;
     }
 
     

@@ -1,0 +1,1169 @@
+{
+  "obs": "Observações iniciais",
+  "contextnodes": [
+    {
+      "source_widget": "43",
+      "target_widget": "42",
+      "nodetype": "edge.EdgeDescriptor",
+      "version": "1.0.0",
+      "context": 1611245718743471830,
+      "uid": 1611245718743492243,
+      "name": "Conector",
+      "desc": "Conector para transmissão de dados e comandos",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1536433695722,
+      "loaded": 1536433695722,
+      "graph_widget": "28",
+      "style": "entity",
+      "observ": "Observações gerais",
+      "dependencies": [],
+      "autoloadui": false,
+      "iconifyui": false,
+      "uilandx": 100,
+      "uilandy": 100
+    },
+    {
+      "source_widget": "42",
+      "target_widget": "46",
+      "nodetype": "edge.EdgeDescriptor",
+      "version": "1.0.0",
+      "context": 1611245718743471830,
+      "uid": 1611245718743557394,
+      "name": "Conector",
+      "desc": "Conector para transmissão de dados e comandos",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1536433702721,
+      "loaded": 1536433702721,
+      "graph_widget": "27",
+      "style": "entity;fontStyle\u003d1;fontColor\u003d#FF0033",
+      "observ": "Observações gerais",
+      "dependencies": [],
+      "autoloadui": false,
+      "iconifyui": false,
+      "uilandx": 100,
+      "uilandy": 100
+    },
+    {
+      "source_widget": "46",
+      "target_widget": "47",
+      "nodetype": "edge.EdgeDescriptor",
+      "version": "1.0.0",
+      "context": 1611245718743471830,
+      "uid": 1611245718743565202,
+      "name": "Conector",
+      "desc": "Conector para transmissão de dados e comandos",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1536437617475,
+      "loaded": 1536437617475,
+      "graph_widget": "48",
+      "style": "entity",
+      "observ": "Observações gerais",
+      "dependencies": [],
+      "autoloadui": false,
+      "iconifyui": false,
+      "uilandx": 100,
+      "uilandy": 100
+    },
+    {
+      "outputfile": "/Bascon/BSW1/Controle/area2/bsw3.qef",
+      "multiline": false,
+      "nodetype": "filewriter.FileWriterDescriptor",
+      "version": "1.0.0",
+      "context": 1611245718743471830,
+      "uid": 1611245718743575964,
+      "name": "Gravador QEF",
+      "desc": "Dispositivo para gravaçãode novos arquivos em um diretorio no disco",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1536437613297,
+      "loaded": 1536437613297,
+      "graph_widget": "47",
+      "xpos": 720.0,
+      "ypos": 350.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/save.gif",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.filewriter.FileWriterService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Gravador de Arquivos",
+          "class_name": "com.virna5.filewriter.MonitorIFrame",
+          "type": "iframe"
+        }
+      ],
+      "autoloadui": false,
+      "iconifyui": false,
+      "uilandx": 100,
+      "uilandy": 100
+    },
+    {
+      "source_widget": "45",
+      "target_widget": "44",
+      "nodetype": "edge.EdgeDescriptor",
+      "version": "1.0.0",
+      "context": 1611245718743471830,
+      "uid": 1611245718743656637,
+      "name": "Conector",
+      "desc": "Conector para transmissão de dados e comandos",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1536428831519,
+      "loaded": 1536428831519,
+      "graph_widget": "17",
+      "style": "entity",
+      "observ": "Observações gerais",
+      "dependencies": [],
+      "autoloadui": false,
+      "iconifyui": false,
+      "uilandx": 100,
+      "uilandy": 100
+    },
+    {
+      "useheader": true,
+      "encoding": "UTF-8",
+      "separator": ",",
+      "locale": "PT-BR",
+      "output": "result",
+      "qeffields": [
+        {
+          "ids": "1610884029974241717",
+          "fieldname": "C",
+          "value": 0.1,
+          "window": 5.0,
+          "percent": true,
+          "limitlow": 0.0,
+          "limithigh": 0.0
+        },
+        {
+          "ids": "1610884040879005474",
+          "fieldname": "Si",
+          "value": 0.1,
+          "window": 5.0,
+          "percent": true,
+          "limitlow": 0.0,
+          "limithigh": 0.0
+        },
+        {
+          "ids": "1610884049972249169",
+          "fieldname": "Mn",
+          "value": 0.1,
+          "window": 10.0,
+          "percent": true,
+          "limitlow": 0.0,
+          "limithigh": 0.0
+        },
+        {
+          "ids": "1610884056120269772",
+          "fieldname": "P",
+          "value": 0.1,
+          "window": 10.0,
+          "percent": true,
+          "limitlow": 0.0,
+          "limithigh": 0.0
+        },
+        {
+          "ids": "1610883989528579578",
+          "fieldname": "S",
+          "value": 0.1,
+          "window": 15.0,
+          "percent": true,
+          "limitlow": 0.0,
+          "limithigh": 0.0
+        },
+        {
+          "ids": "1610884121281786292",
+          "fieldname": "Mg",
+          "value": 0.1,
+          "window": 10.0,
+          "percent": false,
+          "limitlow": 0.1,
+          "limithigh": 0.3
+        }
+      ],
+      "cardname": "BSW_:timestamp",
+      "groupname": "Fe",
+      "nodetype": "qeffilter.QEFFilterDescriptor",
+      "version": "1.0.0",
+      "context": 1611245718743471830,
+      "uid": 1611245718743667218,
+      "name": "Filtro QEF",
+      "desc": "Processador de dados em arquivos tipo QEF",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1536260589123,
+      "loaded": 1536260589123,
+      "graph_widget": "46",
+      "xpos": 660.0,
+      "ypos": 110.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/filter_qef.png",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.qeffilter.QEFFilterService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Filtro QEF",
+          "class_name": "com.virna5.qeffilter.QEFIFrame",
+          "type": "iframe"
+        }
+      ],
+      "autoloadui": true,
+      "iconifyui": false,
+      "uilandx": 120,
+      "uilandy": 300
+    },
+    {
+      "useheader": true,
+      "encoding": "UTF-8",
+      "separator": ";",
+      "endline": "\n\r",
+      "locale": "PT-BR",
+      "output": "csv",
+      "automatic": false,
+      "interval": 0,
+      "generatorfields": [
+        {
+          "fieldname": "Amostra:",
+          "fieldtype": "texto",
+          "format": "%s",
+          "range": "teste"
+        },
+        {
+          "fieldname": "Liga:",
+          "fieldtype": "texto",
+          "format": "%s",
+          "range": "liga1"
+        },
+        {
+          "fieldname": "Si",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.2:0.3"
+        },
+        {
+          "fieldname": "Fe",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "94.5:97.0"
+        },
+        {
+          "fieldname": "Cu",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Mg",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Mn",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Cr",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.4:0.7"
+        },
+        {
+          "fieldname": "Ni",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.4:0.7"
+        },
+        {
+          "fieldname": "Zn",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Ti",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Ag",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "null"
+        },
+        {
+          "fieldname": "B",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Ba",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Be",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Bi",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Ca",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Cd",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Ga",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Co",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "In",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Li",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Mo",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Na",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Pb",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Sn",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Sr",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "V",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.01:0.02"
+        },
+        {
+          "fieldname": "Zr",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Sb",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "As",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Hg",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "P",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "La",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Ce",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Al",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "S",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.04:0.06"
+        },
+        {
+          "fieldname": "Bg",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Au",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "C",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.3:0.5"
+        },
+        {
+          "fieldname": "Nb",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Se",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "Te",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.003:0.005"
+        },
+        {
+          "fieldname": "O",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Ta",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "W",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "N",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        },
+        {
+          "fieldname": "Hf",
+          "fieldtype": "numero",
+          "format": "%4.3f",
+          "range": "0.02:0.035"
+        }
+      ],
+      "nodetype": "qs4generator.QS4GeneratorDescriptor",
+      "version": "1.0.0",
+      "context": 1611245718743471830,
+      "uid": 1611245718743697726,
+      "name": "Gerador QS-BSW3",
+      "desc": "Cria arquivo de resultados randomicos para teste",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1536427771286,
+      "loaded": 1536427771286,
+      "graph_widget": "45",
+      "xpos": 100.0,
+      "ypos": 350.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/gear.png",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.qs4generator.QS4GeneratorService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Gerador de Resultados",
+          "class_name": "com.virna5.qs4generator.MonitorIFrame",
+          "type": "iframe"
+        }
+      ],
+      "autoloadui": true,
+      "iconifyui": false,
+      "uilandx": 650,
+      "uilandy": 180
+    },
+    {
+      "outputfile": "/Bascon/BSW1/Controle/area1/bsw3.csv",
+      "multiline": false,
+      "nodetype": "filewriter.FileWriterDescriptor",
+      "version": "1.0.0",
+      "context": 1611245718743471830,
+      "uid": 1611245718743719060,
+      "name": "Gravador de Arquivos",
+      "desc": "Dispositivo para gravaçãode novos arquivos em um diretorio no disco",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1536428826517,
+      "loaded": 1536428826517,
+      "graph_widget": "44",
+      "xpos": 420.0,
+      "ypos": 420.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/save.gif",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.filewriter.FileWriterService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Gravador de Arquivos",
+          "class_name": "com.virna5.filewriter.MonitorIFrame",
+          "type": "iframe"
+        }
+      ],
+      "autoloadui": false,
+      "iconifyui": false,
+      "uilandx": 100,
+      "uilandy": 100
+    },
+    {
+      "timespot": 0,
+      "lastseen": 0,
+      "interval": 2000,
+      "lag": 250,
+      "triggered": false,
+      "timeout": 60000,
+      "multiline": false,
+      "inputfile_path": "/Bascon/BSW1/Controle/area1/bsw3.csv",
+      "outputfile": "/Bascon/BSW1/Controle/area2",
+      "nodetype": "fileobserver.FileObserverDescriptor",
+      "version": "1.0.0",
+      "context": 1611245718743471830,
+      "uid": 1611245718743742224,
+      "name": "Observador de Arquivos",
+      "desc": "Dispositivo para verificação e leitura de novos arquivos em um diratorio.",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1536260519228,
+      "loaded": 1536260519228,
+      "graph_widget": "43",
+      "xpos": 80.0,
+      "ypos": 90.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/triangle.png",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.fileobserver.FileObserverService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Observador de Arquivos",
+          "class_name": "com.virna5.fileobserver.MonitorIFrame",
+          "type": "iframe"
+        }
+      ],
+      "autoloadui": true,
+      "iconifyui": false,
+      "uilandx": 120,
+      "uilandy": 50
+    },
+    {
+      "useheader": true,
+      "encoding": "UTF-8",
+      "separator": ";",
+      "locale": "PT-BR",
+      "output": "result",
+      "csvfields": [
+        {
+          "csvfield": "Amostra:",
+          "realm": "cabecalho",
+          "type": "texto",
+          "readcsv": true,
+          "resultfield": "Amostra",
+          "resultseq": 1,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Liga:",
+          "realm": "cabecalho",
+          "type": "texto",
+          "readcsv": true,
+          "resultfield": "Liga",
+          "resultseq": 2,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Si",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Si",
+          "resultseq": 4,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Fe",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Fe",
+          "resultseq": 23,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Cu",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Cu",
+          "resultseq": 17,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Mg",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Mg",
+          "resultseq": 22,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Mn",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Mn",
+          "resultseq": 5,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Cr",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Cr",
+          "resultseq": 10,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ni",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Ni",
+          "resultseq": 11,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Zn",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Zn",
+          "resultseq": 18,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ti",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Ti",
+          "resultseq": 14,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ag",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Ag",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "B",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "B",
+          "resultseq": 19,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ba",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Ba",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Be",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Be",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Bi",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Bi",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ca",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Ca",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Cd",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Cd",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ga",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Ga",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Co",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Co",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "In",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "In",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Li",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Li",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Mo",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Mo",
+          "resultseq": 12,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Na",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Na",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Pb",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Pb",
+          "resultseq": 19,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Sn",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Sn",
+          "resultseq": 20,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Sr",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Sr",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "V",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "V",
+          "resultseq": 13,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Zr",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Zr",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Sb",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Sb",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "As",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "As",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Hg",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Hg",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "P",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "P",
+          "resultseq": 6,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "La",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "La",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ce",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Ce",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Al",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Al",
+          "resultseq": 21,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "S",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "S",
+          "resultseq": 7,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Bg",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Bg",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Au",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Au",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "C",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "C",
+          "resultseq": 3,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Nb",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "Nb",
+          "resultseq": 15,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Se",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Se",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Te",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Te",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "O",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "O",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Ta",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Ta",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "W",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "W",
+          "resultseq": 16,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "N",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "N",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        },
+        {
+          "csvfield": "Hf",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": false,
+          "resultfield": "Hf",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        }
+      ],
+      "nodetype": "csvfilter.CSVFilterDescriptor",
+      "version": "1.0.0",
+      "context": 1611245718743471830,
+      "uid": 1611245718743765279,
+      "name": "Filtro CSV",
+      "desc": "Processador de dados em arquivos tipo CSV",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1536260527373,
+      "loaded": 1536260527373,
+      "graph_widget": "42",
+      "xpos": 390.0,
+      "ypos": 170.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/filter.png",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.csvfilter.CSVFilterService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Filtro CSV",
+          "class_name": "com.virna5.csvfilter.MonitorIFrame",
+          "type": "iframe"
+        }
+      ],
+      "autoloadui": false,
+      "iconifyui": false,
+      "uilandx": 100,
+      "uilandy": 100
+    }
+  ],
+  "nodetype": "contexto.RootDescriptor",
+  "version": "1.0.0",
+  "context": 1611245718743471830,
+  "uid": 1611245718743795020,
+  "name": "Root",
+  "desc": "Root",
+  "designer": "msantos",
+  "owner": "BSW",
+  "created": 1536603636219,
+  "loaded": 1536603636219,
+  "graph_widget": "1",
+  "observ": "Observações gerais",
+  "dependencies": [],
+  "autoloadui": true,
+  "iconifyui": false,
+  "uilandx": 100,
+  "uilandy": 100
+}

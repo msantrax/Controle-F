@@ -15,15 +15,12 @@ import com.virna5.contexto.VirnaPayload;
 import com.virna5.contexto.VirnaServices;
 import static com.virna5.contexto.VirnaServices.STATES.IDLE;
 import static com.virna5.contexto.VirnaServices.STATES.INIT;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayDeque;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
+import javax.swing.JDesktopPane;
 
 public class FileWriterService extends BaseService {
 
@@ -191,6 +188,21 @@ public class FileWriterService extends BaseService {
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;
                         
+                        case TSK_CLEAR:
+                            liframe = (com.virna5.filewriter.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
+                            if (liframe != null){
+                                JDesktopPane mon = liframe.getDesktopPane();
+                                
+                                //mon.getDesktopManager().deiconifyFrame(liframe); 
+                                //liframe.iconifyFrame(false);
+                                mon.getDesktopManager().closeFrame(liframe);
+                                log.fine("UI Interface removed @ Filewriter");
+                            }
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;       
+                                
+                            
+                            
                         case RESET:
                             //log.log(Level.FINE, "FOB em RESET");
                             states_stack.push(VirnaServices.STATES.IDLE);
@@ -243,7 +255,7 @@ public class FileWriterService extends BaseService {
                             if (fwdesc != null){
                                 try{
                                     ContextUtils.saveFile(fwdesc.getOutputfile(), payload);
-                                    log.fine(String.format("Wrote file %s with : %s",fwdesc.getOutputfile(), payload));
+                                    //log.fine(String.format("Wrote file %s with : %s",fwdesc.getOutputfile(), payload));
                                     if (liframe != null){
                                         liframe.updateUIDirect(new FileWriterUIUpdater()
                                                                 .setLedcolor(MonitorIFrameInterface.LED_GREEN_ON)
@@ -265,8 +277,8 @@ public class FileWriterService extends BaseService {
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;
     
-                            default:
-                                log.fine("Undefined state on QS4Generator : " + smm.getState().toString());
+                        default:
+                                log.fine("Chamada de Estado Indeterminada no Gravador de Arquivos : " + smm.getState().toString());
                                 states_stack.push(VirnaServices.STATES.IDLE);
                                 break;
  
@@ -279,7 +291,7 @@ public class FileWriterService extends BaseService {
                     }
                 }
             } catch (Exception ex) {
-                log.log(Level.WARNING, String.format("Falha na maquina de estados em FileWriter : %s"), ex.toString());
+                log.log(Level.WARNING, "Falha na maquina de estados no Gravador de Arquivos : " + ex.toString());
                 startService();
             }
 

@@ -19,6 +19,9 @@ public class ContextDescriptor {
     private long context;
     private long uid;
     
+    
+    
+    
     private ContextNodes contextnodes;
     
     
@@ -56,12 +59,5 @@ public class ContextDescriptor {
         return uid;
     }
 
-    /**
-     * @param uid the uid to set
-     */
-    public void setUID(long uid) {
-        this.uid = uid;
-    }
-    
     
 }

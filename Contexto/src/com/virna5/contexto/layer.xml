@@ -3,16 +3,10 @@
 <filesystem>
     <folder name="Menu">
         <attr name="SystemFileSystem.localizingBundle" stringvalue="org.netbeans.core.ui.resources.Bundle"/>
-        <folder name="Designer">
-            <attr name="position" intvalue="1100"/>
-        </folder>
+        <file name="Designer_hidden"/>
         <folder name="Window">
             <file name="com-virna5-graph-GraphPropertiesTopComponent.shadow_hidden"/>
         </folder>
     </folder>
-    <folder name="Toolbars">
-        <folder name="Designer">
-            
-        </folder>
-    </folder>    
+    <folder name="Toolbars"/>    
 </filesystem>

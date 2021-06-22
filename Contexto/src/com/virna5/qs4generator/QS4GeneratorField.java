@@ -80,22 +80,28 @@ public class QS4GeneratorField {
         }
         else if (fieldtype.equals(FTYPE.numero.name())){
             try {
-                String[] ranges = range.split(":");
-                if (ranges.length == 2){
-                    Double dl = Double.parseDouble(ranges[0]);
-                    Double dh = Double.parseDouble(ranges[1]);
-                    Double drange = dh - dl;
-                    if (drange > 0.0001){
-                        double random = ThreadLocalRandom.current().nextDouble(dl, dh);
-                        out = String.format(lc, format, random);
+                
+                if (range.toUpperCase().equals("NULL") || range.equals("")){
+                    out = "Null";
+                }
+                else{
+                    String[] ranges = range.split(":");
+                    if (ranges.length == 2){
+                        Double dl = Double.parseDouble(ranges[0]);
+                        Double dh = Double.parseDouble(ranges[1]);
+                        Double drange = dh - dl;
+                        if (drange > 0.0001){
+                            double random = ThreadLocalRandom.current().nextDouble(dl, dh);
+                            out = String.format(lc, format, random);
+                        }
+                        else{
+                            out = ranges[0];
+                        }
                     }
-                    else{
+                    else {
                         out = ranges[0];
-                    }
-                }
-                else {
-                    out = ranges[0];
-                }
+                    } 
+                }    
             } catch (Exception ex){
                 out = "0.0";
             }

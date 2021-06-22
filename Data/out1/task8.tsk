@@ -1,0 +1,166 @@
+{
+  "obs": "Observações iniciais",
+  "contextnodes": [
+    {
+      "source_widget": "3",
+      "target_widget": "4",
+      "nodetype": "edge.EdgeDescriptor",
+      "version": "1.0.0",
+      "context": 1599387604824091662,
+      "uid": 1599387604825292140,
+      "name": "Conector",
+      "desc": "Conector para transmissão de dados e comandos",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1525294863216,
+      "loaded": 1525294863216,
+      "graph_widget": "6",
+      "style": "entity",
+      "observ": "Observações gerais",
+      "dependencies": []
+    },
+    {
+      "source_widget": "2",
+      "target_widget": "3",
+      "nodetype": "edge.EdgeDescriptor",
+      "version": "1.0.0",
+      "context": 1599387604824091662,
+      "uid": 1599387604825394733,
+      "name": "Conector",
+      "desc": "Conector para transmissão de dados e comandos",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1525294853693,
+      "loaded": 1525294853693,
+      "graph_widget": "5",
+      "style": "entity",
+      "observ": "Observações gerais",
+      "dependencies": []
+    },
+    {
+      "nodetype": "filewriter.FileWriterDescriptor",
+      "version": "1.0.0",
+      "context": 1599387604824091662,
+      "uid": 1599387604824893043,
+      "name": "Gravador de Arquivos",
+      "desc": "Dispositivo para gravaçãode novos arquivos em um diretorio no disco",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1525294850450,
+      "loaded": 1525294850450,
+      "graph_widget": "4",
+      "xpos": 580.0,
+      "ypos": 330.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/save.gif",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.filewriter.FileWriterService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Gravador de Arquivos",
+          "class_name": "com.virna5.filewriter.MonitorIFrame",
+          "type": "iframe"
+        }
+      ]
+    },
+    {
+      "useheader": true,
+      "encoding": "UTF-8",
+      "separator": ",",
+      "locale": "PT-BR",
+      "output": "result",
+      "csvfields": [
+        {
+          "csvfield": "9695468",
+          "realm": "valor",
+          "type": "numero",
+          "readcsv": true,
+          "resultfield": "799695468",
+          "resultseq": 0,
+          "writeresult": true,
+          "number": 0.0
+        }
+      ],
+      "nodetype": "csvfilter.CSVFilterDescriptor",
+      "version": "1.0.0",
+      "context": 1599387604824091662,
+      "uid": 1599387604825042512,
+      "name": "Filtro CSV",
+      "desc": "Processador de dados em arquivos tipo CSV",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1525294847296,
+      "loaded": 1525294847296,
+      "graph_widget": "3",
+      "xpos": 350.0,
+      "ypos": 140.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/filter.png",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.csvfilter.CSVFilterService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Filtro CSV",
+          "class_name": "com.virna5.csvfilter.MonitorIFrame",
+          "type": "iframe"
+        }
+      ]
+    },
+    {
+      "timespot": 0,
+      "lastseen": 0,
+      "interval": 2000,
+      "lag": 250,
+      "triggered": false,
+      "timeout": 60000,
+      "inputfile_path": "/Bascon/BSW1",
+      "outputfile": "",
+      "nodetype": "fileobserver.FileObserverDescriptor",
+      "version": "1.0.0",
+      "context": 1599387604824091662,
+      "uid": 1599387604825088669,
+      "name": "Observador de Arquivos",
+      "desc": "Dispositivo para verificação e leitura de novos arquivos em um diratorio.",
+      "designer": "msantos",
+      "owner": "BSW",
+      "created": 1525294843872,
+      "loaded": 1525294843872,
+      "graph_widget": "2",
+      "xpos": 140.0,
+      "ypos": 310.0,
+      "width": 120.0,
+      "height": 70.0,
+      "style": "icon;image\u003d/com/virna5/graphimages/triangle.png",
+      "observ": "Observações gerais",
+      "dependencies": [
+        "com.virna5.fileobserver.FileObserverService"
+      ],
+      "interfaces": [
+        {
+          "display_name": "Observador de Arquivos",
+          "class_name": "com.virna5.fileobserver.MonitorIFrame",
+          "type": "iframe"
+        }
+      ]
+    }
+  ],
+  "nodetype": "contexto.RootDescriptor",
+  "version": "1.0.0",
+  "context": 1599387604824091662,
+  "uid": 1599387604825138825,
+  "name": "Root",
+  "desc": "Root",
+  "designer": "msantos",
+  "owner": "BSW",
+  "created": 1525294826053,
+  "loaded": 1525294826053,
+  "graph_widget": "1",
+  "observ": "Observações gerais",
+  "dependencies": []
+}

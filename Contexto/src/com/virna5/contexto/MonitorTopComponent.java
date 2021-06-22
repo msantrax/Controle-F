@@ -29,9 +29,9 @@ import org.openide.util.NbBundle.Messages;
 @TopComponent.Description(
         preferredID = "MonitorTopComponent",
         iconBase = "com/virna5/contexto/nfs_mount.png",
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS
+        persistenceType = TopComponent.PERSISTENCE_NEVER
 )
-@TopComponent.Registration(mode = "editor", openAtStartup = true)
+@TopComponent.Registration(mode = "editor", openAtStartup = false)
 @ActionID(category = "Window", id = "com.virna5.contexto.MonitorTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(
@@ -57,7 +57,6 @@ public final class MonitorTopComponent extends TopComponent  implements Internal
         setName("Monitor");
         setToolTipText("tooltip");
         //setContentPane(dpmain);
-        
         frames = new LinkedHashMap<>();
      
     }
@@ -65,6 +64,9 @@ public final class MonitorTopComponent extends TopComponent  implements Internal
     public boolean isLoaded(String id){
         return frames.containsKey(id);
     }
+    
+    
+    
     
     public JInternalFrame addIFrame(String []framedata, BaseDescriptor bd, String artifact) {
          
@@ -80,6 +82,11 @@ public final class MonitorTopComponent extends TopComponent  implements Internal
             dpmain.add(internal_frame);
             internal_frame.setLocation(100, 100);
             internal_frame.setSelected(true);
+            
+            
+            if (!classname.contains("Interceptor")){
+                internal_frame.setIcon(true);
+            }
             
             MonitorIFrameInterface mif = (MonitorIFrameInterface)internal_frame;
             

@@ -338,6 +338,7 @@ public class BasicGraphEditor extends JPanel {
                     rd.setGraph_widget(mxc.getId());
                     rd.setContext(context);
                     rd.setUID(ContextUtils.getUID());
+                    rd.getContextNodes().clear();
                 }
                 else{
                     // Build info fot log servicces
@@ -445,7 +446,11 @@ public class BasicGraphEditor extends JPanel {
         
         mxCell parent = (mxCell)graph.getDefaultParent();
         RootConnector rc = (RootConnector)parent.getValue();
-        //rc.initNode();
+        
+        // TODO1
+        rc.initNode();
+        
+        
         RootNode rn = (RootNode)rc.getNode();
         rn.setDescriptor(loadedctx);
         

@@ -20,6 +20,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDesktopPane;
 
 
 public class QS4GeneratorService extends BaseService {
@@ -151,8 +152,10 @@ public class QS4GeneratorService extends BaseService {
         private ArrayDeque <VirnaServices.STATES>states_stack;
         private SMTraffic smm;
         
+        private com.virna5.qs4generator.MonitorIFrame liframe;
+        
         private BaseDescriptor temp_bd;
-        QS4GeneratorDescriptor qs4desc;
+        private QS4GeneratorDescriptor qs4desc;
          
 
         public SMThread(BlockingQueue<SMTraffic> tqueue) {
@@ -226,8 +229,32 @@ public class QS4GeneratorService extends BaseService {
                                 }
                             }
                             states_stack.push(VirnaServices.STATES.IDLE);
-                            break;    
+                            break;
+                            
+                        case TSK_INITUI:
+                            log.fine("QS Generator doing initui @ "+ smm.getHandle());
+                            liframe = (com.virna5.qs4generator.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
+                            qs4desc = (QS4GeneratorDescriptor)descriptors.get(smm.getHandle());
+                            liframe.setIcon(qs4desc.getIconifyui());
+                            liframe.setLocation(qs4desc.getUilandx(), qs4desc.getUilandy());
+                            
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;  
                         
+                        case TSK_CLEAR:
+                            liframe = (com.virna5.qs4generator.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
+                            if (liframe != null){
+                                JDesktopPane mon = liframe.getDesktopPane();
+                                //liframe.iconifyFrame(false);
+//                                mon.getDesktopManager().deiconifyFrame(liframe); 
+//                                mon.remove(liframe);
+                                
+                                mon.getDesktopManager().closeFrame(liframe);
+                                log.fine("UI Interface removed @ QS4Generator");
+                            }
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break; 
+                            
                         case QS4GEN_GEN:
                             log.fine("Generate result requested");
                             com.virna5.qs4generator.MonitorIFrame liframe = 
@@ -270,7 +297,7 @@ public class QS4GeneratorService extends BaseService {
                     }
                 }
             } catch (Exception ex) {
-                log.log(Level.WARNING, ex.toString());
+                log.log(Level.WARNING,"Falha na máquina de estados em QS4 Generator : " + ex.toString());
                 startService();
             }
 

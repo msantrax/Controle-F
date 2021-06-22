@@ -17,12 +17,15 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDesktopPane;
 
 public class InterceptorService extends BaseService {
 
     private static final Logger log = Logger.getLogger(InterceptorService.class.getName());
     
-    private static InterceptorService instance;    
+    private static InterceptorService instance; 
+    
+    private InterceptorDescriptor fod;
    
     private InterceptorService.SMThread service_thread;
  
@@ -55,7 +58,8 @@ public class InterceptorService extends BaseService {
     @Override
     public void configService(BaseDescriptor bd){
         
-        InterceptorDescriptor fod = (InterceptorDescriptor) bd;
+        fod = (InterceptorDescriptor) bd;
+        
         Long uid = fod.getUID();
         if (descriptors.containsKey(uid)){
             descriptors.remove(uid);
@@ -120,7 +124,7 @@ public class InterceptorService extends BaseService {
 
         private BaseDescriptor temp_bd;
         private InterceptorDescriptor fwdesc;
-        private com.virna5.interceptor.MonitorIFrame liframe;
+        private com.virna5.interceptor.InterceptorIFrame liframe;
         
 
         public SMThread(BlockingQueue<SMTraffic> tqueue) {
@@ -178,10 +182,25 @@ public class InterceptorService extends BaseService {
                                 String action = (smm.getCode() == 1) ? "Activating" : "Deactivating;";
                                 log.fine(String.format("%s task %d on InterceptorService using %s", action, lhandle, temp_bd.getName()));
                             }
-                            
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;
                         
+                        case TSK_CLEAR:
+                            liframe = (com.virna5.interceptor.InterceptorIFrame) getIFrame(String.valueOf(smm.getHandle()));
+                            if (liframe != null){
+                                JDesktopPane mon = liframe.getDesktopPane();
+//                                mon.getDesktopManager().deiconifyFrame(liframe); 
+//                                //liframe.iconifyFrame(false);
+//                                mon.remove(liframe);
+                                
+                                mon.getDesktopManager().closeFrame(liframe);
+                                log.fine("UI Interface removed @ Interceptor");
+                            }
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;       
+                            
+                            
+                            
                         case RESET:
                             //log.log(Level.FINE, "FOB em RESET");
                             states_stack.push(VirnaServices.STATES.IDLE);
@@ -193,34 +212,52 @@ public class InterceptorService extends BaseService {
                             VirnaPayload vp1 = smm.getPayload();
                             String payload1 = vp1.vstring;
                             
-                            liframe = (com.virna5.interceptor.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
-                            
-                            fwdesc = (InterceptorDescriptor)descriptors.get(smm.getHandle());
-                            if (fwdesc != null){
-                                    
-                               
-                            }
-                          
+                            liframe = (com.virna5.interceptor.InterceptorIFrame) getIFrame(String.valueOf(smm.getHandle()));
+                            InterceptModel im = liframe.getModel();
+                            im.loadRecord(payload1, true);
+ 
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;
  
-                            default:
-                                log.fine("Undefined state on Interceptor : " + smm.getState().toString());
-                                states_stack.push(VirnaServices.STATES.IDLE);
-                                break;
+                        case SENDRECORD:
+                            
+                            VirnaPayload vp2 = smm.getPayload();
+                            String payload2 = vp2.vstring;
+                            
+                            fwdesc = fod;
+                            if (fwdesc != null){
+                                log.info("Interceptor is sending record");
+                                
+                                fwdesc.notifySignalListeners(0, new SMTraffic(fwdesc.getUID(),
+                                            VirnaServices.CMDS.LOADSTATE,
+                                            0, 
+                                            VirnaServices.STATES.LOADRECORD, 
+                                            new VirnaPayload().setString(payload2)
+                                ));
+                            }
+                           
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;    
+                            
+                            
+                        default:
+                            log.fine("Undefined state on Interceptor : " + smm.getState().toString());
+                            states_stack.push(VirnaServices.STATES.IDLE);
+                            break;
  
 
                     }
                 }
             } catch (Exception ex) {
-                log.log(Level.WARNING, String.format("Falha na maquina de estados em Interceptor : %s"), ex.toString());
+                log.log(Level.WARNING, "Falha na maquina de estados no Interceptor : " + ex.toString());
+                //ex.printStackTrace();
                 startService();
             }
 
         }
 
         public void setDone(boolean done) {
-            if (done) log.log(Level.FINE, "FOB Stopping Service");
+            if (done) log.log(Level.FINE, "Interceptor Stopping Service");
             this.done = done;
         }   
     };

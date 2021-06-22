@@ -70,19 +70,27 @@ public class ValuePanel extends javax.swing.JPanel {
         lb_header = new javax.swing.JLabel();
         tf_value = new javax.swing.JTextField();
 
+        setBackground(new java.awt.Color(255, 255, 255));
+        setBorder(null);
+        setMaximumSize(new java.awt.Dimension(125, 75));
         setPreferredSize(new java.awt.Dimension(125, 75));
 
-        lb_header.setFont(new java.awt.Font("DejaVu Sans", 1, 18)); // NOI18N
+        lb_header.setBackground(new java.awt.Color(240, 240, 240));
+        lb_header.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
         lb_header.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         org.openide.awt.Mnemonics.setLocalizedText(lb_header, "Mn"); // NOI18N
-        lb_header.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        lb_header.setBorder(null);
         lb_header.setDoubleBuffered(true);
         lb_header.setOpaque(true);
+        lb_header.setPreferredSize(new java.awt.Dimension(23, 20));
 
-        tf_value.setFont(new java.awt.Font("DejaVu Sans", 1, 18)); // NOI18N
+        tf_value.setFont(new java.awt.Font("DejaVu Sans", 1, 14)); // NOI18N
         tf_value.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         tf_value.setText("0.381"); // NOI18N
-        tf_value.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        tf_value.setBorder(null);
+        tf_value.setMaximumSize(new java.awt.Dimension(50, 20));
+        tf_value.setMinimumSize(new java.awt.Dimension(50, 20));
+        tf_value.setPreferredSize(new java.awt.Dimension(50, 20));
         tf_value.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tf_valueActionPerformed(evt);
@@ -93,16 +101,15 @@ public class ValuePanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lb_header, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
-            .addComponent(tf_value)
+            .addComponent(tf_value, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+            .addComponent(lb_header, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(lb_header)
+                .addComponent(lb_header, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tf_value)
-                .addContainerGap())
+                .addComponent(tf_value, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

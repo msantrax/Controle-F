@@ -15,12 +15,19 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyVetoException;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.Timer;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.LifecycleManager;
+import org.openide.util.Exceptions;
 
 
-public class MonitorIFrame extends JInternalFrame implements MonitorIFrameInterface {
+public class MonitorIFrame extends JInternalFrame implements MonitorIFrameInterface, ActionListener {
 
     private QS4GeneratorDescriptor descriptor;
     private QS4GeneratorService service;
@@ -28,6 +35,8 @@ public class MonitorIFrame extends JInternalFrame implements MonitorIFrameInterf
   
     private Timer timer;
  
+    private QS4GeneratorFieldsWrapper cfw;
+    DialogDescriptor d;
     
     public MonitorIFrame() {
         initComponents();
@@ -35,6 +44,15 @@ public class MonitorIFrame extends JInternalFrame implements MonitorIFrameInterf
           
     }
 
+    public void iconifyFrame(boolean icon){
+        
+        try {
+            this.setIcon(icon);
+        } catch (PropertyVetoException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        
+    }
 
     // ============================================== POINTERS DE MANEJAMENTO ================================================
     /**
@@ -111,13 +129,25 @@ public class MonitorIFrame extends JInternalFrame implements MonitorIFrameInterf
                     //lb_timestamp.setText(LocalDate.now().format(date_formatter));
                     lb_timestamp.setText(ContextUtils.getTimestamp());
                 }
+                else{
+                    
+                }
             }
         };
         EventQueue.invokeLater(worker);   
     }
-    
 
-    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        
+        if(e.getSource() == DialogDescriptor.OK_OPTION) {
+            //LifecycleManager.getDefault().exit();
+        } 
+        
+        d.setClosingOptions(null);
+        
+    }
+   
     
     private class LedTimerListener implements ActionListener {
     
@@ -133,6 +163,29 @@ public class MonitorIFrame extends JInternalFrame implements MonitorIFrameInterf
     }
     
     
+    public void editValues(){
+        
+        cfw = descriptor.getGeneratorfields();
+        QS4GeneratorEditorPanel gep = new QS4GeneratorEditorPanel(cfw);
+        
+        d = new DialogDescriptor(gep, "Editor", true, this);
+        d.setClosingOptions(new Object[]{});
+        
+        d.addPropertyChangeListener(new PropertyChangeListener() {
+            public void propertyChange(PropertyChangeEvent e) {
+                if(e.getPropertyName().equals(DialogDescriptor.PROP_VALUE) && e.getNewValue()==DialogDescriptor.CLOSED_OPTION) {
+//                    LifecycleManager.getDefault().exit();
+                }
+            }
+        });
+       
+        DialogDisplayer.getDefault().notifyLater(d);
+ 
+    }
+    
+    
+    
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -143,6 +196,7 @@ public class MonitorIFrame extends JInternalFrame implements MonitorIFrameInterf
         jLabel1 = new javax.swing.JLabel();
         ckb_auto = new javax.swing.JCheckBox();
         bt_simulate = new javax.swing.JButton();
+        bt_edit = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
@@ -169,10 +223,17 @@ public class MonitorIFrame extends JInternalFrame implements MonitorIFrameInterf
             }
         });
 
-        org.openide.awt.Mnemonics.setLocalizedText(bt_simulate, "Simular Resultado");
+        org.openide.awt.Mnemonics.setLocalizedText(bt_simulate, org.openide.util.NbBundle.getMessage(MonitorIFrame.class, "MonitorIFrame.bt_simulate.text")); // NOI18N
         bt_simulate.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bt_simulateActionPerformed(evt);
+            }
+        });
+
+        org.openide.awt.Mnemonics.setLocalizedText(bt_edit, "Editar Resultado"); // NOI18N
+        bt_edit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bt_editActionPerformed(evt);
             }
         });
 
@@ -181,18 +242,19 @@ public class MonitorIFrame extends JInternalFrame implements MonitorIFrameInterf
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lb_timestamp)
-                        .addGap(18, 240, Short.MAX_VALUE)
+                        .addGap(18, 18, Short.MAX_VALUE)
                         .addComponent(lb_led))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(39, 39, 39)
                         .addComponent(ckb_auto)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
+                        .addComponent(bt_edit)
+                        .addGap(18, 18, 18)
                         .addComponent(bt_simulate)))
                 .addGap(32, 32, 32))
         );
@@ -207,19 +269,20 @@ public class MonitorIFrame extends JInternalFrame implements MonitorIFrameInterf
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(bt_simulate)
-                    .addComponent(ckb_auto))
-                .addContainerGap(13, Short.MAX_VALUE))
+                    .addComponent(ckb_auto)
+                    .addComponent(bt_edit))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -247,7 +310,12 @@ public class MonitorIFrame extends JInternalFrame implements MonitorIFrameInterf
 
     }//GEN-LAST:event_bt_simulateActionPerformed
 
+    private void bt_editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bt_editActionPerformed
+        editValues();
+    }//GEN-LAST:event_bt_editActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bt_edit;
     private javax.swing.JButton bt_simulate;
     private javax.swing.JCheckBox ckb_auto;
     private javax.swing.JLabel jLabel1;

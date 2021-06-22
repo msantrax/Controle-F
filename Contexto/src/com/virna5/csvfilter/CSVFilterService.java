@@ -9,11 +9,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.virna5.contexto.BaseDescriptor;
 import com.virna5.contexto.BaseService;
+import com.virna5.contexto.MonitorIFrameInterface;
 import com.virna5.contexto.ResultField;
 import com.virna5.contexto.ResultRecord;
 import com.virna5.contexto.SMTraffic;
 import com.virna5.contexto.VirnaPayload;
 import com.virna5.contexto.VirnaServices;
+import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -23,6 +25,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDesktopPane;
+import org.openide.awt.StatusDisplayer;
 
 
 public class CSVFilterService extends BaseService {
@@ -39,6 +42,9 @@ public class CSVFilterService extends BaseService {
         return instance;
     }
     public CSVFilterService getDefault() { return instance; }
+    
+    private String filtered_payload="";
+    private int fields_converted = 0;
     
   
     public CSVFilterService() {
@@ -74,6 +80,44 @@ public class CSVFilterService extends BaseService {
         smqueue.add(signal);
     }
     
+    
+    private CSVFieldsWrapper sortFields(CSVFieldsWrapper fields){
+        
+        CSVFieldsWrapper sortedfields = new CSVFieldsWrapper();
+        int maxseq=0;
+        
+        for (CSVField csvf : fields){
+            if (csvf.resultseq > maxseq) maxseq=csvf.resultseq;
+        }
+        
+        for (int i = 1; i <= maxseq; i++) {
+            for (CSVField csvf : fields){
+                if (csvf.resultseq == i){
+                    sortedfields.add(csvf);
+                }
+            }
+        }
+  
+        return sortedfields;
+        
+    }
+    
+    private int getBySequence(CSVFieldsWrapper fields, int seq){
+        
+        int maxseq = fields.size();
+        int i;
+        
+        
+        for (i = 0; i <= maxseq; i++) {
+            if (fields.get(i).getResultseq() == seq){
+                return i;
+            }
+        }  
+        
+        return 0;
+    }
+    
+    
     public String parseLoad(String pld, CSVFilterDescriptor fodesc){
       
         
@@ -82,33 +126,54 @@ public class CSVFilterService extends BaseService {
         String sjson = "";
      
         rr.setName(fodesc.getName());
+        fields_converted = 0;
+        StringBuilder sb = new StringBuilder();
+        
         
         if (pld.contains("\r\n") || pld.contains("\n")){
             // Has header
             pld = pld.replace("\r", "");
             String[] lpld = pld.split("\n");
             
-            String [] cheaders = lpld[0].split(fodesc.getSeparator());;
+            String [] cheaders = lpld[0].split(fodesc.getSeparator());
             String [] cfields = lpld[1].split(fodesc.getSeparator());
             
             if (cfields.length != fodesc.getCsvfields().size()){
                 log.fine("CSVFields size do not match");
+                filtered_payload=String.format("Numero de campos inconsistente : %d <> %d", cfields.length, fodesc.getCsvfields().size());
             }
             
             int counter=0;
-            for (CSVField csvf : fodesc.getCsvfields()){
+            
+//            int maxseq = getMaxSeq(fodesc.getCsvfields());
+//            int thisseq = 0;
+            
+            for (CSVField csvf : sortFields(fodesc.getCsvfields())){
                 //csvf.setValue(cfields[counter]);
                 if (csvf.isReadcsv()){
                     ResultField rf = new ResultField(   rr.getUid(),
                                                         csvf.getResultfield(), 
                                                         CSVField.getRealmEnum(csvf.getRealm()),
                                                         CSVField.getTypeEnum(csvf.getType()),
-                                                        cfields[counter],
+                                                        cfields[getBySequence(fodesc.getCsvfields(), csvf.getResultseq())],
                                                         csvf.getResultseq());
                     fields.add(rf);
+                    fields_converted++;
+                    sb.append(String.format("Campo %d => %s = %s \n\r",
+                                        counter,
+                                        csvf.getCSVfield(),
+                                        cfields[getBySequence(fodesc.getCsvfields(), csvf.getResultseq())])
+                                        );
+                    
                 }
                 counter++;
             }
+            
+            if (counter > 0){
+               filtered_payload = String.format("Filtro CSV converteu %d campos : \n\r", counter);
+               filtered_payload += sb.toString();       
+            }
+         
             
             GsonBuilder builder = new GsonBuilder(); 
             builder.setPrettyPrinting(); 
@@ -117,7 +182,7 @@ public class CSVFilterService extends BaseService {
 
 //            log.info("========== JSON : ==================\n\r");
 //            log.info(sjson);
-//            log.info(String.format("Json parser loaded %d chars", sjson.length()));
+//            log.info(String.format("Json parser loaded %d chars", sjson.length()));            
         }
         else{
             // Single Line
@@ -222,7 +287,11 @@ public class CSVFilterService extends BaseService {
                             liframe = (com.virna5.csvfilter.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
                             if (liframe != null){
                                 JDesktopPane mon = liframe.getDesktopPane();
-                                mon.remove(liframe);
+                                //liframe.iconifyFrame(false);
+//                                mon.getDesktopManager().deiconifyFrame(liframe); 
+//                                mon.remove(liframe);
+                                
+                                mon.getDesktopManager().closeFrame(liframe);
                                 log.fine("UI Interface removed @ CSVFilter");
                             }
                             states_stack.push(VirnaServices.STATES.IDLE);
@@ -230,19 +299,33 @@ public class CSVFilterService extends BaseService {
                                
                             
                         case CSV_CONVERT:
-                            log.fine("CSVFilter is converting");                       
+                            log.fine("CSVFilter is converting");
+                            com.virna5.csvfilter.MonitorIFrame liframe = 
+                                    (com.virna5.csvfilter.MonitorIFrame) getIFrame(String.valueOf(smm.getHandle()));
+                         
                             fodesc = (CSVFilterDescriptor)descriptors.get(smm.getHandle());
                             VirnaPayload vp = smm.getPayload();
                             String pld = vp.vstring;
                             String record = parseLoad(pld, fodesc);
                             if (!record.equals("")){
+                                
+                                liframe.updateUI(MonitorIFrameInterface.LED_GREEN_ON, filtered_payload);
+                                
                                 fodesc.notifySignalListeners(0, new SMTraffic(fodesc.getUID(),
                                             VirnaServices.CMDS.LOADSTATE,
                                             0, 
                                             VirnaServices.STATES.LOADRECORD, 
                                             new VirnaPayload().setString(record)
                                         ));
+                                
+                                 
+                                StatusDisplayer.getDefault().setStatusText("Filtro " + fodesc.getName() + 
+                                                                            " publicou uma analise no sistema");
                             }
+                            else{
+                                liframe.updateUI(MonitorIFrameInterface.LED_RED, "");
+                            }
+                            
                             states_stack.push(VirnaServices.STATES.IDLE);
                             break;    
                             
@@ -254,13 +337,14 @@ public class CSVFilterService extends BaseService {
                     }
                 }
             } catch (Exception ex) {
-                log.log(Level.WARNING, ex.toString());
+                log.log(Level.SEVERE,"Falha na máquina de estados no Filtro CSV : " + ex.toString());
+                startService();
             }
 
         }
 
         public void setDone(boolean done) {
-            if (done) log.log(Level.FINE, "FOB Stopping Service");
+            if (done) log.log(Level.FINE, "CSVFilter is Stopping Service");
             this.done = done;
         }   
     };

@@ -25,9 +25,11 @@ import com.mxgraph.util.mxUtils;
 import com.mxgraph.view.mxGraph;
 import com.virna5.csvfilter.CSVFilterConnector;
 import com.virna5.edge.EdgeConnector;
+import com.virna5.eo2filter.EO2FilterConnector;
 import com.virna5.fileobserver.FileObserverConnector;
 import com.virna5.filewriter.FileWriterConnector;
 import com.virna5.interceptor.InterceptorConnector;
+import com.virna5.qeffilter.QEFFilterConnector;
 import com.virna5.qs4generator.QS4GeneratorConnector;
 import com.virna5.sapfilter.SAPFilterConnector;
 import java.util.logging.Logger;
@@ -89,9 +91,18 @@ public class GraphEditor extends BasicGraphEditor{
                                         "icon;image=/com/virna5/graphimages/filter.png",
                                         120, 70, new CSVFilterConnector() );
         
+        shapesPalette.addTemplate("Filtro EO2",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/filter.png")),
+                                        "icon;image=/com/virna5/graphimages/filter.png",
+                                        120, 70, new EO2FilterConnector() );
+        
+        
         shapesPalette.addTemplate("Filtro SAP",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/filter.png")),
                                         "icon;image=/com/virna5/graphimages/filter.png",
                                         120, 70, new SAPFilterConnector() );
+        
+        shapesPalette.addTemplate("Gerador QEF",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/filter_qef.png")),
+                                        "icon;image=/com/virna5/graphimages/filter_qef.png",
+                                        120, 70, new QEFFilterConnector() );
         
         
         shapesPalette.addTemplate("Gravador de Arquivos",new ImageIcon(GraphEditor.class.getResource("/com/virna5/graphimages/hd-48x48.png")),

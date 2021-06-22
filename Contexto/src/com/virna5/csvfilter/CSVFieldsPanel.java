@@ -8,6 +8,9 @@ package com.virna5.csvfilter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.virna5.contexto.ContextUtils;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
@@ -30,7 +33,6 @@ public class CSVFieldsPanel extends javax.swing.JPanel implements TableModelList
 
     private static final Logger log = Logger.getLogger(CSVFieldsPanel.class.getName());
 
-    
     protected CSVFieldsWrapper cfw;
     
     
@@ -51,12 +53,27 @@ public class CSVFieldsPanel extends javax.swing.JPanel implements TableModelList
         
         model.addTableModelListener(this);
         
+//        this.addFocusListener(new FocusListener() {
+//            @Override
+//            public void focusGained(FocusEvent e) {
+//                log.info("Focus Gained");
+//            }
+//
+//            @Override
+//            public void focusLost(FocusEvent e) {
+//                log.info("Focus Lost");
+//            }
+//            
+//        });
+        
+        
     }
 
     
     @Override
     public void tableChanged(TableModelEvent e) {
-        log.info("table changed"); 
+        log.info("table changed");
+        
     }
     
     private void addRow(){
@@ -351,7 +368,7 @@ public class CSVFieldsPanel extends javax.swing.JPanel implements TableModelList
         });
 
         bt_up.setFont(new java.awt.Font("DejaVu Sans", 1, 18)); // NOI18N
-        bt_up.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/virna5/graphimages/1uparrow.png"))); // NOI18N
+        bt_up.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/virna5/graphimages/1downarrow.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(bt_up, org.openide.util.NbBundle.getMessage(CSVFieldsPanel.class, "CSVFieldsPanel.bt_up.text")); // NOI18N
         bt_up.setToolTipText("Mova o Campo abaixo"); // NOI18N
         bt_up.setPreferredSize(new java.awt.Dimension(60, 29));
@@ -362,7 +379,7 @@ public class CSVFieldsPanel extends javax.swing.JPanel implements TableModelList
         });
 
         bt_down.setFont(new java.awt.Font("DejaVu Sans", 1, 18)); // NOI18N
-        bt_down.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/virna5/graphimages/1downarrow.png"))); // NOI18N
+        bt_down.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/virna5/graphimages/1uparrow.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(bt_down, org.openide.util.NbBundle.getMessage(CSVFieldsPanel.class, "CSVFieldsPanel.bt_down.text")); // NOI18N
         bt_down.setToolTipText("Mova o Campo acima"); // NOI18N
         bt_down.setPreferredSize(new java.awt.Dimension(60, 29));
@@ -476,7 +493,7 @@ public class CSVFieldsPanel extends javax.swing.JPanel implements TableModelList
         saveTemplate();
     }//GEN-LAST:event_bt_saveActionPerformed
 
-
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton br_import;
     private javax.swing.JButton bt_add;

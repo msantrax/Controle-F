@@ -39,10 +39,10 @@ import org.openide.util.lookup.InstanceContent;
 )
 @TopComponent.Description(
         preferredID = "ControleTopComponent",
-        iconBase = "com/virna5/context/eraser.png",
-        persistenceType = TopComponent.PERSISTENCE_ALWAYS
+        iconBase = "com/virna5/context/exec.png",
+        persistenceType = TopComponent.PERSISTENCE_NEVER
 )
-@TopComponent.Registration(mode = "editor", openAtStartup = true)
+@TopComponent.Registration(mode = "editor", openAtStartup = false)
 @ActionID(category = "Window", id = "com.virna5.context.ControleTopComponent")
 @ActionReference(path = "Menu/Window" /*, position = 333 */)
 @TopComponent.OpenActionRegistration(
@@ -67,8 +67,7 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
     ArrayList<RunTaskValue> tasks;
     
     private final InstanceContent content = new InstanceContent();
-    
-    
+        
     public ControleTopComponent() {
         
         log.setLevel(Level.FINE);
@@ -115,21 +114,18 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
             }
         });
         
-        this.bt_removetask.setEnabled(false);
+        //this.bt_removetask.setEnabled(false);
         
         ctrl = Controler.getInstance();
         ctrl.setView(this);
         ctrl.addSignalListener(this);
         //ctrl.startService();
      
-        this.requestActive();
-        
-        if (!ContextUtils.AUTOLOAD.equals("")){
-            ctrl.addContext(ContextUtils.AUTOLOAD);
-            //ctrl.
-        }
-        
-        
+//        this.requestActive();
+//        
+//        if (!ContextUtils.AUTOLOAD.equals("")){
+//            ctrl.addContext(ContextUtils.AUTOLOAD);
+//        }
         
         this.pnl_runtable.setVisible(false);
         
@@ -148,6 +144,8 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
                                             .setLong1(1000L)
                                             .setLong2(1000L) );
         ctrl.processSignal(smtf);
+        
+        
     
     }
     
@@ -155,8 +153,7 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
      
         tasks.add(new RunTaskValue(uid, desc, start, owner, false, tools, obs));
         tools_model.addGroup(tools);
-        tbl_running.updateUI();
-        
+        tbl_running.updateUI();      
     }
     
     public void removeTask(long uid, int index){
@@ -181,6 +178,11 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
             this.group = _group; 
         }
         
+        public String[] getGroup(int index){
+            return groups.get(index);
+        }
+        
+        
         public int getSelected(){
             return group;
         }
@@ -203,9 +205,7 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
         public int getSize(){
             return groups.get(group).length;
         }
-        
-        
-    
+   
     };
             
    
@@ -328,8 +328,6 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
             }
         }
     };
-    
-    
     
     public class RunTaskValue {
     
@@ -471,7 +469,6 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
         pnl_layer1.setOpaque(false);
 
         pnl_runtable.setBackground(new java.awt.Color(255, 255, 255));
-        pnl_runtable.setBorder(null);
         pnl_runtable.setOpaque(false);
         pnl_runtable.setPreferredSize(new java.awt.Dimension(835, 80));
         pnl_runtable.setLayout(new java.awt.BorderLayout());
@@ -479,10 +476,8 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
         jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
         jScrollPane1.setBorder(null);
         jScrollPane1.setMaximumSize(new java.awt.Dimension(32767, 80));
-        jScrollPane1.setOpaque(true);
         jScrollPane1.setPreferredSize(new java.awt.Dimension(456, 80));
 
-        tbl_running.setBorder(null);
         tbl_running.setFont(new java.awt.Font("DejaVu Sans", 0, 14)); // NOI18N
         tbl_running.setModel(model);
         tbl_running.setToolTipText("<html>\nSed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium <br>\ndoloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore <br>\nveritatis et quasi architecto beatae vitae dicta sunt explicabo.<br> \nNemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, <br>\nsed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. <br>\nNeque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, <br>\nadipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et <br>\ndolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, <br>\n</html>"); // NOI18N
@@ -499,13 +494,11 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
         jLabel4.setPreferredSize(new java.awt.Dimension(345, 40));
         pnl_runtable.add(jLabel4, java.awt.BorderLayout.PAGE_START);
 
-        jPanel2.setBorder(null);
         jPanel2.setMaximumSize(new java.awt.Dimension(32767, 40));
         jPanel2.setOpaque(false);
         jPanel2.setPreferredSize(new java.awt.Dimension(1054, 40));
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT, 10, 5));
 
-        bt_removetask.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/virna5/graphimages/remove.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(bt_removetask, "Remover Tarefa"); // NOI18N
         bt_removetask.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -514,7 +507,6 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
         });
         jPanel2.add(bt_removetask);
 
-        bt_addtask.setIcon(new javax.swing.ImageIcon(getClass().getResource("/com/virna5/contexto/exec.png"))); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(bt_addtask, "Adicionar Tarefa");
         bt_addtask.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -603,7 +595,33 @@ public final class ControleTopComponent extends TopComponent implements SignalLi
     // End of variables declaration//GEN-END:variables
     @Override
     public void componentOpened() {
-        // TODO add custom code on component opening
+        
+        log.info("Top opneened");
+        this.pnl_runtable.setVisible(!this.pnl_runtable.isVisible()); 
+        
+        this.tbl_running.getSelectionModel().setSelectionInterval(0, 0);
+        Long ctx = tasks.get(0).context;
+        
+        String[] gitems = tools_model.getGroup(0);
+        for (String sitem : gitems){
+            log.info("GItem = " + sitem);
+            if (sitem !=null){
+                if (!sitem.equals("Selecione uma ferramenta")){
+                    VirnaPayload payload = new VirnaPayload().setString(sitem).setLong1(ctx);
+                    SMTraffic smtf = new SMTraffic( ctrl.getContext(),
+                                VirnaServices.CMDS.LOADSTATE, 0, 
+                                VirnaServices.STATES.CTRL_LOADMONITOR, 
+                                payload);
+                    ctrl.processSignal(smtf);
+                }
+            }
+            
+        }
+        
+        this.tbl_running.updateUI();
+        
+        
+        
     }
 
     @Override

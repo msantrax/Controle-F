@@ -154,7 +154,7 @@
           <Font name="DejaVu Sans" size="18" style="1"/>
         </Property>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/com/virna5/graphimages/1uparrow.png"/>
+          <Image iconType="3" name="/com/virna5/graphimages/1downarrow.png"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="com/virna5/csvfilter/Bundle.properties" key="CSVFieldsPanel.bt_up.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
@@ -174,7 +174,7 @@
           <Font name="DejaVu Sans" size="18" style="1"/>
         </Property>
         <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-          <Image iconType="3" name="/com/virna5/graphimages/1downarrow.png"/>
+          <Image iconType="3" name="/com/virna5/graphimages/1uparrow.png"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="com/virna5/csvfilter/Bundle.properties" key="CSVFieldsPanel.bt_down.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>

@@ -61,6 +61,12 @@ public class FileObserverDescriptor extends BaseDescriptor{
         
         this.multiline = false;
         
+        autoloadui = true;
+        iconifyui = true;
+        uilandx = 120;
+        uilandy = 150;
+        
+        
     }
 
     

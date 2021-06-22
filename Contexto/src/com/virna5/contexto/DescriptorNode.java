@@ -105,7 +105,28 @@ public class DescriptorNode extends AbstractNode implements ChangeListener {
             psr.setShortDescription("Que utilizou o artefato por ultimo");
             set.put(psr);
             
-            psr = new PropertySupport.Reflection<>(obj, String.class, "observ");
+            psr = new PropertySupport.Reflection<>(obj, Boolean.class, "autoloadui");
+            psr.setName("Carregar Interface");
+            psr.setShortDescription("Carregar dispositivo de interface com usuario no canvas de trabalho");
+            set.put(psr);
+            
+            psr = new PropertySupport.Reflection<>(obj, Boolean.class, "iconifyui");
+            psr.setName("Minimizar Dispositivo");
+            psr.setShortDescription("Minimizar janela do dispositivo (evitar congestão do canvas de trabalho)");
+            set.put(psr);
+            
+            psr = new PropertySupport.Reflection<>(obj, Integer.class, "uilandx");
+            psr.setName("Posição da UI (x)");
+            psr.setShortDescription("Posição do dispositivo no canvas (x)");
+            set.put(psr);
+            
+            psr = new PropertySupport.Reflection<>(obj, Integer.class, "uilandy");
+            psr.setName("Posição da UI (y)");
+            psr.setShortDescription("Posição do dispositivo no canvas (y)");
+            set.put(psr);
+            
+            
+            psr = new PropertySupport.Reflection<>(obj, String.class, "desc");
             psr.setName("Observações");
             psr.setShortDescription("Informaçoes adicionais sobre o estado e configuração do artefato");
             set.put(psr);
